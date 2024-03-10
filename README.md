@@ -18,3 +18,5 @@ This script needs:
 1.vnavmesh 
 
 2.Pandora
+
+3.Teleporter
