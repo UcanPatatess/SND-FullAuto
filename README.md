@@ -1,4 +1,4 @@
-# SND-FullAutoCokeBuy
+# SND-FullAuto
 FFXIV a Lua script that uses Something Need Doing
 
 you need to be close to the Sabina when you start the script otherways no bueno
