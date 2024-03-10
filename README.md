@@ -20,3 +20,5 @@ This script needs:
 2.Pandora
 
 3.Teleporter
+
+4.lifestream
