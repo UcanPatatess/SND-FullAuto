@@ -3,6 +3,8 @@ FFXIV a Lua script that uses Something Need Doing
 
 Repo:
 
+https://raw.githubusercontent.com/NightmareXIV/MyDalamudPlugins/main/pluginmaster.json
+
 https://puni.sh/api/repository/croizat
 
 https://love.puni.sh/ment.json
