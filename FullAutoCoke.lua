@@ -92,6 +92,7 @@ function ExchangeCompany()
       yield("/pcall SelectString true 3")
    else
       repeat
+         GrandCompfull = GetNodeText("GrandCompanySupplyList",23)
          GrandCompOpen = IsNodeVisible("GrandCompanySupplyList",20)
          yield("/pcall GrandCompanySupplyList true 1 0 0")
          yield("/wait 0.4")
