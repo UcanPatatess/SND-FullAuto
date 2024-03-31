@@ -1,8 +1,7 @@
 --[[
 
       ***********************************************
-      *          Triple Triad Seller                * 
-      *  Sells your acumulated Triple Triad cards   *
+      *             Triple Triad Seller             * 
       ***********************************************
 
       **********************
