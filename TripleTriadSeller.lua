@@ -1,14 +1,20 @@
 --[[
 
       ***********************************************
-      *             Triple Triad Seller             * 
+      *          Triple Triad Seller                * 
+      *  Sells your acumulated Triple Triad cards   *
       ***********************************************
 
-      **********************
-      * Version  |  0.0.2  *
-      **********************
+	  *************************
+      *  Author: UcanPatates  *
+      *************************
 
-      -> 0.0.1  : +Added Teleport and auto walk to Triple Triad Seller
+
+      **********************
+      * Version  |  0.0.3  *
+      **********************
+	 -> 0.0.3  : Improved the while loop at function TripleSeller() Thanks LeafFriend
+      -> 0.0.2  : +Added Teleport and auto walk to Triple Triad Seller
       -> 0.0.1  : Just the seller
 
       ***************
@@ -52,38 +58,20 @@ function TargetedInteract(target)
 end
 
 function TripleSeller()
-
 yield("/pcall SelectIconString false 1")
-yield("/wait 0.4")
 repeat
   yield("/wait 0.1")
 until IsAddonReady("TripleTriadCoinExchange")
-
-yield("/wait 0.3")
-nodecheck = IsNodeVisible("TripleTriadCoinExchange",2)
-nodenumber = GetNodeText("TripleTriadCoinExchange",3 ,1 ,5)
-a = tonumber(nodenumber)
-yield("/wait 0.3")
-if nodecheck then
-  yield("/wait 0.2")
-  yield("/pcall TripleTriadCoinExchange true -1")
-  yield("/wait 0.2")
-else
-  while nodecheck == false do
-    yield("/wait 0.4")
+while not IsNodeVisible("TripleTriadCoinExchange",2) do
+    nodenumber = GetNodeText("TripleTriadCoinExchange",3 ,1 ,5)
+	a = tonumber(nodenumber)
+	yield("/wait 0.4")
     yield("/pcall TripleTriadCoinExchange true 0")
     yield("/wait 0.3")
     yield(string.format("/pcall ShopCardDialog true 0 %d", a))
     yield("/wait 0.2")
-    nodecheck = IsNodeVisible("TripleTriadCoinExchange",2)
-    nodenumber = GetNodeText("TripleTriadCoinExchange",3 ,1 ,5)
-    a = tonumber(nodenumber)
-     if nodecheck then
-      yield("/wait 0.2")
-      yield("/pcall TripleTriadCoinExchange true -1")
-    end
-  end
 end
+yield("/pcall TripleTriadCoinExchange true -1")
 end
 
 function WalkTo(x, y, z)
