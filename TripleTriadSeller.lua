@@ -9,11 +9,11 @@
       *  Author: UcanPatates  *
       *************************
 
-
       **********************
       * Version  |  0.0.3  *
       **********************
-	 -> 0.0.3  : Improved the while loop at function TripleSeller() Thanks LeafFriend
+
+      -> 0.0.3  : Improved the while loop at function TripleSeller() Thanks LeafFriend
       -> 0.0.2  : +Added Teleport and auto walk to Triple Triad Seller
       -> 0.0.1  : Just the seller
 
