@@ -98,7 +98,7 @@ while not IsNodeVisible("TripleTriadCoinExchange",2) do
        yield("/wait 0.1")
     until IsAddonReady("ShopCardDialog")
     yield(string.format("/pcall ShopCardDialog true 0 %d", a))
-    yield("/wait 0.3")
+    yield("/wait 0.6")
 end
 yield("/pcall TripleTriadCoinExchange true -1")
 end
