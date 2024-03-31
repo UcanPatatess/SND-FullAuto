@@ -30,6 +30,7 @@
 
 
       Plugins that are used are:
+      -> Teleporter
       -> vnavmesh : https://puni.sh/api/repository/veyn
       -> Something Need Doing [Expanded Edition] : https://puni.sh/api/repository/croizat
            
