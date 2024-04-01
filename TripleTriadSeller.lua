@@ -10,9 +10,10 @@
       *************************
 
       **********************
-      * Version  |  0.0.4  *
+      * Version  |  0.0.5  *
       **********************
 
+      -> 0.0.5  : Changed TargetedInteract target loop 
       -> 0.0.4  : Added max and min distance settings
       -> 0.0.3  : Improved the while loop at function TripleSeller() Thanks LeafFriend
       -> 0.0.2  : +Added Teleport and auto walk to Triple Triad Seller
@@ -75,7 +76,7 @@ function TargetedInteract(target)
     yield("/target "..target.."")
     repeat
         yield("/wait 0.1")
-    until not IsAddonVisible("_TargetInfoMainTarget")
+    until GetDistanceToTarget() < 4
     yield("/interact")
     repeat
     yield("/wait 0.1")
