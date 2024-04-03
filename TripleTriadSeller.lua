@@ -76,7 +76,7 @@ function TargetedInteract(target)
     yield("/target "..target.."")
     repeat
         yield("/wait 0.1")
-    until GetDistanceToTarget() < 4
+    until GetDistanceToTarget() < 7
     yield("/interact")
     repeat
     yield("/wait 0.1")
