@@ -55,7 +55,7 @@ for _, searchString in ipairs(SearchStrings) do
         -- Perform string pattern matching inside the loop
         local Name, Surname = string.match(alphanumeric_text, "(%a+)%s+(%a+)%s+(.-)%s*"..searchString)
         --debug
-        yield("/echo "..alphanumeric_text)
+        --yield("/echo "..alphanumeric_text)
         -- Check if Name and Surname are not nil before printing
         if Name and Surname then
             yield("/echo " .. Name .. " " .. Surname)
