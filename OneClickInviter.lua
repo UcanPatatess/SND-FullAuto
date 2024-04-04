@@ -55,7 +55,7 @@ for line in Chat_Log:gmatch("[^\r\n]+") do
     -- Check if Name and Surname are not nil before printing
     if Name and Surname then
         yield("/echo " .. Name .. " " .. Surname)
-        --yield("/target " .. Name .. " " .. Surname)
-        --yield("/invite ")
+        yield("/target " .. Name .. " " .. Surname)
+        yield("/invite ")
     end
 end
