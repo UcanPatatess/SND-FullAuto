@@ -31,6 +31,7 @@
       -> Something Need Doing [Expanded Edition] : https://puni.sh/api/repository/croizat
            
 ]]
+SearchString = "lfg" -- this is what are you searching in your chat
 --[[
 
   ************
@@ -40,7 +41,6 @@
 
 ]]
 Chat_Log = GetNodeText("ChatLogPanel_3", 7, 2)
-SearchString = "weeks"
 -- Iterate through each line in the chat log
 for line in Chat_Log:gmatch("[^\r\n]+") do
     local alphanumeric_text = line:gsub("[^%w%s]", " ")
