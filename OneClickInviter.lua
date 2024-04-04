@@ -9,9 +9,9 @@
       *************************
 
       **********************
-      * Version  |  0.0.2  *
+      * Version  |  0.0.3  *
       **********************
-
+      -> 0.0.3  : added multiple search texts
       -> 0.0.2  : minor bug fix
       -> 0.0.1  : Just the Inviter
 
@@ -31,7 +31,7 @@
       -> Something Need Doing [Expanded Edition] : https://puni.sh/api/repository/croizat
            
 ]]
-SearchString = "lfg" -- this is what are you searching in your chat
+SearchStrings = {"lfg", "lfp", "inv"} -- this is what are you searching in your chat
 --[[
 
   ************
@@ -42,20 +42,25 @@ SearchString = "lfg" -- this is what are you searching in your chat
 ]]
 Chat_Log = GetNodeText("ChatLogPanel_3", 7, 2)
 -- Iterate through each line in the chat log
-for line in Chat_Log:gmatch("[^\r\n]+") do
-    local alphanumeric_text = line:gsub("[^%w%s]", " ")
-    
-    -- Remove any leading or trailing whitespace
-    alphanumeric_text = alphanumeric_text:match("^%s*(.-)%s*$")
-    
-    -- Perform string pattern matching inside the loop
-    local Name, Surname = string.match(alphanumeric_text, "(%a+)%s+(%a+)%s+(.-)%s*"..SearchString)
-    --debug
-    --yield("/echo "..alphanumeric_text)
-    -- Check if Name and Surname are not nil before printing
-    if Name and Surname then
-        yield("/echo " .. Name .. " " .. Surname)
-        yield("/target " .. Name .. " " .. Surname)
-        yield("/invite ")
+for _, searchString in ipairs(SearchStrings) do
+    -- Your existing code remains the same, but replace SearchString with searchString
+    Chat_Log = GetNodeText("ChatLogPanel_3", 7, 2)
+    -- Iterate through each line in the chat log
+    for line in Chat_Log:gmatch("[^\r\n]+") do
+        local alphanumeric_text = line:gsub("[^%w%s]", " ")
+        
+        -- Remove any leading or trailing whitespace
+        alphanumeric_text = alphanumeric_text:match("^%s*(.-)%s*$")
+        
+        -- Perform string pattern matching inside the loop
+        local Name, Surname = string.match(alphanumeric_text, "(%a+)%s+(%a+)%s+(.-)%s*"..searchString)
+        --debug
+        yield("/echo "..alphanumeric_text)
+        -- Check if Name and Surname are not nil before printing
+        if Name and Surname then
+            yield("/echo " .. Name .. " " .. Surname)
+            yield("/target " .. Name .. " " .. Surname)
+            yield("/invite ")
+        end
     end
 end
