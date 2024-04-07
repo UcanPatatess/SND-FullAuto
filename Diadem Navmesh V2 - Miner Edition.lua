@@ -5,10 +5,11 @@
     ***********************************
 
     *************************
-    *  Version -> 0.0.1.1  *
+    *  Version -> 0.0.1.3  *
     *************************
 
     Version Notes:
+    0.0.1.2  ->   Fixed the waiting if there is no enemy in target distance now script will contuniue path till there is one and Aether use looks more human now
     0.0.1.0  ->   Man... didn't tink I'd hit this with how big this was getting and the bugs I/We created in turn xD 
                   This is the complete version of this script for now. I'm afraid if i change up the codebase anymore, then it's going to break. XD So going to push this as a released version, then focus on re-factoring the code in a different script (with blackjack and hookers)
                   Main things is:
@@ -131,7 +132,7 @@
 
 ]]
 --script Started echo for debug
-if debug==true then
+if debug then
 yield("/e ------------STARTED------------")
 end
 -- Waypoint (V2) Tables 
@@ -277,43 +278,51 @@ end
         end
     end
 
-    function KillTarget()
-        if IsInZone(939) then
-            while GetDistanceToTarget() == 0.0 and GetCharacterCondition(45, false) and GetDiademAetherGaugeBarCount() >= 1 do
-                yield("/targetenemy")
-                yield("/wait 1")
-                if GetTargetName() ~= "" then
-                    while GetDistanceToTarget() > 7 and GetTargetName() ~= "" do
-                        MountFly()
-                        yield("/wait 1")
-                        yield("/vnavmesh flytarget")
-                    end
-                    while GetDistanceToTarget() >= 5 and GetTargetName() ~= "" do
-                        yield("/wait 0.1")
-                    end
+function KillTarget()
+    if IsInZone(939) then
+        if GetDistanceToTarget() == 0.0 and GetCharacterCondition(6, false) and GetCharacterCondition(45, false) and GetDiademAetherGaugeBarCount() >= 1 then
+            yield("/targetenemy")
+            PlayerWait()  
+            yield("/wait 0.1")
+            if GetTargetName() ~= "" then 
+                if GetDistanceToTarget() > 10 then
                     PathStop()
+                    MountFly()
                     yield("/wait 0.1")
-                    while GetCharacterCondition(4) and GetTargetName() ~= "" do 
+                    yield("/vnavmesh flytarget")
+                    while GetDistanceToTarget() > 10 and GetTargetName() ~= "" do
+                        yield("/wait 0.1")  
+                    end
+                end
+                PathStop() 
+                yield("/wait 0.1")
+                while GetTargetHP() > 1.0 and GetTargetName() ~= "" do
+                    if PathIsRunning() then
+                        PathStop()
+                    end 
+                    if GetCharacterCondition(4) then
                         yield("/ac dismount")
                         yield("/wait 0.3")
                     end
-                    while GetTargetHP() > 1.0 and GetTargetName() ~= "" do
-                        if PathIsRunning() then
-                            PathStop()
-                        end 
-                        if GetCharacterCondition(27) then-- casting
-                            yield("/wait 0.1")
-                        else
-                            yield("/gaction \"Duty Action I\"")
-                            yield("/wait 0.1")
-                        end
+                    if GetDistanceToTarget() > 15 or GetNodeText("_TextError",1) == "Target not in line of sight." or GetNodeText("_TextError",1) == "Target is not in range." then
+                        ClearTarget()
+                        yield("/wait 0.1")
                     end
-                    ClearTarget()
-                    DebugMessage("KillTarget")
+                    if GetCharacterCondition(27) then -- casting
+                        yield("/wait 0.5")
+                    else
+                        yield("/gaction \"Duty Action I\"")
+                        yield("/wait 0.5")
+                    end
                 end
+                ClearTarget()
+                DebugMessage("KillTarget")
             end
         end
     end
+end
+
+
 
     function MountFly()
         if GetCharacterCondition(4, false) and IsInZone(939) then 
@@ -349,7 +358,7 @@ end
             if PathIsRunning() == false or IsMoving() == false then 
                 PathfindAndMoveTo(X, Y, Z, true)
                 yield("/wait 0.1")
-                while PathfindInProgress() == true do
+                while PathfindInProgress() do
                     yield("/wait 0.1")
                 end 
             end
@@ -369,7 +378,7 @@ end
     end
 
     function PlayerWait()
-        if PlayerWaitTime == true then 
+        if PlayerWaitTime then 
             math.randomseed( os.time() )
             RandomTimeWait = math.random(10, 20) / 10
             yield("/wait "..RandomTimeWait)
@@ -396,35 +405,35 @@ end
                     yield("/e [Node Type] This is a Max Integrity Node, time to start buffing/smacking")
                     PlayerWait()
                     yield("/wait 0.1")
-                    while BuffYield2 == true and GetGp() >= 500 and HasStatusId(219) == false and GetLevel() >= 40 do -- 
+                    while BuffYield2 and GetGp() >= 500 and HasStatusId(219) == false and GetLevel() >= 40 do -- 
                         if debug then yield("/e [Debug] Should be applying Kings Yield 2") end
                         if GetClassJobId() == 16 then 
                             yield("/ac \"King's Yield II\"")-- King's Yield 2
                             StatusCheck()
                         end 
                     end
-                    while BuffGift2 == true and GetGp() >= 100 and HasStatusId(759) == false and GetLevel() >= 50 do
+                    while BuffGift2 and GetGp() >= 100 and HasStatusId(759) == false and GetLevel() >= 50 do
                         if debug then yield("/e [Debug] Should be applying Mountaineer's Gift 2'") end
                         if GetClassJobId() == 16 then 
                             yield("/ac \"Mountaineer's Gift II\"") -- Mountaineer's Gift 2 (Min)
                             StatusCheck()
                         end 
                     end
-                    while BuffGift1 == true and GetGp() >= 100 and HasStatusId(759) == false and GetLevel() >= 50 do
+                    while BuffGift1 and GetGp() >= 100 and HasStatusId(759) == false and GetLevel() >= 50 do
                         if debug then yield("/e [Debug] Should be applying Mountaineer's Gift 2'") end
                         if GetClassJobId() == 16 then 
                             yield("/ac \"Mountaineer's Gift I\"") -- Mountaineer's Gift 1 (Min)
                             StatusCheck()
                         end 
                     end
-                    while BuffTidings2 == true and GetGp() >= 200 and HasStatusId(2667) == false and GetLevel() >= 81 do 
+                    while BuffTidings2 and GetGp() >= 200 and HasStatusId(2667) == false and GetLevel() >= 81 do 
                         if debug then yield("/e [Debug] Should be applying Tidings") end
                         if GetClassJobId() == 16 then 
                             yield("/ac \"Nald'thal's Tidings\"") -- Nald'thal's Tidings (Min)
                             StatusCheck()
                         end 
                     end 
-                    while BuffBYieldHarvest2  == true and GetGp() >= 100 and HasStatusId(1286) == false and GetLevel() >= 68 do
+                    while BuffBYieldHarvest2 and GetGp() >= 100 and HasStatusId(1286) == false and GetLevel() >= 68 do
                         if debug then yield("/e [Debug] Should be applying Bountiful Yield 2") end
                         if GetClassJobId() == 16 then 
                             yield("/ac \"Bountiful Yield II\"") 
@@ -493,7 +502,7 @@ end
     end 
 
     function BountifulYieldII()
-        while BuffBYieldHarvest2 == true and GetGp() >= 100 and GetLevel() >= 68 and VisibleNode == "Max GP ≥ 858 → Gathering Attempts/Integrity +5" do
+        while BuffBYieldHarvest2 and GetGp() >= 100 and GetLevel() >= 68 and VisibleNode == "Max GP ≥ 858 → Gathering Attempts/Integrity +5" do
             if debug then yield("/e [Debug] Should be applying Kings Yield 2") end
             if GetClassJobId() == 16 then 
                 yield("/ac \"Bountiful Yield II\"")
@@ -516,7 +525,7 @@ end
         yield("/snd stop")
     end   
 
-    if Self_Repair == true and Npc_Repair == true then
+    if Self_Repair and Npc_Repair then
         Npc_Repair=false
         yield("/echo You can only select one repair setting. Setting Npc Repair false")
     end
@@ -539,7 +548,7 @@ end
 
     -- If you have the ability to repair your gear, this will allow you to do so. 
     -- Currently will repair when your gear gets to 50% or below, but you can change the value to be whatever you would like
-    if NeedsRepair(Repair_Amount) and Self_Repair == true then
+    if NeedsRepair(Repair_Amount) and Self_Repair then
         yield("/generalaction repair")
         yield("/waitaddon Repair")
         yield("/pcall Repair true 0")
@@ -552,7 +561,7 @@ end
         yield("/wait 1")
         yield("/pcall Repair true -1")
     end
-    if NeedsRepair(Repair_Amount) and Npc_Repair == true then
+    if NeedsRepair(Repair_Amount) and Npc_Repair then
         if IsInZone(886) then -- Check if in Firmament
             WalkTo(47, -16, 151)
             TargetedInteract("Eilonwy") -- Interact with target named "Eilonwy"
@@ -599,7 +608,7 @@ end
     while IsInZone(939) and GetCharacterCondition(45, false) do
         for i=1, #miner_table do
             if GetCharacterCondition(45, false) then 
-                if UseFood == true and (GetStatusTimeRemaining(48) <= FoodTimeRemaining or HasStatusId(48) == false) then 
+                if UseFood and (GetStatusTimeRemaining(48) <= FoodTimeRemaining or HasStatusId(48) == false) then 
                     yield("/e Food seems to have ran out, going to re-food")
                     FoodCheck()
                 end
