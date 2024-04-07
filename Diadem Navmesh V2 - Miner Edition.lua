@@ -5,10 +5,21 @@
     ***********************************
 
     *************************
-    *  Version -> 0.0.0.54  *
+    *  Version -> 0.0.1.1  *
     *************************
 
     Version Notes:
+    0.0.1.0  ->   Man... didn't tink I'd hit this with how big this was getting and the bugs I/We created in turn xD 
+                  This is the complete version of this script for now. I'm afraid if i change up the codebase anymore, then it's going to break. XD So going to push this as a released version, then focus on re-factoring the code in a different script (with blackjack and hookers)
+                  Main things is:
+                    -> Red Route is up and running 
+                    -> Aethercannon is online and functional (and doesn't crash)
+                    -> Ability to select which node your going to hit in the settings (don't be a dumb dumb and set it to where it'll try and gather something outside your gathering range, it won't')
+                    -> Ability to ACTUALLY use the proper GP skills on the +10 integ node as well so you can maxamize on getting your items
+                    -> Vnavmesh also fixed the pathing issue in v31, so that's also to a point where I feel comfortable releasing this with the "AllIslands" route. 
+                  Thank you @UcanPatates with the help on this. I look foward to us making this the best diadem script we can in lua, then maybe translate that into a plugin in itself. 
+    0.0.0.62 ->   Hope this fixes the red route rock issue, as well as the aether cannon problem. . . 
+    0.0.0.56 ->   Lot of adjustments overall, new Red Route WP's'
     0.0.0.51 ->   New targeting logic in testing 
     0.0.0.47 ->   Tweaked some stuff added 2 new functions -byUcanPatates
     0.0.0.41 ->   "Red Route" is running!
@@ -26,11 +37,6 @@
                 
     Notes to self to fix:
     1: include visland movement, cause MAN flying through things is actually really annoying (mainly transitioning islands, gaps in the floor)
-
-    THINGS TO DO. 
-    -> Create the "Red" Route properly. Points are set in there but need to actually go through and set it up to the proper format
-    -> Create the "Blue Route"
-    -> Create the double route on the single island
 
     ***************
     * Description *
@@ -57,7 +63,8 @@
     * Credits *
     ***********
 
-    Author: Leontopodium Nivale
+    Author: Leontopodium Nivale 
+    Co-Laborator/Co-Author: UcanPatates
     Class: Miner
 
     **************
@@ -65,7 +72,7 @@
     **************
 ]]
 
-    UseFood = false
+    UseFood = true
     FoodKind = "Sideritis Cookie <HQ>"
     RemainingFoodTimer = 5 -- This is in minutes
     -- If you would like to use food while in diadem, and what kind of food you would like to use. 
@@ -88,7 +95,7 @@
             -- "RedRoute" -> The perception route that only runs through 8 nodes on the red route [WIP]
             -- "BlueRoute" -> The gathering route that only runs through 8 nodes on the blue route [WIP]
 
-    GatheringSlot = 1
+    GatheringSlot = 4 
     -- This will let you tell the script WHICH item you want to gather. (So if I was gathering the 4th item from the top, I would input 4)
     -- This will NOT work with Pandora's Gathering, as a fair warning in itself. 
     -- Options : 1 | 2 | 3 | 4 | 7 | 8 (1st slot... 2nd slot... ect)
@@ -103,16 +110,17 @@
     -- They will go off in the order they are currently typed out, so keep that in mind for GP Usage if that's something you want to consider
 
     Repair_Amount = 99
-    Self_Repair = false --if its true script will try to self reapair
-    Npc_Repair = true --if its true script will try to go to mender npc and repair
+    Self_Repair = true --if its true script will try to self reapair
+    Npc_Repair = false --if its true script will try to go to mender npc and repair
     --When do you want to repair your own gear? From 0-100 (it's in percentage, but enter a whole value
 
-    PlayerWaitTime = false 
+    PlayerWaitTime = true 
     -- this is if you want to make it... LESS sus on you just jumping from node to node instantly/firing a cannon off at an enemy and then instantly flying off
     -- default is true, just for safety. If you want to turn this off, do so at your own risk. 
-    debug = true
-    -- This is for debugging 
 
+    debug = false
+    -- This is for debugging 
+	
 
 --[[
 
@@ -131,8 +139,8 @@ end
     local Y = 0
     local Z = 0
     -- for 4th var
-        -- visland movement     = 0 
-        -- navmesh movement     = 1 
+        -- MoveTarget = 0 
+        -- FlyTarget  = 1 
     -- for 5th var
         -- mineral target [red] = 0
         -- rocky target [blue]  = 1
@@ -194,12 +202,12 @@ end
             {
                 {-162.63,-1.79,-381.59,1,1},
                 {-171.29,-0.84,-506.78,1,0},
-                {-85.26,-16.37,-595.80,1,0},
+                {-79.07,-17.95,-589.16,1,0},
                 {-52.39,-41.39,-529.72,1,0},
-                {-23.12,-27.32,-532.47,1,1},
-                {52.10,-39.32,-503.62,1,1},
+                {-23.12,-27.32,-532.47,0,1}, -- changed this one
+                {60.74,-45.80,-516.52,0,1},
                 {98.86,-43.16,-501.89,1,0},
-                {-197.88,-1.08,-364.74,1,0},
+                {-192.44,-1.99,-359.21,1,0},
             }
     end       
 
@@ -207,6 +215,7 @@ end
 
     function GatheringTarget(i)
         LoopClear()
+        ToFarFromNode = 0 
         while GetCharacterCondition(45,false) and GetCharacterCondition(6, false) do
             while GetTargetName() == "" do
                 if miner_table[i][5] == 0 then 
@@ -218,7 +227,11 @@ end
             end
             yield("/wait 0.1")
             if GetDistanceToTarget() > 6 then 
-                yield("/vnavmesh flytarget")
+                if miner_table[i][4] == 1 then 
+                    yield("/vnavmesh flytarget")
+                elseif miner_table[i][4] == 0 then 
+                    yield("/vnavmesh movetarget")
+                end
                 while GetDistanceToTarget() > 6 do 
                     yield("/wait 0.1")
                 end
@@ -235,95 +248,72 @@ end
             while GetCharacterCondition(6, false) do 
                 yield("/wait 0.1")
                 yield("/interact")
+                ToFarFromNode = ToFarFromNode + 1
+                if ToFarFromNode >= 100 then 
+                    yield("/vnavmesh movetarget")
+                    ToFarFromNode = 0 
+                end 
             end 
         end
         PathStop()
         yield("/wait 2")
         DGathering()
         PlayerWait()
-DebugMessage("GatheringTarget")
+        DebugMessage("GatheringTarget")
     end
 
-function CanadianMounty()
-        local maxIterations = 1000  -- Maximum number of iterations allowed
-        local iterationCount = 0
-    
-        while GetCharacterCondition(4, false) and IsInZone(939) and iterationCount < maxIterations do 
-            while GetCharacterCondition(27, false) and IsInZone(939) and iterationCount < maxIterations do
+    function CanadianMounty()
+        while GetCharacterCondition(4, false) and IsInZone(939) do 
+            while GetCharacterCondition(27, false) and IsInZone(939) do
                 yield("/wait 0.1")
                 yield('/gaction "mount roulette"')
-                iterationCount = iterationCount + 1
             end
-        
-            while GetCharacterCondition(27) and IsInZone(939) and iterationCount < maxIterations do 
+            while GetCharacterCondition(27) and IsInZone(939) do 
                 yield("/wait 0.1")
-                iterationCount = iterationCount + 1
             end 
-        
-            yield("/wait 2")
-            iterationCount = iterationCount + 1
+            yield("/wait 1")
+            PlayerWait()
+            DebugMessage("CanadianMounty")
         end
-    DebugMessage("CanadianMounty")
     end
 
     function KillTarget()
-        local maxIterations = 1000  -- Maximum number of iterations allowed
-        local iterationCount = 0
-    
         if IsInZone(939) then
-            while GetDistanceToTarget() == 0 and GetCharacterCondition(45, false) and iterationCount < maxIterations and GetDiademAetherGaugeBarCount() >= 1 do
+            while GetDistanceToTarget() == 0.0 and GetCharacterCondition(45, false) and GetDiademAetherGaugeBarCount() >= 1 do
                 yield("/targetenemy")
                 yield("/wait 1")
                 if GetTargetName() ~= "" then
-                    while GetDistanceToTarget() > 7 and iterationCount < maxIterations do
-                        CanadianMounty()
+                    while GetDistanceToTarget() > 7 and GetTargetName() ~= "" do
+                        MountFly()
                         yield("/wait 1")
-                        yield("/vnavmesh movetarget")
+                        yield("/vnavmesh flytarget")
                     end
-                    while GetDistanceToTarget() >= 5 and iterationCount < maxIterations do
-                    yield("/wait 0.1")
-                    iterationCount = iterationCount + 1
+                    while GetDistanceToTarget() >= 5 and GetTargetName() ~= "" do
+                        yield("/wait 0.1")
                     end
                     PathStop()
                     yield("/wait 0.1")
-                    while GetCharacterCondition(4) and iterationCount < maxIterations do 
-                        yield("/e [I - Debug] problem child here")
+                    while GetCharacterCondition(4) and GetTargetName() ~= "" do 
                         yield("/ac dismount")
                         yield("/wait 0.3")
-                        iterationCount = iterationCount + 1
                     end
-                    yield("/e MAYDAY MAYDAY")
-                    while GetTargetHP() > 1.0 and iterationCount < maxIterations do
-                        if GetCharacterCondition(27) then -- casting
+                    while GetTargetHP() > 1.0 and GetTargetName() ~= "" do
+                        if PathIsRunning() then
+                            PathStop()
+                        end 
+                        if GetCharacterCondition(27) then-- casting
                             yield("/wait 0.1")
                         else
-                            --yield("/e Using Action")
                             yield("/gaction \"Duty Action I\"")
                             yield("/wait 0.1")
                         end
-                        iterationCount = iterationCount + 1
                     end
+                    ClearTarget()
+                    DebugMessage("KillTarget")
                 end
-                DebugMessage("KillTarget")
             end
         end
     end
-
-    --[[ changed it to my version
-            function CanadianMounty()
-                while GetCharacterCondition(4, false) and IsInZone(939) do 
-                    while GetCharacterCondition(27, false) and IsInZone(939) do
-                        yield("/wait 0.1")
-                        yield('/gaction "mount roulette"')
-                    end
-                    while GetCharacterCondition(27) and IsInZone(939) do 
-                        yield("/wait 0.1")
-                    end 
-                    yield("/wait 2")
-                end
-        DebugMessage("CanadianMounty")
-            end
-    --]]
 
     function MountFly()
         if GetCharacterCondition(4, false) and IsInZone(939) then 
@@ -336,7 +326,7 @@ function CanadianMounty()
             yield("/wait 0.1")
             yield("/gaction jump")
         end
-DebugMessage("MountFly")
+        DebugMessage("MountFly")
     end
 
     function WalkTo(x, y, z)
@@ -344,41 +334,7 @@ DebugMessage("MountFly")
         while (PathIsRunning() or PathfindInProgress()) do
             yield("/wait 0.5")
         end
-DebugMessage("WalkTo")
-    end
-
-    function AetherGaugeKiller()
-        yield("/targetenemy")
-        if GetTargetName() ~= "" and GetCharacterCondition(45,false) and GetDistanceToTarget() < 40 then 
-            if GetDistanceToTarget() <= 10 then 
-                CanadianMounty()
-                yield("/vnavmesh movetarget")
-            elseif GetDistanceToTarget() > 10 and GetDistanceToTarget() < 40 then 
-                MountFly()
-                yield("/vnavmesh flytarget")
-            end
-            while GetDistanceToTarget() >= 5 do
-                yield("/wait 0.1")
-            end
-            PathStop()
-            while GetCharacterCondition(4) do 
-                yield("/ac dismount")
-                yield("/wait 0.3")
-            end 
-            yield("/wait 2")
-            while GetTargetHP() > 1.0 and GetTargetName() ~= "" and GetDistanceToTarget() ~= 0.0 do
-                if GetCharacterCondition(27) then -- casting
-                    yield("/wait 0.1")
-                else
-                    yield("/gaction \"Duty Action I\"")
-                    yield("/wait 0.1")
-                end
-            end
-            PlayerWait()
-            MountFly()
-            ClearTarget()
-            DebugMessage("AetherGaugeKiller")
-        end
+        DebugMessage("WalkTo")
     end
   
     function VNavMoveTime()
@@ -398,10 +354,7 @@ DebugMessage("WalkTo")
                 end 
             end
             yield("/wait 0.1")
-KillTarget()
-            --if GetDiademAetherGaugeBarCount() >= 1 then 
-            --    AetherGaugeKiller()                               Changed this to use my version of killer
-            --end 
+            KillTarget()
         end
         DebugMessage("VNavMoveTime")
     end
@@ -412,16 +365,16 @@ KillTarget()
             yield("/wait 0.1")
         end 
         yield("/visland stop")
-DebugMessage("VislandMoveTime")
+        DebugMessage("VislandMoveTime")
     end
 
     function PlayerWait()
-    if PlayerWaitTime == true then 
+        if PlayerWaitTime == true then 
             math.randomseed( os.time() )
             RandomTimeWait = math.random(10, 20) / 10
             yield("/wait "..RandomTimeWait)
+            DebugMessage("PlayerWait")
         end
-DebugMessage("PlayerWait")
     end  
 
     function StatusCheck()
@@ -431,48 +384,48 @@ DebugMessage("PlayerWait")
                 yield("/wait 0.1")
             until GetCharacterCondition(42, false)
         end
-DebugMessage("StatusCheck")
+        DebugMessage("StatusCheck")
     end     
 
     function DGathering()
         LoopClear() 
         UiElementSelector()
         while GetCharacterCondition(6) do 
-yield("/wait 1") -- added this to throtle down the while loop lua calls it too much and it ads +1 to Node_ThreshHold
             if VisibleNode == "Max GP ≥ 858 → Gathering Attempts/Integrity +5" and DGatheringLoop == false then 
                 while VisibleNode == "Max GP ≥ 858 → Gathering Attempts/Integrity +5" and DGatheringLoop == false do 
                     yield("/e [Node Type] This is a Max Integrity Node, time to start buffing/smacking")
-                    yield("/wait 2")
+                    PlayerWait()
+                    yield("/wait 0.1")
                     while BuffYield2 == true and GetGp() >= 500 and HasStatusId(219) == false and GetLevel() >= 40 do -- 
-                        yield("/e [Debug] Should be applying Kings Yield 2")
+                        if debug then yield("/e [Debug] Should be applying Kings Yield 2") end
                         if GetClassJobId() == 16 then 
                             yield("/ac \"King's Yield II\"")-- King's Yield 2
                             StatusCheck()
                         end 
                     end
                     while BuffGift2 == true and GetGp() >= 100 and HasStatusId(759) == false and GetLevel() >= 50 do
-                        yield("/e [Debug] Should be applying Mountaineer's Gift 2'")
+                        if debug then yield("/e [Debug] Should be applying Mountaineer's Gift 2'") end
                         if GetClassJobId() == 16 then 
                             yield("/ac \"Mountaineer's Gift II\"") -- Mountaineer's Gift 2 (Min)
                             StatusCheck()
                         end 
                     end
                     while BuffGift1 == true and GetGp() >= 100 and HasStatusId(759) == false and GetLevel() >= 50 do
-                        yield("/e [Debug] Should be applying Mountaineer's Gift 2'")
+                        if debug then yield("/e [Debug] Should be applying Mountaineer's Gift 2'") end
                         if GetClassJobId() == 16 then 
                             yield("/ac \"Mountaineer's Gift I\"") -- Mountaineer's Gift 1 (Min)
                             StatusCheck()
                         end 
                     end
                     while BuffTidings2 == true and GetGp() >= 200 and HasStatusId(2667) == false and GetLevel() >= 81 do 
-                        yield("/e [Debug] Should be applying Tidings")
+                        if debug then yield("/e [Debug] Should be applying Tidings") end
                         if GetClassJobId() == 16 then 
                             yield("/ac \"Nald'thal's Tidings\"") -- Nald'thal's Tidings (Min)
                             StatusCheck()
                         end 
                     end 
                     while BuffBYieldHarvest2  == true and GetGp() >= 100 and HasStatusId(1286) == false and GetLevel() >= 68 do
-                        yield("/e [Debug] Should be applying Bountiful Yield 2")
+                        if debug then yield("/e [Debug] Should be applying Bountiful Yield 2") end
                         if GetClassJobId() == 16 then 
                             yield("/ac \"Bountiful Yield II\"") 
                             StatusCheck()
@@ -485,20 +438,10 @@ yield("/wait 1") -- added this to throtle down the while loop lua calls it too m
                 DGatheringLoop = true
             end 
             yield("/pcall Gathering true "..NodeSelection)
-            while GetCharacterCondition(42) and WhileBrake <= 1000 do
-                yield("/wait 0.1")
-                WhileBrake = WhileBrake + 1
-                if WhileBrake > 1000 then
-                    yield("/e WhileBrake: "..WhileBrake.." exceeded 1000, breaking the loop")
-                    break  -- Break the loop if WhileBrake exceeds 1000
-                end
+            yield("/wait 0.1")
+            while GetCharacterCondition(42) do
+                yield("/wait 0.2")
             end
-            Node_ThreshHold = Node_ThreshHold + 1 
-            if Node_ThreshHold >= 20 and NodeChanged == false then 
-                yield("/e WELL. Somehow you manage to select an option that wasn't an option. Defaulting to the VERY top node")
-                NodeSelection = 0 
-                NodeChanged = true 
-            end 
         end 
         DebugMessage("DGathering")
     end
@@ -514,7 +457,7 @@ yield("/wait 1") -- added this to throtle down the while loop lua calls it too m
                 UseFood = false 
             end
         end
-DebugMessage("FoodCheck")
+        DebugMessage("FoodCheck")
     end
 
     function TargetedInteract(target)
@@ -531,17 +474,14 @@ DebugMessage("FoodCheck")
 
     function LoopClear() 
         Food_Tick = 0 
-        Node_ThreshHold = 0 
-        NodeChanged = false
-        DGatheringLoop = false
-        EnemyAttempted = false 
-DebugMessage("LoopClear")
+        DGatheringLoop = false 
+        DebugMessage("LoopClear")
     end
 
     function DebugMessage(func)
-    if debug==true then
+        if debug==true then
             yield("/e [Debug]: " .. func .. ": Completed")
-    end
+        end
     end
 
     function UiElementSelector()
@@ -552,8 +492,17 @@ DebugMessage("LoopClear")
         end 
     end 
 
+    function BountifulYieldII()
+        while BuffBYieldHarvest2 == true and GetGp() >= 100 and GetLevel() >= 68 and VisibleNode == "Max GP ≥ 858 → Gathering Attempts/Integrity +5" do
+            if debug then yield("/e [Debug] Should be applying Kings Yield 2") end
+            if GetClassJobId() == 16 then 
+                yield("/ac \"Bountiful Yield II\"")
+                StatusCheck()
+            end 
+        end
+    end 
+
 ::SettingNodeValue:: 
-    WhileBrake = 0 --this is experimental
     NodeSelection = GatheringSlot - 1
     FoodTimeRemaining = RemainingFoodTimer * 60
     DGatheringLoop = false 
@@ -563,13 +512,13 @@ DebugMessage("LoopClear")
     if (Current_job == 17) or (Current_job == 16) then
         goto Enter
     elseif (Current_job > 17) or (Current_job < 15) then
-        yield("/echo Hmm... You're not on a gathering job, switch to one and stop the script again.")
+        yield("/echo Hmm... You're not on a gathering job, switch to one and start the script again.")
         yield("/snd stop")
     end   
 
     if Self_Repair == true and Npc_Repair == true then
         Npc_Repair=false
-        yield("/echo You can only select one repair setting Setting Npc Repair false")
+        yield("/echo You can only select one repair setting. Setting Npc Repair false")
     end
 
 ::Enter::
@@ -603,25 +552,23 @@ DebugMessage("LoopClear")
         yield("/wait 1")
         yield("/pcall Repair true -1")
     end
-if NeedsRepair(Repair_Amount) and Npc_Repair == true then
-        if GetZoneID() == 886 then -- Check if in Firmament
+    if NeedsRepair(Repair_Amount) and Npc_Repair == true then
+        if IsInZone(886) then -- Check if in Firmament
             WalkTo(47, -16, 151)
-    --yield("/visland moveto 47 -16 151") -- Move to Eilonwy
             TargetedInteract("Eilonwy") -- Interact with target named "Eilonwy"
             yield("/pcall SelectIconString false 1") 
             while not IsAddonReady("Repair") do 
             yield("/wait 0.1")
         end
         yield("/pcall Repair true 0") 
-yield("/wait 0.1")
+        yield("/wait 0.1")
         if IsAddonReady("SelectYesno") then
             yield("/pcall SelectYesno true 0")
             yield("/wait 0.1")
         end
         yield("/pcall Repair true -1") 
         yield("/wait 0.1")
-        WalkTo(-18.5, -16, 142)
---yield("/visland moveto -18.5 -16 142")
+        WalkTo(-18.5, -16, 142) --Walks to target named "Eilonwy"
         else
             yield("/echo You are not in Firmament") -- Notify if not in Firmament
         end
@@ -650,8 +597,8 @@ yield("/wait 0.1")
 ::DiademFarming::
 
     while IsInZone(939) and GetCharacterCondition(45, false) do
-for i=1, #miner_table do
-    if GetCharacterCondition(45, false) then 
+        for i=1, #miner_table do
+            if GetCharacterCondition(45, false) then 
                 if UseFood == true and (GetStatusTimeRemaining(48) <= FoodTimeRemaining or HasStatusId(48) == false) then 
                     yield("/e Food seems to have ran out, going to re-food")
                     FoodCheck()
@@ -660,16 +607,14 @@ for i=1, #miner_table do
                 X = miner_table[i][1]
                 Y = miner_table[i][2]
                 Z = miner_table[i][3]
-                if miner_table[i][4] == 0 then 
-                    VislandMoveTime() 
-                elseif miner_table[i][4] == 1 then 
-                    VNavMoveTime() 
-                end
+                ClearTarget()
+                KillTarget()
+                VNavMoveTime() 
                 if miner_table[i][5] == 0 or miner_table[i][5] == 1 then 
-    GatheringTarget(i)
+                GatheringTarget(i)
                 end 
             end 
-end
+        end
     end 
 
 goto Enter
