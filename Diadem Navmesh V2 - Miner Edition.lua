@@ -5,10 +5,12 @@
     ***********************************
 
     *************************
-    *  Version -> 0.0.1.3  *
+    *  Version -> 0.0.1.5  *
     *************************
 
     Version Notes:
+    0.0.1.5  ->   Fixed Job checking not working properly
+    0.0.1.4  ->   Fixed Gift1 not popping up when it should 
     0.0.1.2  ->   Fixed the waiting if there is no enemy in target distance now script will contuniue path till there is one and Aether use looks more human now
     0.0.1.0  ->   Man... didn't tink I'd hit this with how big this was getting and the bugs I/We created in turn xD 
                   This is the complete version of this script for now. I'm afraid if i change up the codebase anymore, then it's going to break. XD So going to push this as a released version, then focus on re-factoring the code in a different script (with blackjack and hookers)
@@ -419,8 +421,8 @@ end
                             StatusCheck()
                         end 
                     end
-                    while BuffGift1 and GetGp() >= 100 and HasStatusId(759) == false and GetLevel() >= 50 do
-                        if debug then yield("/e [Debug] Should be applying Mountaineer's Gift 2'") end
+                    while BuffGift1 and GetGp() >= 50 and HasStatusId(2666) == false and GetLevel() >= 15 do
+                        if debug then yield("/e [Debug] Should be applying Mountaineer's Gift 1'") end
                         if GetClassJobId() == 16 then 
                             yield("/ac \"Mountaineer's Gift I\"") -- Mountaineer's Gift 1 (Min)
                             StatusCheck()
@@ -520,7 +522,7 @@ end
     Current_job = GetClassJobId()
     if (Current_job == 17) or (Current_job == 16) then
         goto Enter
-    elseif (Current_job > 17) or (Current_job < 15) then
+    else
         yield("/echo Hmm... You're not on a gathering job, switch to one and start the script again.")
         yield("/snd stop")
     end   
