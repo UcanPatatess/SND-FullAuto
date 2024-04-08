@@ -5,7 +5,7 @@
     ***********************************
 
     ************************
-    *  Version -> 0.0.1.9  *
+    *  Version -> 0.0.1.9.1  *
     ************************
 
     Version Notes:
@@ -102,7 +102,7 @@
     Npc_Repair = false --if its true script will try to go to mender npc and repair
     --When do you want to repair your own gear? From 0-100 (it's in percentage, but enter a whole value
 
-    PlayerWaitTime = false 
+    PlayerWaitTime = true 
     -- this is if you want to make it... LESS sus on you just jumping from node to node instantly/firing a cannon off at an enemy and then instantly flying off
     -- default is true, just for safety. If you want to turn this off, do so at your own risk. 
 
