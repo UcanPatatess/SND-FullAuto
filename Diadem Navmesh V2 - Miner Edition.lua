@@ -5,7 +5,7 @@
     ***********************************
 
     **************************
-    *  Version -> 0.0.1.9.3  *
+    *  Version -> 0.0.1.9.4  *
     **************************
 
     Version Notes:
@@ -270,6 +270,7 @@
                     while GetDistanceToTarget() > 3.5 do 
                         yield("/wait 0.1")
                     end
+                    PathStop()
                 end
             end            
         end
