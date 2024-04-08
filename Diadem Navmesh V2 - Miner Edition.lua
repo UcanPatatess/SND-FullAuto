@@ -706,7 +706,7 @@
     X = spawnisland_table[1][1]
     Y = spawnisland_table[1][2]
     Z = spawnisland_table[1][3]
-    --VNavMoveTime(1) -- esentially goes above the lookout box, then continues on | 01:40 by UcanPatates 09.04.2024 Disabled this because we don't need it anymore.
+    VNavMoveTime(1) -- esentially goes above the lookout box, then continues on
 
     while IsInZone(939) and GetCharacterCondition(45, false) do
         for i=1, #gather_table do
