@@ -5,7 +5,7 @@
     ***********************************
 
     **************************
-    *  Version -> 0.0.1.9.2  *
+    *  Version -> 0.0.1.9.3  *
     **************************
 
     Version Notes:
@@ -245,8 +245,6 @@
                 elseif gather_table[i][5] == 3 then 
                     yield("/target Lush Vegetation Patch")
                 end
-                if GetTargetName() then
-                end
             end
             yield("/wait 0.1")
             if GetDistanceToTarget() > 6 then 
@@ -255,21 +253,21 @@
                 elseif gather_table[i][6] == 1 then 
                     yield("/vnavmesh movetarget")
                 end
-                while GetDistanceToTarget() > 3.6 do 
+                while GetDistanceToTarget() > 3.5 do 
                     yield("/wait 0.1")
                 end
-            end
-            PathStop()
-            if GetCharacterCondition(4) then
-                yield("/ac dismount")
                 PathStop()
-            end 
+                if GetDistanceToTarget() < 3.5 and GetCharacterCondition(4) then
+                    yield("/ac dismount")
+                    yield("/wait 0.3")
+                end
+            end
             while GetCharacterCondition(6, false) do 
                 yield("/wait 0.1")
                 yield("/interact")
                 if GetNodeText("_TextError",1) == "Too far away." then 
                     yield("/vnavmesh movetarget")
-                    while GetDistanceToTarget() > 3.6 do 
+                    while GetDistanceToTarget() > 3.5 do 
                         yield("/wait 0.1")
                     end
                 end
