@@ -5,10 +5,11 @@
     ***********************************
 
     ************************
-    *  Version -> 0.0.1.8  *
+    *  Version -> 0.0.1.9  *
     ************************
 
     Version Notes:
+    0.0.1.9  ->   Some fixes
     0.0.1.8  ->   Tweaked the Node targeting should work better and look more human now.
     0.0.1.7  ->   Fixed the nvamesh getting stuck at ground while running path. Added target selection options Twekaed with eather use if you unselect the target or somehow it dies script will contuniue to gather.
     0.0.1.6  ->   Pink Route for btn is live! After some minor code tweaking and standardizing tables. 
@@ -233,7 +234,6 @@
 --Functions
     function GatheringTarget(i)
         LoopClear()
-        ToFarFromNode = 0 
         while GetCharacterCondition(45,false) and GetCharacterCondition(6, false) do
             while GetTargetName() == "" do
                 if gather_table[i][5] == 0 then 
@@ -264,13 +264,11 @@
             end 
             yield("/wait 0.1")
             yield("/interact")
-            ToFarFromNode = ToFarFromNode + 1
-            if ToFarFromNode >= 10 then 
+            if GetNodeText("_TextError",1) == "Too far away." then 
                 yield("/vnavmesh movetarget")
                 while GetDistanceToTarget() > 3.6 do 
                     yield("/wait 0.1")
                 end
-                ToFarFromNode = 0 
             end 
         end
         PathStop()
@@ -284,6 +282,7 @@
             while GetCharacterCondition(27, false) and IsInZone(939) do
                 yield("/wait 0.1")
                 yield('/gaction "mount roulette"')
+                
             end
             while GetCharacterCondition(27) and IsInZone(939) do 
                 yield("/wait 0.1")
