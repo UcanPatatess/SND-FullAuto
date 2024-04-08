@@ -4,9 +4,9 @@
     * Diadem Farming - Miner Edition  *
     ***********************************
 
-    ************************
-    *  Version -> 0.0.1.9.1  *
-    ************************
+    **************************
+    *  Version -> 0.0.1.9.2  *
+    **************************
 
     Version Notes:
     0.0.1.9  ->   Some fixes
@@ -245,6 +245,8 @@
                 elseif gather_table[i][5] == 3 then 
                     yield("/target Lush Vegetation Patch")
                 end
+                if GetTargetName() then
+                end
             end
             yield("/wait 0.1")
             if GetDistanceToTarget() > 6 then 
@@ -262,18 +264,20 @@
                 yield("/ac dismount")
                 PathStop()
             end 
-            yield("/wait 0.1")
-            yield("/interact")
-            if GetNodeText("_TextError",1) == "Too far away." then 
-                yield("/vnavmesh movetarget")
-                while GetDistanceToTarget() > 3.6 do 
-                    yield("/wait 0.1")
+            while GetCharacterCondition(6, false) do 
+                yield("/wait 0.1")
+                yield("/interact")
+                if GetNodeText("_TextError",1) == "Too far away." then 
+                    yield("/vnavmesh movetarget")
+                    while GetDistanceToTarget() > 3.6 do 
+                        yield("/wait 0.1")
+                    end
                 end
-            end 
+            end            
         end
         PathStop()
         DGathering()
-        PlayerWait()
+        yield("/wait 0.1")
         DebugMessage("GatheringTarget")
     end
 
