@@ -4,12 +4,13 @@
     * Diadem Farming - Miner Edition  *
     ***********************************
 
-    **************************
-    *  Version -> 0.0.1.9.4  *
-    **************************
+    *************************
+    *  Version -> 0.0.1.11  *
+    *************************
 
     Version Notes:
-    0.0.1.9  ->   Some fixes
+    0.0.1.11 ->   Partially fixed the getting stuck after killing mobs fixed the dismount problem that made you fall down infinitely
+    0.0.1.10 ->   New node targeting fixes spawn island aether current fix 
     0.0.1.8  ->   Tweaked the Node targeting should work better and look more human now.
     0.0.1.7  ->   Fixed the nvamesh getting stuck at ground while running path. Added target selection options Twekaed with eather use if you unselect the target or somehow it dies script will contuniue to gather.
     0.0.1.6  ->   Pink Route for btn is live! After some minor code tweaking and standardizing tables. 
@@ -31,7 +32,7 @@
     ***************
 
     Current plans: 
-        -> need to add a targeting feature to NOT target sprites, or moreso ONLY target a certain mob of your choosing. 
+        -> 
   
     *********************
     *  Required Plugins *
@@ -44,6 +45,7 @@
         -> Options → "/target" → checkmark "Use SND's targeting system"
         -> Options → "/target" → uncheckmark "stop macro if target not found"
     -> Pandora's Box -> https://love.puni.sh/ment.json
+    -> vnavmesh : https://puni.sh/api/repository/veyn
 
 
     ***********
@@ -58,7 +60,7 @@
     **************
 ]]
 
-    UseFood = false
+    UseFood = true
     FoodKind = "Sideritis Cookie <HQ>"
     RemainingFoodTimer = 5 -- This is in minutes
     -- If you would like to use food while in diadem, and what kind of food you would like to use. 
@@ -79,12 +81,12 @@
             -- "RedRoute"     -> min perception route, 8 node loop
             -- "PinkRoute"    -> Btn perception route, 8 node loop
 
-    GatheringSlot = 1
+    GatheringSlot = 4
     -- This will let you tell the script WHICH item you want to gather. (So if I was gathering the 4th item from the top, I would input 4)
     -- This will NOT work with Pandora's Gathering, as a fair warning in itself. 
     -- Options : 1 | 2 | 3 | 4 | 7 | 8 (1st slot... 2nd slot... ect)
     
-    TargetOption = 2 
+    TargetOption = 1 
     -- This will let you tell the script which target to use Aethercannon.
     -- Options : 1 | 2 | 3 (Option: 1 is any target, Option: 2 only sprites Options: 3 is don't include sprites enemys)
     
@@ -98,7 +100,7 @@
     -- They will go off in the order they are currently typed out, so keep that in mind for GP Usage if that's something you want to consider
 
     Repair_Amount = 99
-    Self_Repair = false --if its true script will try to self reapair
+    Self_Repair = true --if its true script will try to self reapair
     Npc_Repair = false --if its true script will try to go to mender npc and repair
     --When do you want to repair your own gear? From 0-100 (it's in percentage, but enter a whole value
 
@@ -106,7 +108,7 @@
     -- this is if you want to make it... LESS sus on you just jumping from node to node instantly/firing a cannon off at an enemy and then instantly flying off
     -- default is true, just for safety. If you want to turn this off, do so at your own risk. 
 
-    debug = true
+    debug = false
     -- This is for debugging 
 
 --[[
@@ -215,7 +217,10 @@
                 {-215.1211,-1.3262,-494.8219,0,3,1},
             }
     end
- 
+     spawnisland_table = 
+        {
+            {-605.7039,312.0701,-159.7864,0,99,0},
+        }
 -- Skill Check 
     if GetClassJobId() == 16 then -- Miner Skills 
         Yield2 = "\"King's Yield II\""
@@ -234,6 +239,7 @@
 --Functions
     function GatheringTarget(i)
         LoopClear()
+        a = 0
         while GetCharacterCondition(45,false) and GetCharacterCondition(6, false) do
             while GetTargetName() == "" do
                 if gather_table[i][5] == 0 then 
@@ -253,13 +259,13 @@
                 elseif gather_table[i][6] == 1 then 
                     yield("/vnavmesh movetarget")
                 end
-                while GetDistanceToTarget() > 3.5 do 
+                while GetDistanceToTarget() > 3.5 and a < 10 do  --sometimes its getting stuck here as a fix i did this works but not perfect
                     yield("/wait 0.1")
+                    a = a + 1
                 end
                 PathStop()
                 if GetDistanceToTarget() < 3.5 and GetCharacterCondition(4) then
-                    yield("/ac dismount")
-                    yield("/wait 0.3")
+                    Dismount()
                 end
             end
             while GetCharacterCondition(6, false) do 
@@ -315,8 +321,6 @@
             else
                 return false
             end
-        else
-            return false
         end
     end
 
@@ -332,7 +336,6 @@
                         ClearTarget() 
                         yield("/wait 0.1")
                     end
-                    PlayerWait()
                     yield("/wait 0.1")
                 if  Target() then 
                     KillLoop = KillLoop + 1
@@ -342,7 +345,10 @@
                         yield("/wait 0.1")
                         yield("/vnavmesh flytarget")
                         while GetDistanceToTarget() > 10 and GetTargetName() ~= "" do
-                            yield("/wait 0.1")  
+                            yield("/wait 0.1")
+                            if GetCharacterCondition(77) == false then
+                            yield("/send SPACE")
+                            end                            
                         end
                     end
                     PathStop() 
@@ -351,10 +357,7 @@
                         if PathIsRunning() then
                             PathStop()
                         end 
-                        if GetCharacterCondition(4) then
-                            yield("/ac dismount")
-                            yield("/wait 0.3")
-                        end
+                        Dismount()
                         if GetDistanceToTarget() > 15 or GetNodeText("_TextError",1) == "Target not in line of sight." or GetNodeText("_TextError",1) == "Target is not in range." then
                             ClearTarget()
                             yield("/wait 0.1")
@@ -367,7 +370,6 @@
                             yield("/wait 0.5")
                         end
                     end
-                    ClearTarget()
                     DebugMessage("KillTarget")
                 end
             end
@@ -381,7 +383,9 @@
             end
         end
         while GetCharacterCondition(77) == false and IsInZone(939) do 
-            yield("/gaction jump")
+            PathStop()
+            CanadianMounty()
+            yield("/send SPACE")
             yield("/wait 0.1")
             yield("/gaction jump")
         end
@@ -427,14 +431,15 @@
                 if PathIsRunning() == false or IsMoving() == false then 
                     PathfindAndMoveTo(X, Y, Z, true)
                     yield("/wait 0.1")
+                    while PathfindInProgress() do
+                        yield("/wait 0.1")
+                        if GetCharacterCondition(4) == false or GetCharacterCondition(77) == false then 
+                            MountFly()
+                        end
+                    end 
                 end
                 yield("/wait 0.1")
                 KillTarget()
-            end
-            while GetCharacterCondition(4) do  
-                yield("/ac dismount")
-                yield("/wait 0.1")
-                PathStop()
             end
         end
         DebugMessage("VNavMoveTime")
@@ -573,7 +578,23 @@
             end 
         end
     end 
-
+    function Dismount()
+        a=0
+        if GetCharacterCondition(4) or GetCharacterCondition(77) then
+            yield("/ac dismount")
+            yield("/wait 0.3")
+        while GetCharacterCondition(77) and a < 2 do
+            yield("/wait 0.5")
+            a=a+1
+        end
+            if a == 2 then
+                yield("/wait 0.1")
+                yield("/send SPACE")
+                ClearTarget() 
+                PathStop()
+            end
+        end
+    end
     function UseSkill(SkillName)
         yield("/ac "..SkillName)
         yield("/wait 0.1")
@@ -674,6 +695,19 @@
 
 ::DiademFarming::
 
+    while IsInZone(939) == false and GetCharacterCondition(45, true) do -- this whole section is new. 
+        yield("/wait 1")
+    end 
+    if UseFood and (GetStatusTimeRemaining(48) <= FoodTimeRemaining or HasStatusId(48) == false) then 
+        yield("/e [Diadem Gathering] Food seems to have ran out, going to re-food")
+        FoodCheck()
+    end
+    MountFly()
+    X = spawnisland_table[1][1]
+    Y = spawnisland_table[1][2]
+    Z = spawnisland_table[1][3]
+    --VNavMoveTime(1) -- esentially goes above the lookout box, then continues on | 01:40 by UcanPatates 09.04.2024 Disabled this because we don't need it anymore.
+
     while IsInZone(939) and GetCharacterCondition(45, false) do
         for i=1, #gather_table do
             if GetCharacterCondition(45, false) then 
@@ -686,10 +720,9 @@
                 Y = gather_table[i][2]
                 Z = gather_table[i][3]
                 ClearTarget()
-                KillTarget()
                 VNavMoveTime(i) 
-                if gather_table[i][5] <= 3 then 
-                GatheringTarget(i)
+                if gather_table[i][5] ~= 99 then -- 99 is the code imma use if I don't want it gathering anything, and make sure it's not the coords I want to use as a midpoint
+                    GatheringTarget(i)
                 end 
             end 
         end
