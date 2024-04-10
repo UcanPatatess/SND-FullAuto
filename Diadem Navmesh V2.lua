@@ -5,10 +5,11 @@
     *******************
 
     *************************
-    *  Version -> 0.0.1.16  *
+    *  Version -> 0.0.1.17  *
     *************************
    
     Version Notes:
+    0.0.1.17 ->    Now it will go to other nodes and continue if the target you were trying to kill got stolen(yea i know we already fixed it once)
     0.0.1.16 ->    Fixed the rare getting stuck after killing mobs issue. (this time it is a real fix)
     0.0.1.15 ->    . . . This hasn't been miner edition for awhile. NAME CHANGED
     0.0.1.14 ->    (Man I thought I would of been done with this) Made a "CapGP" setting. If you want it to spend GP before you get to cap, change this to false. (this will use YieldII)
@@ -384,9 +385,11 @@
 
     function KillTarget()
         if IsInZone(939) then
-            if GetDistanceToTarget() == 0.0 and GetCharacterCondition(6, false) and GetCharacterCondition(45, false) and GetDiademAetherGaugeBarCount() >= 1 and GetDistanceToPoint(X, Y, Z) > 1 then 
+            if GetDistanceToTarget() == 0.0 and GetCharacterCondition(6, false) and GetCharacterCondition(45, false) and GetDiademAetherGaugeBarCount() >= 1 and GetDistanceToPoint(X, Y, Z) > 10 then 
                 if KillLoop >= 1 then
-                    yield("/wait 5")
+                    if (PathIsRunning() or PathfindInProgress()) then
+                        yield("/wait 2")
+                    end
                     LoopClear()
                 end
                 for i=1, #mob_table do
