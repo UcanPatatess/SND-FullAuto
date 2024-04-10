@@ -4,9 +4,9 @@
     * Diadem Farming  *
     *******************
 
-    *************************
-    *  Version -> 0.0.1.17.2  *
-    *************************
+    ***************************
+    *  Version -> 0.0.1.17.3  *
+    ***************************
    
     Version Notes:
     0.0.1.17 ->    Now it will go to other nodes and continue if the target you were trying to kill got stolen(yea i know we already fixed it once)
@@ -226,7 +226,7 @@
     elseif RouteType == "PinkRoute" then 
         gather_table = 
             {
-                {-252.8828,-1.3541,-472.2332,0,3,1},
+                {-248.6381,-1.5664,-468.8910,0,3,1},
                 {-338.3759,-0.4761,-415.3227,0,3,1},
                 {-366.2651,-1.8514,-350.1429,0,3,1},
                 {-429.5530,29.7115,-252.8121,0,2,1},
