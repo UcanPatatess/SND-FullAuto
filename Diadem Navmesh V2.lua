@@ -1,23 +1,28 @@
 --[[
 
-    ***********************************
-    * Diadem Farming - Miner Edition  *
-    ***********************************
+    *******************
+    * Diadem Farming  *
+    *******************
 
     *************************
-    *  Version -> 0.0.1.11  *
+    *  Version -> 0.0.1.16  *
     *************************
-
+   
     Version Notes:
-    0.0.1.11 ->   Partially fixed the getting stuck after killing mobs fixed the dismount problem that made you fall down infinitely
-    0.0.1.10 ->   New node targeting fixes spawn island aether current fix 
-    0.0.1.8  ->   Tweaked the Node targeting should work better and look more human now.
-    0.0.1.7  ->   Fixed the nvamesh getting stuck at ground while running path. Added target selection options Twekaed with eather use if you unselect the target or somehow it dies script will contuniue to gather.
-    0.0.1.6  ->   Pink Route for btn is live! After some minor code tweaking and standardizing tables. 
-    0.0.1.5  ->   Fixed Job checking not working properly
-    0.0.1.4  ->   Fixed Gift1 not popping up when it should 
-    0.0.1.2  ->   Fixed the waiting if there is no enemy in target distance now script will contuniue path till there is one and Aether use looks more human now
-    0.0.1.0  ->   Man... didn't tink I'd hit this with how big this was getting and the bugs I/We created in turn xD 
+    0.0.1.16 ->    Fixed the rare getting stuck after killing mobs issue. (this time it is a real fix)
+    0.0.1.15 ->    . . . This hasn't been miner edition for awhile. NAME CHANGED
+    0.0.1.14 ->    (Man I thought I would of been done with this) Made a "CapGP" setting. If you want it to spend GP before you get to cap, change this to false. (this will use YieldII)
+    0.0.1.13 ->    Targeting system has been overhauled on the mob kill side, now it SHOULD only target the mobs you want to target. (this also means you can edit the table and remove which mobs you ONLY want to target.)
+    0.0.1.12 ->    Switched over the debug to output to XlLog under "Info" this cleans up chat a lot, but also has it in a neat place for us to track where things might of broke
+    0.0.1.11 ->    Partially fixed the getting stuck after killing mobs fixed the dismount problem that made you fall down infinitely
+    0.0.1.10 ->    New node targeting fixes spawn island aether current fix 
+    0.0.1.8  ->    Tweaked the Node targeting should work better and look more human now.
+    0.0.1.7  ->    Fixed the nvamesh getting stuck at ground while running path. Added target selection options Twekaed with eather use if you unselect the target or somehow it dies script will contuniue to gather.
+    0.0.1.6  ->    Pink Route for btn is live! After some minor code tweaking and standardizing tables. 
+    0.0.1.5  ->    Fixed Job checking not working properly
+    0.0.1.4  ->    Fixed Gift1 not popping up when it should 
+    0.0.1.2  ->    Fixed the waiting if there is no enemy in target distance now script will contuniue path till there is one and Aether use looks more human now
+    0.0.1.0  ->    Man... didn't tink I'd hit this with how big this was getting and the bugs I/We created in turn xD 
                   This is the complete version of this script for now. I'm afraid if i change up the codebase anymore, then it's going to break. XD So going to push this as a released version, then focus on re-factoring the code in a different script (with blackjack and hookers)
                   Main things is:
                     -> Red Route is up and running 
@@ -31,20 +36,29 @@
     * Description *
     ***************
 
-    Current plans: 
-        -> 
-  
+    (What was suppose to be a leveling script xD) 
+    A SND Lua script that allows you to loop through and maximize the amount of points that you can get in a timespan. 
+    This includes (but limited to)
+        -> Aethercannon Usage 
+        -> Fully Automated Gathering 
+        -> Using skills on the proper node 
+        -> More dynamic pathing (to hopefully prevent everyone looking as botty)
+
+    PLEASE. CHANGE. SETTINGS. As necessary
+
     *********************
     *  Required Plugins *
     *********************
 
     -> visland -> https://puni.sh/api/repository/veyn
     -> SomethingNeedDoing (Expanded Edition) [Make sure to press the lua button when you import this] -> https://puni.sh/api/repository/croizat
+        -> New to SND Options? It's the " ? " RIGHT below "Macro Queue" from here you can go to the "Options" tab to find where you need to change these
         -> Options → "/item" → Uncheckmark "Stop macro if the item to use is not found" 
         -> Options → "/item" → Uncheckmark "Stop macro if you cannot use an item"
         -> Options → "/target" → checkmark "Use SND's targeting system"
         -> Options → "/target" → uncheckmark "stop macro if target not found"
     -> Pandora's Box -> https://love.puni.sh/ment.json
+        -> DISABLE P.GATHERING (yes i'm serious)
     -> vnavmesh : https://puni.sh/api/repository/veyn
 
 
@@ -53,7 +67,7 @@
     ***********
 
     Author(s): Leontopodium Nivale | UcanPatates 
-    Class: Miner
+    Class: Miner | BTN
 
     **************
     *  SETTINGS  *
@@ -86,15 +100,19 @@
     -- This will NOT work with Pandora's Gathering, as a fair warning in itself. 
     -- Options : 1 | 2 | 3 | 4 | 7 | 8 (1st slot... 2nd slot... ect)
     
-    TargetOption = 1 
+    TargetOption = 1
     -- This will let you tell the script which target to use Aethercannon.
     -- Options : 1 | 2 | 3 (Option: 1 is any target, Option: 2 only sprites Options: 3 is don't include sprites enemys)
+
+    CapGP = true 
+    -- Bountiful Yield 2 (Min) | Bountiful Harvest 2 (Btn) [+x (based on gathering) to that hit on the node (only once)]
+    -- If you want this to let your gp cap between rounds, then true 
+    -- If you would like it to use a skill on a node before getting to the final one, so you don't waste GP, set to false
     
     BuffYield2 = true -- Kings Yield 2 (Min) | Bountiful Yield 2 (Btn) [+2 to all hits]
     BuffGift2 = true -- Mountaineer's Gift 2 (Min) | Pioneer's Gift 2 (Btn) [+30% to perception hit]
     BuffGift1 = true -- Mountaineer's Gift 1 (Min) | Pioneer's Gift 1 (Btn) [+10% to perception hit]
     BuffTidings2 = true -- Nald'thal's Tidings (Min) | Nophica's Tidings (Btn) [+1 extra if perception bonus is hit]
-    BuffBYieldHarvest2  = true -- Bountiful Yield 2 (Min) | Bountiful Harvest 2 (Btn) [+x (based on gathering) to that hit on the node (only once)]
     -- Here you can select which buffs get activated whenever you get to the mega node (aka the node w/ +5 Integrity) 
     -- These are all togglable with true | false 
     -- They will go off in the order they are currently typed out, so keep that in mind for GP Usage if that's something you want to consider
@@ -196,7 +214,7 @@
         gather_table = 
             {
                 {-161.2715,-3.5233,-378.8041,0,1,1}, -- Start of the route
-                {-168.4631,-4.9886,-514.8903,0,0,0}, -- Around the tree 
+                {-169.3415,-7.1092,-518.7053,0,0,1}, -- Around the tree (Rock + Bones?)
                 {-78.5548,-18.1347,-594.6666,1,0,1}, -- Log + Rock (Problematic)
                 {-54.6772,-45.7177,-521.7173,0,0,1}, -- Down the hill 
                 {-22.5868,-26.5050,-534.9953,0,1,1}, -- up the hill (rock + tree)
@@ -217,10 +235,48 @@
                 {-215.1211,-1.3262,-494.8219,0,3,1},
             }
     end
-     spawnisland_table = 
-        {
-            {-605.7039,312.0701,-159.7864,0,99,0},
-        }
+
+    if TargetOption == 1 then 
+        mob_table = 
+            {
+                {"Proto-noctilucale"},
+                {"Diadem Bloated Bulb"},
+                {"Diadem Melia"},
+                {"Diadem Icetrap"},
+                {"Diadem Werewood"},
+                {"Diadem Biast"},
+                {"Diadem Ice Bomb"},
+                {"Diadem Zoblyn"},
+                {"Diadem Ice Golem"},
+                {"Diadem Golem"},
+                {"Corrupted Sprite"},
+            }
+    elseif TargetOption == 2 then 
+        mob_table = 
+            {
+                {"Corrupted Sprite"},
+            }
+    elseif TargetOption == 3 then 
+        mob_table = 
+            {
+                {"Proto-noctilucale"},
+                {"Diadem Bloated Bulb"},
+                {"Diadem Melia"},
+                {"Diadem Icetrap"},
+                {"Diadem Werewood"},
+                {"Diadem Biast"},
+                {"Diadem Ice Bomb"},
+                {"Diadem Zoblyn"},
+                {"Diadem Ice Golem"},
+                {"Diadem Golem"}
+            }
+    end 
+
+    spawnisland_table = 
+       {
+           {-605.7039,312.0701,-159.7864,0,99,0},
+       }
+
 -- Skill Check 
     if GetClassJobId() == 16 then -- Miner Skills 
         Yield2 = "\"King's Yield II\""
@@ -239,7 +295,6 @@
 --Functions
     function GatheringTarget(i)
         LoopClear()
-        a = 0
         while GetCharacterCondition(45,false) and GetCharacterCondition(6, false) do
             while GetTargetName() == "" do
                 if gather_table[i][5] == 0 then 
@@ -259,9 +314,15 @@
                 elseif gather_table[i][6] == 1 then 
                     yield("/vnavmesh movetarget")
                 end
-                while GetDistanceToTarget() > 3.5 and a < 10 do  --sometimes its getting stuck here as a fix i did this works but not perfect
+                while GetDistanceToTarget() > 3.5 do 
+                    if gather_table[i][6] == 0 and GetCharacterCondition(4) == false or GetCharacterCondition(77) == false then 
+                        MountFly()
+                        yield("/wait 0.1")
+                        if GetCharacterCondition(4) and GetCharacterCondition(77) then
+                            yield("/vnavmesh flytarget")
+                        end
+                    end  
                     yield("/wait 0.1")
-                    a = a + 1
                 end
                 PathStop()
                 if GetDistanceToTarget() < 3.5 and GetCharacterCondition(4) then
@@ -271,6 +332,17 @@
             while GetCharacterCondition(6, false) do 
                 yield("/wait 0.1")
                 yield("/interact")
+                while GetTargetName() == "" do
+                    if gather_table[i][5] == 0 then 
+                        yield("/target Mineral Deposit")
+                    elseif gather_table[i][5] == 1 then 
+                        yield("/target Rocky Outcrop")
+                    elseif gather_table[i][5] == 2 then 
+                        yield("/target Mature Tree")
+                    elseif gather_table[i][5] == 3 then 
+                        yield("/target Lush Vegetation Patch")
+                    end
+                end
                 if GetNodeText("_TextError",1) == "Too far away." then 
                     yield("/vnavmesh movetarget")
                     while GetDistanceToTarget() > 3.5 do 
@@ -283,7 +355,7 @@
         PathStop()
         DGathering()
         yield("/wait 0.1")
-        DebugMessage("GatheringTarget")
+        LogInfo("GatheringTarget -> Completed")
     end
 
     function CanadianMounty()
@@ -298,46 +370,38 @@
             end 
             yield("/wait 1")
             PlayerWait()
-            DebugMessage("CanadianMounty")
+            LogInfo("CanadianMounty -> Completed")
         end
     end
 
     function Target()
-        if TargetOption == 1 then
-            if GetTargetName() ~= "" then
-                return true 
-            else
-                return false
-            end
-        elseif TargetOption == 2 then
-            if GetTargetName() == "Corrupted Sprite" then
-                return true 
-            else
-                return false
-            end
-        elseif TargetOption == 3 then
-            if GetTargetName() ~= "Corrupted Sprite" then
-                return true
-            else
-                return false
-            end
+        if GetTargetName() ~= "" then
+            return true 
+        else
+            return false
         end
     end
 
     function KillTarget()
         if IsInZone(939) then
-            if GetDistanceToTarget() == 0.0 and GetCharacterCondition(6, false) and GetCharacterCondition(45, false) and GetDiademAetherGaugeBarCount() >= 1 then 
+            if GetDistanceToTarget() == 0.0 and GetCharacterCondition(6, false) and GetCharacterCondition(45, false) and GetDiademAetherGaugeBarCount() >= 1 and GetDistanceToPoint(X, Y, Z) > 1 then 
                 if KillLoop >= 1 then
                     yield("/wait 5")
                     LoopClear()
                 end
-                    yield("/targetenemy")
+                for i=1, #mob_table do
+                    yield("/target "..mob_table[i][1])
+                    yield("/wait 0.03")
                     if Target() == false then
-                        ClearTarget() 
-                        yield("/wait 0.1")
+                        yield("/wait 0.05")
                     end
-                    yield("/wait 0.1")
-                if  Target() then 
+                    if Target() == true then 
+                        break 
+                    end
+                end   
+                
+                yield("/wait 0.1")
+                if Target() then 
                     KillLoop = KillLoop + 1
                     if GetDistanceToTarget() > 10 then
                         PathStop()
@@ -346,8 +410,8 @@
                         yield("/vnavmesh flytarget")
                         while GetDistanceToTarget() > 10 and GetTargetName() ~= "" do
                             yield("/wait 0.1")
-                            if GetCharacterCondition(77) == false then
-                            yield("/send SPACE")
+                            if GetCharacterCondition(4) == false or GetCharacterCondition(77) == false then 
+                                MountFly()
                             end                            
                         end
                     end
@@ -370,7 +434,7 @@
                             yield("/wait 0.5")
                         end
                     end
-                    DebugMessage("KillTarget")
+                    LogInfo("KillTarget -> Completed")
                 end
             end
         end
@@ -385,11 +449,11 @@
         while GetCharacterCondition(77) == false and IsInZone(939) do 
             PathStop()
             CanadianMounty()
-            yield("/send SPACE")
+            yield("/gaction jump")
             yield("/wait 0.1")
             yield("/gaction jump")
         end
-        DebugMessage("MountFly")
+        LogInfo("MountFly -> Completed")
     end
 
     function WalkTo(x, y, z)
@@ -397,7 +461,7 @@
         while (PathIsRunning() or PathfindInProgress()) do
             yield("/wait 0.5")
         end
-        DebugMessage("WalkTo")
+        LogInfo("WalkTo -> Completed")
     end
   
     function VNavMoveTime(i)
@@ -442,7 +506,7 @@
                 KillTarget()
             end
         end
-        DebugMessage("VNavMoveTime")
+        LogInfo("VNavMoveTime(i) -> Completed")
     end
 
     function VislandMoveTime() 
@@ -451,7 +515,7 @@
             yield("/wait 0.1")
         end 
         yield("/visland stop")
-        DebugMessage("VislandMoveTime")
+        LogInfo("VislandMoveTime -> Completed")
     end
 
     function PlayerWait()
@@ -459,7 +523,7 @@
             math.randomseed( os.time() )
             RandomTimeWait = math.random(10, 20) / 10
             yield("/wait "..RandomTimeWait)
-            DebugMessage("PlayerWait")
+            LogInfo("PlayerWait -> Completed")
         end
     end  
 
@@ -470,7 +534,7 @@
                 yield("/wait 0.1")
             until GetCharacterCondition(42, false)
         end
-        DebugMessage("StatusCheck")
+        LogInfo("StatusCheck -> Completed")
     end     
 
     function DGathering()
@@ -479,7 +543,7 @@
         while GetCharacterCondition(6) do 
             if VisibleNode == "Max GP ≥ 858 → Gathering Attempts/Integrity +5" and DGatheringLoop == false then 
                 while VisibleNode == "Max GP ≥ 858 → Gathering Attempts/Integrity +5" and DGatheringLoop == false do 
-                    yield("/e [Diadem Gathering] [Node Type] This is a Max Integrity Node, time to start buffing/smacking")
+                    LogInfo("[Diadem Gathering] [Node Type] This is a Max Integrity Node, time to start buffing/smacking")
                     PlayerWait()
                     yield("/wait 0.1")
                     while BuffYield2 and GetGp() >= 500 and HasStatusId(219) == false and GetLevel() >= 40 do -- 
@@ -510,7 +574,7 @@
                     DGatheringLoop = true
                 end
             elseif VisibleNode ~= "Max GP ≥ 858 → Gathering Attempts/Integrity +5" and DGatheringLoop == false then 
-                yield("/e [Diadem Gathering] [Node Type] Normal Node")
+                LogInfo("[Diadem Gathering] [Node Type] Normal Node")
                 DGatheringLoop = true
             end 
             yield("/pcall Gathering true "..NodeSelection)
@@ -518,8 +582,12 @@
             while GetCharacterCondition(42) do
                 yield("/wait 0.2")
             end
+            if PathIsRunning() == true then 
+                PathStop()
+            end
+            BountifulYieldII()
         end 
-        DebugMessage("DGathering")
+        LogInfo("DGathering -> Completed")
     end
 
     function FoodCheck() 
@@ -533,7 +601,7 @@
                 UseFood = false 
             end
         end
-        DebugMessage("FoodCheck")
+        LogInfo("FoodCheck -> Completed")
     end
 
     function TargetedInteract(target)
@@ -545,20 +613,14 @@
         repeat
             yield("/wait 0.1")
         until IsAddonReady("SelectIconString")
-        DebugMessage("TargetedInteract")
+        LogInfo("TargetedInteract -> Completed")
     end
 
     function LoopClear()
         KillLoop = 0
         Food_Tick = 0 
         DGatheringLoop = false 
-        DebugMessage("LoopClear")
-    end
-
-    function DebugMessage(func)
-        if debug==true then
-            yield("/e [Diadem Debug]: " .. func .. ": Completed")
-        end
+        LogInfo("LoopClear -> Completed")
     end
 
     function UiElementSelector()
@@ -570,14 +632,14 @@
     end 
 
     function BountifulYieldII()
-        while BuffBYieldHarvest2 and GetGp() >= 100 and GetLevel() >= 68 and VisibleNode == "Max GP ≥ 858 → Gathering Attempts/Integrity +5" do
-            if debug then yield("/e [Debug] Should be applying Kings Yield 2") end
-            if GetClassJobId() == 16 then 
-                yield("/ac \"Bountiful Yield II\"")
-                StatusCheck()
-            end 
+        YieldGP = GetMaxGp() - 30
+        if GetGp() >= YieldGP and GetLevel() >= 68 and VisibleNode ~= "Max GP ≥ 858 → Gathering Attempts/Integrity +5" then 
+            LogInfo("Popping Yield 2 Buff")
+            yield("/ac "..Bountiful2)
+            StatusCheck()
         end
     end 
+
     function Dismount()
         a=0
         if GetCharacterCondition(4) or GetCharacterCondition(77) then
@@ -589,12 +651,13 @@
         end
             if a == 2 then
                 yield("/wait 0.1")
-                yield("/send SPACE")
+                yield("/gaction jump")
                 ClearTarget() 
                 PathStop()
             end
         end
     end
+
     function UseSkill(SkillName)
         yield("/ac "..SkillName)
         yield("/wait 0.1")
@@ -695,19 +758,6 @@
 
 ::DiademFarming::
 
-    while IsInZone(939) == false and GetCharacterCondition(45, true) do -- this whole section is new. 
-        yield("/wait 1")
-    end 
-    if UseFood and (GetStatusTimeRemaining(48) <= FoodTimeRemaining or HasStatusId(48) == false) then 
-        yield("/e [Diadem Gathering] Food seems to have ran out, going to re-food")
-        FoodCheck()
-    end
-    MountFly()
-    X = spawnisland_table[1][1]
-    Y = spawnisland_table[1][2]
-    Z = spawnisland_table[1][3]
-    VNavMoveTime(1) -- esentially goes above the lookout box, then continues on
-
     while IsInZone(939) and GetCharacterCondition(45, false) do
         for i=1, #gather_table do
             if GetCharacterCondition(45, false) then 
@@ -724,6 +774,12 @@
                 if gather_table[i][5] ~= 99 then -- 99 is the code imma use if I don't want it gathering anything, and make sure it's not the coords I want to use as a midpoint
                     GatheringTarget(i)
                 end 
+                if GetInventoryFreeSlotCount() == 0 then 
+                    LogInfo("It seems like your inventory has reached Max Capacity slot wise. For the safety of you (and to help you not just stand there for hours on end), we're going to stop the script here and leave the instance")
+                    yield("/e It seems like your inventory has reached Max Capacity slot wise. For the safety of you (and to help you not just stand there for hours on end), we're going to stop the script here and leave the instance")
+                    DutyLeave()
+                    yield("/snd stop")
+                end
             end 
         end
     end 
