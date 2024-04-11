@@ -76,7 +76,7 @@
     **************
 ]]
 
-    UseFood = false
+    UseFood = true
     FoodKind = "Sideritis Cookie <HQ>"
     RemainingFoodTimer = 5 -- This is in minutes
     -- If you would like to use food while in diadem, and what kind of food you would like to use. 
@@ -102,7 +102,7 @@
     -- This will NOT work with Pandora's Gathering, as a fair warning in itself. 
     -- Options : 1 | 2 | 3 | 4 | 7 | 8 (1st slot... 2nd slot... ect)
     
-    TargetOption = 2
+    TargetOption = 1
     -- This will let you tell the script which target to use Aethercannon.
     -- Options : 1 | 2 | 3 (Option: 1 is any target, Option: 2 only sprites Options: 3 is don't include sprites enemys)
 
@@ -120,11 +120,11 @@
     -- They will go off in the order they are currently typed out, so keep that in mind for GP Usage if that's something you want to consider
 
     Repair_Amount = 99
-    Self_Repair = false --if its true script will try to self reapair
+    Self_Repair = true --if its true script will try to self reapair
     Npc_Repair = false --if its true script will try to go to mender npc and repair
     --When do you want to repair your own gear? From 0-100 (it's in percentage, but enter a whole value
 
-    PlayerWaitTime = false 
+    PlayerWaitTime = true 
     -- this is if you want to make it... LESS sus on you just jumping from node to node instantly/firing a cannon off at an enemy and then instantly flying off
     -- default is true, just for safety. If you want to turn this off, do so at your own risk. 
 
