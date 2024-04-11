@@ -4,11 +4,12 @@
     * Diadem Farming  *
     *******************
 
-    ***************************
-    *  Version -> 0.0.1.17.3  *
-    ***************************
+    *************************
+    *  Version -> 0.0.1.18  *
+    *************************
    
     Version Notes:
+    0.0.1.18 ->    Some automation Bug fixes, safeties added in places (missing a node in a loop will reset the instance)
     0.0.1.17 ->    Now it will go to other nodes and continue if the target you were trying to kill got stolen(yea i know we already fixed it once)
     0.0.1.16 ->    Fixed the rare getting stuck after killing mobs issue. (this time it is a real fix)
     0.0.1.15 ->    . . . This hasn't been miner edition for awhile. NAME CHANGED
@@ -75,7 +76,7 @@
     **************
 ]]
 
-    UseFood = true
+    UseFood = false
     FoodKind = "Sideritis Cookie <HQ>"
     RemainingFoodTimer = 5 -- This is in minutes
     -- If you would like to use food while in diadem, and what kind of food you would like to use. 
@@ -101,7 +102,7 @@
     -- This will NOT work with Pandora's Gathering, as a fair warning in itself. 
     -- Options : 1 | 2 | 3 | 4 | 7 | 8 (1st slot... 2nd slot... ect)
     
-    TargetOption = 1
+    TargetOption = 2
     -- This will let you tell the script which target to use Aethercannon.
     -- Options : 1 | 2 | 3 (Option: 1 is any target, Option: 2 only sprites Options: 3 is don't include sprites enemys)
 
@@ -119,11 +120,11 @@
     -- They will go off in the order they are currently typed out, so keep that in mind for GP Usage if that's something you want to consider
 
     Repair_Amount = 99
-    Self_Repair = true --if its true script will try to self reapair
+    Self_Repair = false --if its true script will try to self reapair
     Npc_Repair = false --if its true script will try to go to mender npc and repair
     --When do you want to repair your own gear? From 0-100 (it's in percentage, but enter a whole value
 
-    PlayerWaitTime = true 
+    PlayerWaitTime = false 
     -- this is if you want to make it... LESS sus on you just jumping from node to node instantly/firing a cannon off at an enemy and then instantly flying off
     -- default is true, just for safety. If you want to turn this off, do so at your own risk. 
 
@@ -296,8 +297,9 @@
 --Functions
     function GatheringTarget(i)
         LoopClear()
+        GatherNodeTargetLoop=0
         while GetCharacterCondition(45,false) and GetCharacterCondition(6, false) do
-            while GetTargetName() == "" do
+            while GetTargetName() == "" and GatherNodeTargetLoop < 20 and IsInZone(886) == false do
                 if gather_table[i][5] == 0 then 
                     yield("/target Mineral Deposit")
                 elseif gather_table[i][5] == 1 then 
@@ -306,6 +308,15 @@
                     yield("/target Mature Tree")
                 elseif gather_table[i][5] == 3 then 
                     yield("/target Lush Vegetation Patch")
+                end
+                yield("/wait 0.1")
+                GatherNodeTargetLoop = GatherNodeTargetLoop + 1
+            end
+            if GatherNodeTargetLoop >= 20 then
+                yield("/e Node not found restarting the gathering loop.")
+                LeaveDuty()
+                while IsInZone(886) == false do
+                yield("/wait 2")
                 end
             end
             yield("/wait 0.1")
@@ -330,10 +341,10 @@
                     Dismount()
                 end
             end
-            while GetCharacterCondition(6, false) do 
+            while GetCharacterCondition(6, false)and IsInZone(886) == false do 
                 yield("/wait 0.1")
                 yield("/interact")
-                while GetTargetName() == "" do
+                while GetTargetName() == "" and GatherNodeTargetLoop < 20 and IsInZone(886) == false do
                     if gather_table[i][5] == 0 then 
                         yield("/target Mineral Deposit")
                     elseif gather_table[i][5] == 1 then 
@@ -343,7 +354,16 @@
                     elseif gather_table[i][5] == 3 then 
                         yield("/target Lush Vegetation Patch")
                     end
+                    yield("/wait 0.1")
+                    GatherNodeTargetLoop = GatherNodeTargetLoop + 1
                 end
+                if GatherNodeTargetLoop >= 20 then
+                yield("/e Node not found restarting the gathering loop.")
+                LeaveDuty()
+                while IsInZone(886) == false do
+                yield("/wait 2")
+                end
+            end
                 if GetNodeText("_TextError",1) == "Too far away." then 
                     yield("/vnavmesh movetarget")
                     while GetDistanceToTarget() > 3.5 do 
@@ -546,7 +566,7 @@
     function DGathering()
         LoopClear() 
         UiElementSelector()
-        while GetCharacterCondition(6) do 
+        while GetCharacterCondition(6) and IsInZone(886) == false do 
             if VisibleNode == "Max GP ≥ 858 → Gathering Attempts/Integrity +5" and DGatheringLoop == false then 
                 while VisibleNode == "Max GP ≥ 858 → Gathering Attempts/Integrity +5" and DGatheringLoop == false do 
                     LogInfo("[Diadem Gathering] [Node Type] This is a Max Integrity Node, time to start buffing/smacking")
@@ -585,7 +605,7 @@
             end 
             yield("/pcall Gathering true "..NodeSelection)
             yield("/wait 0.1")
-            while GetCharacterCondition(42) do
+            while GetCharacterCondition(42) and IsInZone(886) == false do
                 yield("/wait 0.2")
             end
             if PathIsRunning() == true then 
@@ -648,10 +668,10 @@
 
     function Dismount()
         a=0
-        if GetCharacterCondition(4) or GetCharacterCondition(77) then
+        if GetCharacterCondition(4) or GetCharacterCondition(77) and IsInZone(886) == false then
             yield("/ac dismount")
             yield("/wait 0.3")
-        while GetCharacterCondition(77) and a < 2 do
+        while GetCharacterCondition(77) and a < 2 and IsInZone(886) == false do
             yield("/wait 0.5")
             a=a+1
         end
@@ -679,6 +699,17 @@
 ::JobTester::
     Current_job = GetClassJobId()
     if (Current_job == 17) or (Current_job == 16) then
+        if GetClassJobId() == 17 then -- Botanist
+            if RouteType == "RedRoute" then
+                yield("/echo Hmm... You're in Botanis, yet you chose Red Route. Going to assume you meant to choose the route for the class. If not, then stop the script now to change it")
+                RouteType = "PinkRoute"
+            end 
+        elseif GetClassJobId() == 16 then
+            if RouteType == "PinkRoute" then
+                yield("/echo Hmm... You're in Miner, yet you chose Pink Route. Going to assume you meant to choose the route for the class. If not, then stop the script now to change it")
+                RouteType = "RedRoute"
+            end 
+        end
         goto Enter
     else
         yield("/echo Hmm... You're not on a gathering job, switch to one and start the script again.")
