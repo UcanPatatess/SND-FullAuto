@@ -41,7 +41,7 @@
 
 
 
-ArtisanListID = "12017" --Your artisan list
+ArtisanListID = "12017" --Your artisan list not working rn
 
 TurnInWait = 1 --default is 1 you can change it to 0.5 or something lower too
 
@@ -100,7 +100,7 @@ while true do
             yield("/pcall HWDSupply true -1")
         end
     end
-    if GetInventoryFreeSlotCount() ~= 0 and IsIsgardianOpen()==false and GetCharacterCondition(5)==false then
-        yield("/artisan lists "..ArtisanListID.." start")
-    end
+  --  if GetInventoryFreeSlotCount() ~= 0 and IsIsgardianOpen()==false and GetCharacterCondition(5)==false then "not working"
+  --      yield("/artisan lists "..ArtisanListID.." start")
+  --  end
 end
