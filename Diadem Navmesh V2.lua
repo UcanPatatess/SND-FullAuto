@@ -5,10 +5,11 @@
     *******************
 
     ***************************
-    *  Version -> 0.0.1.18.2  *
+    *  Version -> 0.0.1.18.3  *
     ***************************
    
     Version Notes:
+    0.0.1.18.3 ->  Fixed the 4.node of PinkRoute Hopefully fixed the rare accurance of not getting in diadem again
     0.0.1.18.2 ->  Litle fix for jumping before nodes and fixed the automation
     0.0.1.18 ->    Some automation Bug fixes, safeties added in places (missing a node in a loop will reset the instance)
     0.0.1.17 ->    Now it will go to other nodes and continue if the target you were trying to kill got stolen(yea i know we already fixed it once)
@@ -231,7 +232,7 @@
                 {-248.6381,-1.5664,-468.8910,0,3,1},
                 {-338.3759,-0.4761,-415.3227,0,3,1},
                 {-366.2651,-1.8514,-350.1429,0,3,1},
-                {-429.5530,29.7115,-252.8121,0,2,1},
+                {-431.2,27.5,-256.7,0,2,1}, --Lol This is smaller than others because my x y z locator only got this and i am lazy to fix it
                 {-473.4957,31.5405,-244.1215,0,2,1},
                 {-536.5187,33.2307,-253.3514,0,3,1},
                 {-571.2896,35.2772,-236.6808,0,3,1},
@@ -327,7 +328,7 @@
                 elseif gather_table[i][6] == 1 then 
                     yield("/vnavmesh movetarget")
                 end
-                while GetDistanceToTarget() > 3.5 do 
+                while GetDistanceToTarget() > 3.5 and IsInZone(886) == false do 
                     if gather_table[i][6] == 0 and GetCharacterCondition(4) == false and GetCharacterCondition(77) == false then 
                         MountFly()
                         yield("/wait 0.1")
@@ -367,7 +368,7 @@
             end
                 if GetNodeText("_TextError",1) == "Too far away." then 
                     yield("/vnavmesh movetarget")
-                    while GetDistanceToTarget() > 3.5 do 
+                    while GetDistanceToTarget() > 3.5 and IsInZone(886) == false do 
                         yield("/wait 0.1")
                     end
                     PathStop()
@@ -435,7 +436,7 @@
                         MountFly()
                         yield("/wait 0.1")
                         yield("/vnavmesh flytarget")
-                        while GetDistanceToTarget() > 10 and GetTargetName() ~= "" do
+                        while GetDistanceToTarget() > 10 and GetTargetName() ~= "" and IsInZone(886) == false do
                             yield("/wait 0.1")
                             if GetCharacterCondition(4) == false or GetCharacterCondition(77) == false then 
                                 MountFly()
@@ -444,7 +445,7 @@
                     end
                     PathStop() 
                     yield("/wait 0.1")
-                    while GetTargetHP() > 1.0 and GetTargetName() ~= "" do
+                    while GetTargetHP() > 1.0 and GetTargetName() ~= "" and IsInZone(886) == false do
                         if PathIsRunning() then
                             PathStop()
                         end 
@@ -504,7 +505,7 @@
                 if PathIsRunning() == false or IsMoving() == false then 
                     PathfindAndMoveTo(X, Y, Z, true)
                     yield("/wait 0.1")
-                    while PathfindInProgress() do
+                    while PathfindInProgress() and IsInZone(886) == false do
                         yield("/wait 0.1")
                         if GetCharacterCondition(4) == false or GetCharacterCondition(77) == false then 
                             MountFly()
@@ -522,7 +523,7 @@
                 if PathIsRunning() == false or IsMoving() == false then 
                     PathfindAndMoveTo(X, Y, Z, true)
                     yield("/wait 0.1")
-                    while PathfindInProgress() do
+                    while PathfindInProgress() and IsInZone(886) == false do
                         yield("/wait 0.1")
                         if GetCharacterCondition(4) == false or GetCharacterCondition(77) == false then 
                             MountFly()
@@ -573,27 +574,27 @@
                     LogInfo("[Diadem Gathering] [Node Type] This is a Max Integrity Node, time to start buffing/smacking")
                     PlayerWait()
                     yield("/wait 0.1")
-                    while BuffYield2 and GetGp() >= 500 and HasStatusId(219) == false and GetLevel() >= 40 do -- 
+                    while BuffYield2 and GetGp() >= 500 and HasStatusId(219) == false and GetLevel() >= 40 and IsInZone(886) == false do -- 
                         if debug then yield("/e [Debug] Should be applying Kings Yield 2") end
                         UseSkill(Yield2)
                         StatusCheck()
                     end
-                    while BuffGift2 and GetGp() >= 300 and HasStatusId(759) == false and GetLevel() >= 50 do
+                    while BuffGift2 and GetGp() >= 300 and HasStatusId(759) == false and GetLevel() >= 50 and IsInZone(886) == false do
                         if debug then yield("/e [Debug] Should be applying Mountaineer's Gift 2'") end
                         UseSkill(Gift2) -- Mountaineer's Gift 2 (Min)
                         StatusCheck()
                     end
-                    while BuffTidings2 and GetGp() >= 200 and HasStatusId(2667) == false and GetLevel() >= 81 do 
+                    while BuffTidings2 and GetGp() >= 200 and HasStatusId(2667) == false and GetLevel() >= 81 and IsInZone(886) == false do 
                         if debug then yield("/e [Debug] Should be applying Tidings") end
                         UseSkill(Tidings2) -- Nald'thal's Tidings (Min)
                         StatusCheck()
                     end 
-                    while BuffGift1 and GetGp() >= 50 and HasStatusId(2666) == false and GetLevel() >= 15 do
+                    while BuffGift1 and GetGp() >= 50 and HasStatusId(2666) == false and GetLevel() >= 15 and IsInZone(886) == false do
                         if debug then yield("/e [Debug] Should be applying Mountaineer's Gift 1'") end
                         UseSkill(Gift1) -- Mountaineer's Gift 1 (Min)
                         StatusCheck()
                     end
-                    while BuffBYieldHarvest2 and GetGp() >= 100 and HasStatusId(1286) == false and GetLevel() >= 68 do
+                    while BuffBYieldHarvest2 and GetGp() >= 100 and HasStatusId(1286) == false and GetLevel() >= 68 and IsInZone(886) == false do
                         if debug then yield("/e [Debug] Should be applying Bountiful Yield 2") end
                         UseSkill(Bountiful2)
                         StatusCheck()
