@@ -7,9 +7,10 @@
     Author: UcanPatates  
 
     **********************
-    * Version  |  0.0.2  *
+    * Version  |  0.0.3  *
     **********************
 
+    -> 0.0.3  : Made it usable for every item in the Fourth Restoration
     -> 0.0.2  : Added artisan automation
     -> 0.0.1  : This will trade in your collectable grade 4 rope
 
@@ -41,8 +42,16 @@
 
 
 
-ArtisanListID = "12017" --Your artisan list not working rn
+ArtisanListID = "12017" --Your artisan list 
+UseArtisan = false -- if you wanna use artisan with it you have to set you list to 1 and it looks hella sus and slow
 
+SelectTurnIn = 1 
+-- 1 Means Fourth Restoration and First item
+-- 2 Means Fourth Restoration and Second item
+-- 3 Means Fourth Restoration and Third item
+-- 4 Means Fourth Restoration and Fourth item
+-- 5 Means Fourth Restoration and Fifth item
+-- 6 Means Fourth Restoration and Sixth item
 TurnInWait = 1 --default is 1 you can change it to 0.5 or something lower too
 
 --[[
@@ -53,7 +62,16 @@ TurnInWait = 1 --default is 1 you can change it to 0.5 or something lower too
 
 ]]
 
+WhicOne = SelectTurnIn - 1
 
+function TurnIn()
+    if IsIsgardianOpen() then
+        yield("/pcall HWDSupply true 1 5")
+        if GetNodeText("_TextError",1) == "You do not possess the requested item." and IsAddonVisible("_TextError") then
+            yield("/pcall HWDSupply true -1")
+        end
+    end
+end
 
 function AmIThere(zoneid)
     if GetZoneID() == zoneid then
@@ -79,8 +97,9 @@ function IsIsgardianOpen()
     end
 end
 
-while true do
-    yield("/wait 1")
+while AmIThere(886) do
+    
+    yield("/wait "..TurnInWait)
     if GetInventoryFreeSlotCount() == 0 and AmIThere(886) then
         if IsAddonReady("RecipeNote") then
             yield("/pcall RecipeNote true -1")
@@ -93,14 +112,9 @@ while true do
             LogInfo("No Target Found *Potkin*")
         end      
     end
-    while AmIThere(886) and IsIsgardianOpen() do
-        yield("/pcall HWDSupply true 1 5")
-        yield("/wait "..TurnInWait)
-        if GetNodeText("_TextError",1) == "You do not possess the requested item." and IsAddonVisible("_TextError") then
-            yield("/pcall HWDSupply true -1")
-        end
+    TurnIn() --magic is here
+    if UseArtisan and GetInventoryFreeSlotCount() ~= 0 and IsIsgardianOpen()==false and GetCharacterCondition(5)==false then --this works but you have to set your list to 1 and it looks hella sus xd
+        yield("/artisan lists "..ArtisanListID.." start")
     end
-  --  if GetInventoryFreeSlotCount() ~= 0 and IsIsgardianOpen()==false and GetCharacterCondition(5)==false then "not working"
-  --      yield("/artisan lists "..ArtisanListID.." start")
-  --  end
+
 end
