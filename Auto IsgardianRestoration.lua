@@ -66,7 +66,7 @@ WhicOne = SelectTurnIn - 1
 
 function TurnIn()
     if IsIsgardianOpen() then
-        yield("/pcall HWDSupply true 1 5")
+        yield("/pcall HWDSupply true 1 "..WhicOne)
         if GetNodeText("_TextError",1) == "You do not possess the requested item." and IsAddonVisible("_TextError") then
             yield("/pcall HWDSupply true -1")
         end
@@ -98,7 +98,7 @@ function IsIsgardianOpen()
 end
 
 while AmIThere(886) do
-    
+
     yield("/wait "..TurnInWait)
     if GetInventoryFreeSlotCount() == 0 and AmIThere(886) then
         if IsAddonReady("RecipeNote") then
