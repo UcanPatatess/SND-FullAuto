@@ -49,7 +49,7 @@ UseArtisan = false -- if you wanna use artisan with it you have to set you list 
 
 
 
-SelectTurnIn = 6
+SelectTurnIn = 1
 -- 1 Means Fourth Restoration and First item
 -- 2 Means Fourth Restoration and Second item
 -- 3 Means Fourth Restoration and Third item
