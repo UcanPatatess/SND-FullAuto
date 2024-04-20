@@ -20,7 +20,7 @@
     * Description *
     ***************
 
-    This script will trade in your ropes to Potkin if your inventory is full or if you open the trade in screen
+    This script will trade in your Collectables to Potkin if your inventory is full or if you open the trade in screen
     if you are using artisan you need to put your list id in settings
 
     *********************
