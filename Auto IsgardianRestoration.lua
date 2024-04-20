@@ -7,9 +7,9 @@
     Author: UcanPatates  
 
     **********************
-    * Version  |  0.0.5  *
+    * Version  |  0.0.6  *
     **********************
-
+    -> 0.0.6  : Fixed the check it now actualy works(should work xd)
     -> 0.0.5  : Added a Kupo Vouchers check to stop the turnin
     -> 0.0.4  : Added some desc for peeps and added a safety check
     -> 0.0.3  : Made it usable for every item in the Fourth Restoration
@@ -49,7 +49,7 @@ UseArtisan = false -- if you wanna use artisan with it you have to set you list 
 
 
 
-SelectTurnIn = 1
+SelectTurnIn = 6
 -- 1 Means Fourth Restoration and First item
 -- 2 Means Fourth Restoration and Second item
 -- 3 Means Fourth Restoration and Third item
@@ -84,7 +84,7 @@ end
 
 function TurnIn()
     if IsIsgardianOpen() then
-        if GetNodeText("HWDSupply" ,16) == 10/10 then
+        if GetNodeText("HWDSupply" ,16) == "10/10" then
             yield("/pcall HWDSupply true -1")
             yield("/e Your Kupo Vouchers are full !!!")
         else    
