@@ -7,9 +7,10 @@
     Author: UcanPatates  
 
     **********************
-    * Version  |  0.0.3  *
+    * Version  |  0.0.4  *
     **********************
 
+    -> 0.0.4  : Added some desc for peeps and added a safety check
     -> 0.0.3  : Made it usable for every item in the Fourth Restoration
     -> 0.0.2  : Added artisan automation
     -> 0.0.1  : This will trade in your collectable grade 4 rope
@@ -30,11 +31,11 @@
     Plugins that are used are:
     -> vnavmesh : https://puni.sh/api/repository/veyn
     -> TextAdvance : https://raw.githubusercontent.com/NightmareXIV/MyDalamudPlugins/main/pluginmaster.json
-            ->You should do /at before starting it
+            ->You should do /at before starting it !!
     -> Something Need Doing [Expanded Edition] : https://puni.sh/api/repository/croizat
-          -> If there's extra settings needed to be changed in the plugin
-          -> I try and put it below it so people know that it's related to this
     -> Artisan : https://love.puni.sh/ment.json
+
+
     **************
     *  SETTINGS  *
     **************
@@ -45,14 +46,22 @@
 ArtisanListID = "12017" --Your artisan list 
 UseArtisan = false -- if you wanna use artisan with it you have to set you list to 1 and it looks hella sus and slow
 
-SelectTurnIn = 1 
+
+
+SelectTurnIn = 6
 -- 1 Means Fourth Restoration and First item
 -- 2 Means Fourth Restoration and Second item
 -- 3 Means Fourth Restoration and Third item
 -- 4 Means Fourth Restoration and Fourth item
 -- 5 Means Fourth Restoration and Fifth item
 -- 6 Means Fourth Restoration and Sixth item
+-- you can go until 23th list item.
 TurnInWait = 1 --default is 1 you can change it to 0.5 or something lower too
+
+
+
+
+
 
 --[[
     ************
@@ -62,7 +71,13 @@ TurnInWait = 1 --default is 1 you can change it to 0.5 or something lower too
 
 ]]
 
-WhicOne = SelectTurnIn - 1
+if SelectTurnIn < 24 and SelectTurnIn > 0 then
+    WhicOne = SelectTurnIn - 1
+else
+    yield("/e Select a valid Item and start the script again.")
+    yield("/snd stop")
+end
+
 
 function TurnIn()
     if IsIsgardianOpen() then
