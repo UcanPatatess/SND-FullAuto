@@ -45,11 +45,11 @@
 
 
 ArtisanListID = "12017" --Your artisan list 
-UseArtisan = false -- if you wanna use artisan with it you have to set you list to 1 and it looks hella sus and slow
+UseArtisan = false -- if you wanna use artisan with it you have to set your list to 1 item and it looks hella sus and slow
 
 
 
-SelectTurnIn = 6
+SelectTurnIn = 1
 -- 1 Means Fourth Restoration and First item
 -- 2 Means Fourth Restoration and Second item
 -- 3 Means Fourth Restoration and Third item
@@ -58,12 +58,6 @@ SelectTurnIn = 6
 -- 6 Means Fourth Restoration and Sixth item
 -- you can go until 23th list item.
 TurnInWait = 1 --default is 1 you can change it to 0.5 or something lower too
-
-
-
-if GetNodeText("HWDSupply" ,16) == 10/10 then
-    
-end
 
 
 --[[
