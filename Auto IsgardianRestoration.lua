@@ -7,11 +7,12 @@
     Author: UcanPatates  
 
     **********************
-    * Version  |  0.0.4  *
+    * Version  |  0.0.5  *
     **********************
 
+    -> 0.0.5  : Added a Kupo Vouchers check to stop the turnin
     -> 0.0.4  : Added some desc for peeps and added a safety check
-    -> 0.0.3  : Made it usable for every item
+    -> 0.0.3  : Made it usable for every item in the Fourth Restoration
     -> 0.0.2  : Added artisan automation
     -> 0.0.1  : This will trade in your collectable grade 4 rope
 
@@ -20,7 +21,7 @@
     * Description *
     ***************
 
-    This script will trade in your Collectables to Potkin if your inventory is full or if you open the trade in screen
+    This script will trade in your ropes to Potkin if your inventory is full or if you open the trade in screen
     if you are using artisan you need to put your list id in settings
 
     *********************
@@ -60,7 +61,9 @@ TurnInWait = 1 --default is 1 you can change it to 0.5 or something lower too
 
 
 
-
+if GetNodeText("HWDSupply" ,16) == 10/10 then
+    
+end
 
 
 --[[
@@ -81,9 +84,15 @@ end
 
 function TurnIn()
     if IsIsgardianOpen() then
-        yield("/pcall HWDSupply true 1 "..WhicOne)
-        if GetNodeText("_TextError",1) == "You do not possess the requested item." and IsAddonVisible("_TextError") then
+        if GetNodeText("HWDSupply" ,16) == 10/10 then
             yield("/pcall HWDSupply true -1")
+            yield("/e Your Kupo Vouchers are full !!!")
+        else    
+            yield("/wait 0.1")
+            yield("/pcall HWDSupply true 1 "..WhicOne)
+            if GetNodeText("_TextError",1) == "You do not possess the requested item." and IsAddonVisible("_TextError") then
+                yield("/pcall HWDSupply true -1")
+            end
         end
     end
 end
