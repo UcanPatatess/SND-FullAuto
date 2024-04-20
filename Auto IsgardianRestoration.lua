@@ -11,7 +11,7 @@
     **********************
 
     -> 0.0.4  : Added some desc for peeps and added a safety check
-    -> 0.0.3  : Made it usable for every item in the Fourth Restoration
+    -> 0.0.3  : Made it usable for every item
     -> 0.0.2  : Added artisan automation
     -> 0.0.1  : This will trade in your collectable grade 4 rope
 
