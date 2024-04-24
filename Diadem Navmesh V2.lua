@@ -5,10 +5,11 @@
     *******************
 
     ***************************
-    *  Version -> 0.0.1.18.3  *
+    *  Version -> 0.0.1.18.4  *
     ***************************
    
     Version Notes:
+    0.0.1.18.4 ->  Added a option to not use aether cannon , New option anti stutter added Tweaked some of the killing logic.
     0.0.1.18.3 ->  Fixed the 4.node of PinkRoute Hopefully fixed the rare accurance of not getting in diadem again
     0.0.1.18.2 ->  Litle fix for jumping before nodes and fixed the automation
     0.0.1.18 ->    Some automation Bug fixes, safeties added in places (missing a node in a loop will reset the instance)
@@ -106,7 +107,7 @@
     
     TargetOption = 1
     -- This will let you tell the script which target to use Aethercannon.
-    -- Options : 1 | 2 | 3 (Option: 1 is any target, Option: 2 only sprites Options: 3 is don't include sprites enemys)
+    -- Options : 0 | 1 | 2 | 3 (Option: 0 is don't use cannon, Option: 1 is any target, Option: 2 only sprites, Option: 3 is don't include sprites)
 
     CapGP = true 
     -- Bountiful Yield 2 (Min) | Bountiful Harvest 2 (Btn) [+x (based on gathering) to that hit on the node (only once)]
@@ -121,14 +122,19 @@
     -- These are all togglable with true | false 
     -- They will go off in the order they are currently typed out, so keep that in mind for GP Usage if that's something you want to consider
 
-    Repair_Amount = 99
-    Self_Repair = true --if its true script will try to self reapair
-    Npc_Repair = false --if its true script will try to go to mender npc and repair
+    Repair_Amount = 90
+    Self_Repair = false --if its true script will try to self reapair
+    Npc_Repair = true --if its true script will try to go to mender npc and repair
     --When do you want to repair your own gear? From 0-100 (it's in percentage, but enter a whole value
 
     PlayerWaitTime = true 
     -- this is if you want to make it... LESS sus on you just jumping from node to node instantly/firing a cannon off at an enemy and then instantly flying off
     -- default is true, just for safety. If you want to turn this off, do so at your own risk. 
+
+    AntiStutterOpen = false
+    AntiStutter = 2
+    -- default is 2 this will execute the script again if you are having stutter issues 
+    -- WARNING your macro name should be DiademV2
 
     debug = false
     -- This is for debugging 
@@ -161,6 +167,11 @@
     -- for 6th var
         -- FlyTarget  = 0
         -- MoveTarget = 1
+        
+    --for 7th var
+        -- FirstNode = 1
+        -- otherNodes = 0
+
     if RouteType == "MinerIslands" then 
         gather_table =
             {
@@ -217,26 +228,26 @@
     elseif RouteType == "RedRoute" then 
         gather_table = 
             {
-                {-161.2715,-3.5233,-378.8041,0,1,1}, -- Start of the route
-                {-169.3415,-7.1092,-518.7053,0,0,1}, -- Around the tree (Rock + Bones?)
-                {-78.5548,-18.1347,-594.6666,1,0,1}, -- Log + Rock (Problematic)
-                {-54.6772,-45.7177,-521.7173,0,0,1}, -- Down the hill 
-                {-22.5868,-26.5050,-534.9953,0,1,1}, -- up the hill (rock + tree)
-                {59.4516,-41.6749,-520.2413,0,1,1}, -- Spaces out nodes on rock (hate this one)
-                {103.5788,-43.3652,-501.3805,0,0,0}, -- Over the gap
-                {-209.1468,-3.9325,-357.9749,1,0,1}, -- Bonus node
+                {-161.2715,-3.5233,-378.8041,0,1,1,0}, -- Start of the route
+                {-169.3415,-7.1092,-518.7053,0,0,1,0}, -- Around the tree (Rock + Bones?)
+                {-78.5548,-18.1347,-594.6666,1,0,1,0}, -- Log + Rock (Problematic)
+                {-54.6772,-45.7177,-521.7173,0,0,1,0}, -- Down the hill 
+                {-22.5868,-26.5050,-534.9953,0,1,1,0}, -- up the hill (rock + tree)
+                {59.4516,-41.6749,-520.2413,0,1,1,0}, -- Spaces out nodes on rock (hate this one)
+                {102.3,-47.3,-500.1,0,0,0,0}, -- Over the gap
+                {-209.1468,-3.9325,-357.9749,1,0,1,1}, -- Bonus node
             }
     elseif RouteType == "PinkRoute" then 
         gather_table = 
             {
-                {-248.6381,-1.5664,-468.8910,0,3,1},
-                {-338.3759,-0.4761,-415.3227,0,3,1},
-                {-366.2651,-1.8514,-350.1429,0,3,1},
-                {-431.2,27.5,-256.7,0,2,1}, --Lol This is smaller than others because my x y z locator only got this and i am lazy to fix it
-                {-473.4957,31.5405,-244.1215,0,2,1},
-                {-536.5187,33.2307,-253.3514,0,3,1},
-                {-571.2896,35.2772,-236.6808,0,3,1},
-                {-215.1211,-1.3262,-494.8219,0,3,1},
+                {-248.6381,-1.5664,-468.8910,0,3,1,0},
+                {-338.3759,-0.4761,-415.3227,0,3,1,0},
+                {-366.2651,-1.8514,-350.1429,0,3,1,0},
+                {-431.2,27.5,-256.7,0,2,1,0}, --tree node
+                {-473.4957,31.5405,-244.1215,0,2,1,0},
+                {-536.5187,33.2307,-253.3514,0,3,1,0},
+                {-571.2896,35.2772,-236.6808,0,3,1,0},
+                {-215.1211,-1.3262,-494.8219,0,3,1,1},
             }
     end
 
@@ -407,7 +418,7 @@
 
     function KillTarget()
         if IsInZone(939) then
-            if GetDistanceToTarget() == 0.0 and GetCharacterCondition(6, false) and GetCharacterCondition(45, false) and GetDiademAetherGaugeBarCount() >= 1 and GetDistanceToPoint(X, Y, Z) > 10 then 
+            if GetDistanceToTarget() == 0.0 and GetCharacterCondition(6, false) and GetCharacterCondition(45, false) and GetDiademAetherGaugeBarCount() >= 1 and TargetOption ~= 0 then 
                 if KillLoop >= 1 then
                     if (PathIsRunning() or PathfindInProgress()) then
                         yield("/wait 2")
@@ -450,7 +461,11 @@
                             PathStop()
                         end 
                         Dismount()
-                        if GetDistanceToTarget() > 15 or GetNodeText("_TextError",1) == "Target not in line of sight." or GetNodeText("_TextError",1) == "Target is not in range." then
+                        if GetNodeText("_TextError",1) == "Target not in line of sight." and IsAddonVisible("_TextError") then
+                            ClearTarget()
+                            yield("/wait 1")
+                        end
+                        if GetDistanceToTarget() > 15 then
                             ClearTarget()
                             yield("/wait 0.1")
                         end
@@ -673,18 +688,20 @@
         if GetCharacterCondition(4) or GetCharacterCondition(77) and IsInZone(886) == false then
             yield("/ac dismount")
             yield("/wait 0.3")
-        while GetCharacterCondition(77) and a < 2 and IsInZone(886) == false do
+        while GetCharacterCondition(77) and a < 4 and IsInZone(886) == false do
             yield("/wait 0.5")
             a=a+1
         end
-            if a == 2 then
+            if a == 4 then
                 yield("/wait 0.1")
                 yield("/gaction jump")
                 yield("/send SPACE")
                 ClearTarget() 
                 PathStop()
+                LogInfo("Dismount -> BailoutCommanced")
             end
         end
+        LogInfo("Dismount -> Completed")
     end
 
     function UseSkill(SkillName)
@@ -694,6 +711,7 @@
 
 ::SettingNodeValue:: 
     NodeSelection = GatheringSlot - 1
+    Counter = 0
     FoodTimeRemaining = RemainingFoodTimer * 60
     DGatheringLoop = false 
     KillLoop = 0
@@ -816,6 +834,11 @@
                 if gather_table[i][5] ~= 99 then -- 99 is the code imma use if I don't want it gathering anything, and make sure it's not the coords I want to use as a midpoint
                     GatheringTarget(i)
                 end 
+                Counter = Counter + 1
+                if gather_table[i][7] == 1 and AntiStutterOpen and Counter >= AntiStutter then
+                    LogInfo("AntiStutter -> Completed")
+                    yield("/runmacro DiademV2")
+                end
                 if GetInventoryFreeSlotCount() == 0 then 
                     LogInfo("It seems like your inventory has reached Max Capacity slot wise. For the safety of you (and to help you not just stand there for hours on end), we're going to stop the script here and leave the instance")
                     yield("/e It seems like your inventory has reached Max Capacity slot wise. For the safety of you (and to help you not just stand there for hours on end), we're going to stop the script here and leave the instance")
