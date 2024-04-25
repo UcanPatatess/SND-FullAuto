@@ -5,10 +5,11 @@
     *******************
 
     ***************************
-    *  Version -> 0.0.1.18.4  *
+    *  Version -> 0.0.1.19  *
     ***************************
    
     Version Notes:
+    0.0.1.19 ->    Anti stutter now configurable for gathering loops.
     0.0.1.18.4 ->  Added a option to not use aether cannon , New option anti stutter added Tweaked some of the killing logic.
     0.0.1.18.3 ->  Fixed the 4.node of PinkRoute Hopefully fixed the rare accurance of not getting in diadem again
     0.0.1.18.2 ->  Litle fix for jumping before nodes and fixed the automation
@@ -122,9 +123,9 @@
     -- These are all togglable with true | false 
     -- They will go off in the order they are currently typed out, so keep that in mind for GP Usage if that's something you want to consider
 
-    Repair_Amount = 90
-    Self_Repair = false --if its true script will try to self reapair
-    Npc_Repair = true --if its true script will try to go to mender npc and repair
+    Repair_Amount = 99
+    Self_Repair = true --if its true script will try to self reapair
+    Npc_Repair = false --if its true script will try to go to mender npc and repair
     --When do you want to repair your own gear? From 0-100 (it's in percentage, but enter a whole value
 
     PlayerWaitTime = true 
@@ -133,7 +134,7 @@
 
     AntiStutterOpen = false
     AntiStutter = 2
-    -- default is 2 this will execute the script again if you are having stutter issues 
+    -- default is 2 gathering loops this will execute the script again if you are having stutter issues 
     -- WARNING your macro name should be DiademV2
 
     debug = false
@@ -834,11 +835,14 @@
                 if gather_table[i][5] ~= 99 then -- 99 is the code imma use if I don't want it gathering anything, and make sure it's not the coords I want to use as a midpoint
                     GatheringTarget(i)
                 end 
-                Counter = Counter + 1
-                if gather_table[i][7] == 1 and AntiStutterOpen and Counter >= AntiStutter then
-                    LogInfo("AntiStutter -> Completed")
-                    yield("/runmacro DiademV2")
-                end
+                if gather_table[i][7] == 1 then
+                    Counter = Counter + 1
+                    if AntiStutterOpen and Counter >= AntiStutter then
+                        LogInfo("AntiStutter -> Completed")
+                        yield("/runmacro DiademV2")
+                    end
+                end 
+
                 if GetInventoryFreeSlotCount() == 0 then 
                     LogInfo("It seems like your inventory has reached Max Capacity slot wise. For the safety of you (and to help you not just stand there for hours on end), we're going to stop the script here and leave the instance")
                     yield("/e It seems like your inventory has reached Max Capacity slot wise. For the safety of you (and to help you not just stand there for hours on end), we're going to stop the script here and leave the instance")
