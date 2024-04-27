@@ -9,7 +9,7 @@
     **********************
     * Version  |  0.0.6  *
     **********************
-    -> 0.0.6  : Fixed the check it now actualy works(should work xd)
+    -> 0.0.6  : Fixed the check it now actualy works
     -> 0.0.5  : Added a Kupo Vouchers check to stop the turnin
     -> 0.0.4  : Added some desc for peeps and added a safety check
     -> 0.0.3  : Made it usable for every item in the Fourth Restoration
@@ -21,7 +21,7 @@
     * Description *
     ***************
 
-    This script will trade in your ropes to Potkin if your inventory is full or if you open the trade in screen
+    This script will trade in your collectibles to Potkin if your inventory is full or if you open the trade in screen
     if you are using artisan you need to put your list id in settings
 
     *********************
