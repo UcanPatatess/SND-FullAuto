@@ -10,7 +10,7 @@
     * Version  |  0.0.3  *
     **********************
 
-
+    -> 0.0.3  : Example Menu added
     -> 0.0.2  : Trying out the file system
     -> 0.0.1  : Trying out to make a settings menu
 
@@ -56,6 +56,20 @@ TargetOption = 1
 | A. Set Food Timeout (currently: ]] .. FoodTimeout .. [[) 
 | B. Set Target Option (currently: ]] .. TargetOption .. [[) 
 | C. Save and Exit                          
++-----------------------------------------------------+
+]])
+end
+--example menu
+function DisplayTargetOptionMenu()
+    yield([[ 
++-----------------------------------------------------+
+|                Target Option Menu                 |
++-----------------------------------------------------+
+| 0. don't use cannon
+| 1. any target
+| 2. only sprites
+| 3. don't include sprites
+| Current Setting(]] .. TargetOption .. [[) 
 +-----------------------------------------------------+
 ]])
 end
@@ -161,8 +175,9 @@ while true do
     DisplayMenu()
     ChatInput = WaitForChatInput()
 if ChatInput:lower() == "a" then
-    FoodTimeout = SetValue(0, 10,FoodTimeout)
+    FoodTimeout = SetValue(1, 10,FoodTimeout)
 elseif ChatInput:lower() == "b" then
+    DisplayTargetOptionMenu()
     TargetOption = SetValue(0,3,TargetOption)
 elseif ChatInput:lower() == "c" then
     yield("/e Exiting menu")
