@@ -7,7 +7,7 @@
     Author: UcanPatates  
 
     **********************
-    * Version  |  0.0.2  *
+    * Version  |  0.0.3  *
     **********************
 
 
@@ -51,7 +51,7 @@ TargetOption = 1
  function DisplayMenu()
     yield([[ 
 +-----------------------------------------------------+
-|                      Main Menu                      |
+|                         Main Menu                        |
 +-----------------------------------------------------+
 | A. Set Food Timeout (currently: ]] .. FoodTimeout .. [[) 
 | B. Set Target Option (currently: ]] .. TargetOption .. [[) 
@@ -126,6 +126,8 @@ function SetValue(Min, Max,OriginalValue)
         if AreYouSure() then
             yield("/e Set to " .. NewValue)
             return NewValue
+        else
+            return OriginalValue
         end
     else
         yield("/e Invalid input. Please enter a number between "..Min.." and "..Max..".")
