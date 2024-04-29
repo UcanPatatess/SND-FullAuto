@@ -7,9 +7,10 @@
     Author: UcanPatates  
 
     **********************
-    * Version  |  0.0.3  *
+    * Version  |  0.0.4  *
     **********************
 
+    -> 0.0.4  : Now creates a file if there is none
     -> 0.0.3  : Example Menu added
     -> 0.0.2  : Trying out the file system
     -> 0.0.1  : Trying out to make a settings menu
@@ -59,7 +60,7 @@ TargetOption = 1
 +-----------------------------------------------------+
 ]])
 end
---example menu
+
 function DisplayTargetOptionMenu()
     yield([[ 
 +-----------------------------------------------------+
@@ -83,7 +84,20 @@ function FileExists(name)
         return false 
     end
 end
-
+function FolderExists(path)
+    local ok, err, code = os.rename(path, path)
+    if not ok then
+        if code == 13 then
+            -- Permission denied, but it exists
+            LogInfo("[SUCCESS] Folder exists: " .. path)
+            return true
+        end
+        LogInfo("[ERROR] Error checking folder existence: " .. err)
+        return false
+    end
+    LogInfo("[SUCCESS] Folder exists: " .. path)
+    return true
+end
 function LoadSettings()   
     if FileExists(ConfigFolder..ConfigFile) then
         local configFile = io.open(ConfigFolder..ConfigFile, "r")
@@ -103,14 +117,13 @@ function LoadSettings()
 end
 
 function SaveSettings()
-    if not FileExists(ConfigFolder..ConfigFile) then
+    if not FolderExists(ConfigFolder) then
         local success, error_message = os.execute("mkdir \"" .. ConfigFolder .. "\"")
         if not success then
             LogInfo("[ERROR] Couldn't create folder: " .. error_message)
             return
         end
     end
-
     local configFile = io.open(ConfigFolder..ConfigFile, "w")
     if configFile then
         configFile:write("FoodTimeout=" .. FoodTimeout .. "\n")
