@@ -164,10 +164,6 @@ end
 function WaitForChatInput()
     local Chat = ""
     while Chat == "" or Chat:lower() == "n" do
-        if Chat~="" then
-            yield("/wait 2")
-            Chat = GetNodeText("ChatLog", 15, 1)
-        end
         yield("/wait 2")
         Chat = GetNodeText("ChatLog", 15, 1)
     end
