@@ -7,7 +7,7 @@
     Author: UcanPatates  
 
     **********************
-    * Version  |  0.0.6  *
+    * Version  |  0.0.5  *
     **********************
 
     -> 0.0.5  : Added a Kupo Vouchers check to stop the turnin
@@ -21,7 +21,7 @@
     * Description *
     ***************
 
-    This script will trade in your collectibles to Potkin if your inventory is full or if you open the trade in screen
+    This script will trade in your ropes to Potkin if your inventory is full or if you open the trade in screen
     if you are using artisan you need to put your list id in settings
 
     *********************
@@ -166,9 +166,10 @@ function WaitForChatInput()
     while Chat == "" or Chat:lower() == "n" do
         if Chat~="" then
             yield("/wait 2")
+            Chat = GetNodeText("ChatLog", 15, 1)
         end
-        Chat = GetNodeText("ChatLog", 15, 1)
         yield("/wait 2")
+        Chat = GetNodeText("ChatLog", 15, 1)
     end
     return Chat
 end
