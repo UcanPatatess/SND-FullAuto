@@ -253,9 +253,9 @@ while true and MenuClose == 0 do
     DisplayMenu()
     ChatInput = WaitForChatInput()
 if ChatInput:lower() == "a" then
-    SelectTurnIn = SetValue(1, 23,FoodTimeout)
+    SelectTurnIn = SetValue(1, 23,SelectTurnIn)
 elseif ChatInput:lower() == "b" then
-    TurnInWait = SetValue(0.3,5,TargetOption)
+    TurnInWait = SetValue(0.3,5,TurnInWait)
 elseif ChatInput:lower() == "c" then
     OptionCDisplayMenu()
     if AreYouSure() then
