@@ -7,9 +7,10 @@
     Author: UcanPatates  
 
     **********************
-    * Version  |  1.0.0  *
+    * Version  |  1.0.1  *
     **********************
 
+    -> 1.0.1  : Now You don't have to touch the snd settings.
     -> 1.0.0  : Added food usage safety checks and more.
     -> 0.0.2  : Beta version not finished
     -> 0.0.1  : Fishing script with auto repair.
@@ -30,9 +31,6 @@
     *********************
 
     -> SomethingNeedDoing (Expanded Edition) [Make sure to press the lua button when you import this] -> https://puni.sh/api/repository/croizat
-        -> New to SND Options? It's the " ? " RIGHT below "Macro Queue" from here you can go to the "Options" tab to find where you need to change these
-        -> Options → "/item" → Uncheckmark "Stop macro if the item to use is not found" 
-        -> Options → "/item" → Uncheckmark "Stop macro if you cannot use an item"
     -> AutoHook : https://love.puni.sh/ment.json
     -> vnavmesh : https://puni.sh/api/repository/veyn
 
@@ -42,10 +40,12 @@
 ]]
 
 SelfRepair = true
+StopTheScripIfThereIsNoDarkMatter = false
 RepairAmount = 99
 --When do you want to repair your own gear? From 0-100.
   -- Options
     -- SelfRepair : true | false (default is true)
+    -- StopTheScripIfThereIsNoDarkMatter : true | false (default is false)
     -- RepairAmount : Number between 1 to 99 
 UseFood = true 
 StopTheScripIfThereIsNoFood = false
@@ -64,7 +64,7 @@ HowManyMinutes = 20
     -- HowManyMinutes : this setting is to move every x minutes
     -- (defoult is 20 not recomended to make it more than 45)
 
-    
+
 --[[
 
   ************
@@ -73,8 +73,6 @@ HowManyMinutes = 20
   ************
 
 ]]
-
-
 
 
 --4th var
@@ -94,11 +92,23 @@ FishingSpot =
   {455.9,255.3,535.1, 99} --bailout
 }
 
--- Setting up the preset
-yield("/ahpreset " .. AutoHookPreset)
-
 
 -- Functions
+function setPropertyIfNotSet(propertyName, value)
+  if GetSNDProperty(propertyName) == false then
+      SetSNDProperty(propertyName, value)
+      LogInfo("[SetSNDPropertys] " .. propertyName .. " set to " .. tostring(value))
+  end
+end
+
+
+function unsetPropertyIfSet(propertyName, value)
+  if GetSNDProperty(propertyName) then
+      SetSNDProperty(propertyName, value)
+      LogInfo("[SetSNDPropertys] " .. propertyName .. " set to " .. tostring(value))
+  end
+end
+
 function NomNomDelish()
   local EatThreshold = HowManyMinutes * 60
   while (GetStatusTimeRemaining(48) <= EatThreshold or HasStatusId(48) == false) and UseFood do 
@@ -110,6 +120,7 @@ function NomNomDelish()
         if GetCharacterCondition(34) then
           DutyLeave()
         end
+        LogInfo("[FoodCheck] StopTheScripIfThereIsNoFood is true stopping the script")
         yield("/snd stop")
       end
       LogInfo("[FoodCheck] Set to False No Food Remaining")
@@ -187,8 +198,14 @@ function Repair()
     yield("/pcall Repair true 0")
     yield("/wait 0.1")
     if GetNodeText("_TextError",1) == "You do not have the dark matter required to repair that item." and IsAddonVisible("_TextError") then
-      LogInfo("[Repair] Set to False not enough dark matter")
       SelfRepair = false
+      LogInfo("[Repair] Set to False not enough dark matter")
+      if StopTheScripIfThereIsNoDarkMatter then
+        if GetCharacterCondition(34) then
+          DutyLeave()
+        end
+        yield("/snd stop")
+      end
     end
     if IsAddonVisible("SelectYesno") then
       yield("/pcall SelectYesno true 0")
@@ -332,6 +349,19 @@ function WeGoIn()
   LogInfo("[WeGoIn] Completed")
 end
 
+-- Setting up the some stuff
+yield("/ahpreset " .. AutoHookPreset)
+CurrentJob = GetClassJobId()
+
+-- Set properties if they are not already set
+setPropertyIfNotSet("UseItemStructsVersion", "true")
+setPropertyIfNotSet("UseSNDTargeting", "true")
+
+-- Unset properties if they are set
+unsetPropertyIfSet("StopMacroIfTargetNotFound", "false")
+unsetPropertyIfSet("StopMacroIfCantUseItem", "false")
+unsetPropertyIfSet("StopMacroIfItemNotFound", "false")
+
 -- Main loop
 while true do
   if GetInventoryFreeSlotCount() == 0 then 
@@ -342,7 +372,13 @@ while true do
     end
     yield("/snd stop")
   end
+
 if IsInZone(886) or IsInZone(939) then
+  if CurrentJob == 18 then
+  else
+    yield("/e Switch to Fisher and start the script again.")
+    yield("/snd stop")
+  end
   Repair()
   WeGoIn()
   MoveToDiadem(0)
