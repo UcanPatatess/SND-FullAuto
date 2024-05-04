@@ -62,7 +62,7 @@ HowManyMinutes = 20
   --Options
     -- AutoHookPreset : you put your preset name here get it from AutoHook.
     -- HowManyMinutes : this setting is to move every x minutes
-    -- (defoult is 20 not recomended to make it more than 45)
+    -- (default is 20 not recomended to make it more than 30)
 
 
 --[[
