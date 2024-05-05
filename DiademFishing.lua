@@ -7,9 +7,9 @@
     Author: UcanPatates  
 
     **********************
-    * Version  |  1.0.2  *
+    * Version  |  1.0.3  *
     **********************
-
+    -> 1.0.3  : Now checks if the nvavmesh is ready.
     -> 1.0.1  : Now You don't have to touch the snd settings.
     -> 1.0.0  : Added food usage safety checks and more.
     -> 0.0.2  : Beta version not finished
@@ -78,7 +78,7 @@ HowManyMinutes = 20
 --4th var
 -- 0 means First spot to randomly select
 -- 1 means Second spot to randomly select
--- 99 is bailout and clear the 500cast thingy
+-- 500 is bailout and clear the 500cast thingy
 FishingSpot =
 {
   {520.7,193.7,-518.1,0}, -- First spot
@@ -245,9 +245,21 @@ function Dismount()
   end
   LogInfo("[Dismount] Completed")
 end
+function Truncate1Dp(num)
+  return truncate and ("%.1f"):format(num) or num
+end
 
 function MoveToDiadem(RandomSelect)
   local X, Y, Z
+  local was_ready = NavIsReady()
+  if not NavIsReady() then
+    while not NavIsReady() do
+      LogInfo("[Debug]Building navmesh, currently at "..Truncate1Dp(NavBuildProgress()*100).."%")
+      yield("/wait 3")
+    end
+  else
+    LogInfo("[Debug]Navmesh ready!") 
+  end
   if IsInZone(939) then
     X, Y, Z = RandomSpot(RandomSelect)
     local distance = GetDistanceToPoint(X, Y, Z)
