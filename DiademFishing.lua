@@ -221,6 +221,7 @@ function Repair()
   end
 end
 function WalkTo(valuex, valuey, valuez)
+  MeshCheck()
   PathfindAndMoveTo(valuex, valuey, valuez, false)
   while PathIsRunning() or PathfindInProgress() do
       yield("/wait 0.1")
@@ -249,8 +250,7 @@ function Truncate1Dp(num)
   return truncate and ("%.1f"):format(num) or num
 end
 
-function MoveToDiadem(RandomSelect)
-  local X, Y, Z
+function MeshCheck()
   local was_ready = NavIsReady()
   if not NavIsReady() then
     while not NavIsReady() do
@@ -264,6 +264,11 @@ function MoveToDiadem(RandomSelect)
   else
     LogInfo("[Debug]Navmesh ready!") 
   end
+end
+
+function MoveToDiadem(RandomSelect)
+  MeshCheck()
+  local X, Y, Z
   if IsInZone(939) then
     X, Y, Z = RandomSpot(RandomSelect)
     local distance = GetDistanceToPoint(X, Y, Z)
