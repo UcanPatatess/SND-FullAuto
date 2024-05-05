@@ -255,7 +255,7 @@ function MoveToDiadem(RandomSelect)
   if not NavIsReady() then
     while not NavIsReady() do
       LogInfo("[Debug]Building navmesh, currently at "..Truncate1Dp(NavBuildProgress()*100).."%")
-      yield("/wait 3")
+      yield("/wait 1")
     end
   else
     LogInfo("[Debug]Navmesh ready!") 
