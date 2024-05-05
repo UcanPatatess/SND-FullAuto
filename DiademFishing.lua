@@ -256,6 +256,10 @@ function MoveToDiadem(RandomSelect)
     while not NavIsReady() do
       LogInfo("[Debug]Building navmesh, currently at "..Truncate1Dp(NavBuildProgress()*100).."%")
       yield("/wait 1")
+      local was_ready = NavIsReady()
+      if was_ready then
+        LogInfo("[Debug]Navmesh ready!")
+      end
     end
   else
     LogInfo("[Debug]Navmesh ready!") 
