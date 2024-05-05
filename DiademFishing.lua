@@ -58,11 +58,11 @@ FoodKind = "Jhinga Curry <HQ>"
         -- StopTheScripIfThereIsNoFood : true | false (default is false)
         -- FoodKind : "Jhinga Curry <HQ>" (make sure to have the name of the food IN the "")
 
-AutoHookPreset = "Your Preset Name Here"
+AutoHookPreset = "Sweatfish"
 HowManyMinutes = 20
 --Preset settings here
   --Options
-    -- AutoHookPreset : you put your preset name here get it from AutoHook.
+    -- AutoHookPreset : "your preset name" get it from AutoHook if you changed it.
     -- HowManyMinutes : this setting is to move every x minutes
     -- (default is 20 not recomended to make it more than 30)
 
