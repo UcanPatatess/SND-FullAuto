@@ -5,10 +5,11 @@
     *******************
 
     ***************************
-    *  Version -> 0.0.1.19.1  *
+    *  Version -> 0.0.1.19.2  *
     ***************************
    
     Version Notes:
+    0.0.1.19.2 ->  More Pandora settings added to count for user error if you have Auto-interact with Gathering Nodes and Auto-Mount after Gathering they are disabled now.
     0.0.1.19.1 ->  Now you don't need to configure plugin options i got you ;D
     0.0.1.19 ->    Anti stutter now configurable for gathering loops.
     0.0.1.18.4 ->  Added a option to not use aether cannon , New option anti stutter added Tweaked some of the killing logic.
@@ -325,7 +326,10 @@ setSNDPropertyIfNotSet("UseItemStructsVersion")
 setSNDPropertyIfNotSet("UseSNDTargeting")
 
 --for Pandora
+PandoraSetFeatureState("Auto-interact with Gathering Nodes",false)
+PandoraSetFeatureState("Auto-Mount after Gathering",false)
 PandoraSetFeatureState("Pandora Quick Gather",false)
+
 -- Unset properties if they are set
 unsetSNDPropertyIfSet("StopMacroIfTargetNotFound")
 unsetSNDPropertyIfSet("StopMacroIfCantUseItem")
