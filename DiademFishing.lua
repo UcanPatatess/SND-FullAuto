@@ -10,7 +10,7 @@
     * Version  |  1.0.4  *
     **********************
 
-    -> 1.0.4  : Now supports bait and dark matter buying, AutoHook preset is now set automaticly.
+    -> 1.0.4  : Now supports bait and dark matter buying, AutoHook preset is now set automatically.
     -> 1.0.3  : Now checks if the nvavmesh is ready.
     -> 1.0.1  : Now You don't have to touch the snd settings.
     -> 1.0.0  : Added food usage safety checks and more.
