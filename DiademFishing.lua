@@ -7,9 +7,10 @@
     Author: UcanPatates  
 
     **********************
-    * Version  |  1.0.4  *
+    * Version  |  1.0.5  *
     **********************
 
+    -> 1.0.5  : Buying fix for user error.
     -> 1.0.4  : Now supports bait and Dark Matter buying, automatically selects the bait, and sets the AutoHook preset automatically.
     -> 1.0.3  : Now checks if the nvavmesh is ready.
     -> 1.0.1  : Now You don't have to touch the snd settings.
@@ -154,6 +155,7 @@ function LetsBuySomeStuff()
         local distance = GetDistanceToPoint(-641.2, 285.3, -138.7)
         if BuyBait and distance <= 4 and DiademHoverwormCount < 99 then
             while true do
+                local newDiademHoverwormCount = GetItemCount(30281)
                 if GetTargetName() ~= "Mender" then
                     yield("/target Mender")
                     yield("/wait 0.1")
@@ -162,10 +164,8 @@ function LetsBuySomeStuff()
                 elseif IsAddonVisible("SelectYesno") then
                     yield("/pcall SelectYesno true 0")
                     yield("/wait 0.1")
-                    local newDiademHoverwormCount = GetItemCount(30281)
-                    if DiademHoverwormCount <= newDiademHoverwormCount then
+                elseif DiademHoverwormCount < newDiademHoverwormCount then
                     break
-                    end
                 elseif IsAddonVisible("Shop") then
                     yield("/pcall Shop true 0 6 99")
                 else
@@ -182,6 +182,7 @@ function LetsBuySomeStuff()
 
         if BuyDarkMatter and distance <= 4 and Grade8DarkMatterCount < 99 then
             while true do
+                local newGrade8DarkMatterCount = GetItemCount(33916)
                 if GetTargetName() ~= "Mender" then
                     yield("/target Mender")
                     yield("/wait 0.1")
@@ -189,10 +190,8 @@ function LetsBuySomeStuff()
                     yield("/pcall SelectIconString true 0")
                 elseif IsAddonVisible("SelectYesno") then
                     yield("/pcall SelectYesno true 0")
-                    local newGrade8DarkMatterCount = GetItemCount(33916)
-                    if Grade8DarkMatterCount <= newGrade8DarkMatterCount then
+                elseif Grade8DarkMatterCount < newGrade8DarkMatterCount then
                     break
-                    end
                 elseif IsAddonVisible("Shop") then
                     yield("/pcall Shop true 0 14 99")
                 else
