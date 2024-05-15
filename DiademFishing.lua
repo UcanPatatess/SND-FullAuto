@@ -7,9 +7,10 @@
     Author: UcanPatates  
 
     **********************
-    * Version  |  1.0.6  *
+    * Version  |  1.0.7  *
     **********************
 
+    -> 1.0.7  : 500 Cast and Super amiss check fixes.
     -> 1.0.6  : Added NPC repair option and the ability to set a minimum number of baits to buy and Auto Cordial usage.
     -> 1.0.5  : Buying fix for user error.
     -> 1.0.4  : Now supports bait and Dark Matter buying, automatically selects the bait, and sets the AutoHook preset automatically.
@@ -96,7 +97,7 @@ FishingSpot =
   {536.9,192.2,-503.2, 1},
   {570.3,189.4,-502.7, 1},
 
-  {455.9,255.3,535.1, 500} --bailout
+  {422.9,-191.2,-300.2, 500} --bailout
 }
 
 -- Functions
@@ -465,9 +466,14 @@ function MoveToDiadem(RandomSelect)
 end
 
 function Bailout500Cast()
+    while GetCharacterCondition(6) do
+        yield("/ac Quit")
+        yield("/wait 1")
+    end
     MoveToDiadem(500)
     PlayerTest()
-    yield("/ahon")
+    yield("/wait 2")
+    yield("/ac Cast")
     yield("/wait 3")
     while GetCharacterCondition(6) do
         yield("/ac Quit")
@@ -489,13 +495,15 @@ function Dofishing()
         yield("/ahon")
         fishing_start_time = os.time()
         yield("/ac Cast")
+        yield("/wait 0.3")
         while fishing_start_time + MoveEveryMin > os.time() and IsInZone(939) and GetItemCount(30281) > 0 do
-            if GetNodeText("_TextError", 1) ==
-                "The fish here have grown wise to your presence. You might have better luck in a new location..." and
-                IsAddonVisible("_TextError") then
-                Bailout500Cast()
+            if (GetNodeText("_ScreenText", 11, 8) == "The fish here have grown wise to your presence. You might have better luck in a new location..." or
+            GetNodeText("_ScreenText", 11, 8) == "The fish sense something amiss. Perhaps it is time to try another location.") and
+            IsNodeVisible("_ScreenText", 1, 40001) then
+            Bailout500Cast()
+            break
             end
-            yield("/wait 5")
+            yield("/wait 2")
         end
         while GetCharacterCondition(6) do
             yield("/ac Quit")
