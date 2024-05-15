@@ -7,9 +7,10 @@
     Author: UcanPatates  
 
     **********************
-    * Version  |  1.0.5  *
+    * Version  |  1.0.6  *
     **********************
 
+    -> 1.0.6  : Added NPC repair option and the ability to set a minimum number of baits to buy and Auto Cordial usage.
     -> 1.0.5  : Buying fix for user error.
     -> 1.0.4  : Now supports bait and Dark Matter buying, automatically selects the bait, and sets the AutoHook preset automatically.
     -> 1.0.3  : Now checks if the nvavmesh is ready.
@@ -24,6 +25,7 @@
     ***************
 
     This script will fish for you at diadem (Sweetfish).
+    
     here is a wiki:
     https://github.com/PunishXIV/AutoHook/wiki/The-Diadem
 
@@ -45,10 +47,17 @@
 
 --Do you want to buy Diadem Hoverworm and DarkMatter if you don't have it ?
 BuyBait = true           -- true | false (default is true)
+MinimumBait = 200        -- Minimum number of Baits you want. Will buy 99 at a time.
+
 BuyDarkMatter = true     -- true | false (default is true)
+MinimumDarkMatter = 99   -- Minimum number of DarkMatter you want. Will buy 99 at a time.
+
+--Auto use Cordial this is a pandora setting.
+UseCordial = true        -- true | false (default is true)
 
 -- When do you want to repair your own gear? From 0-100.
 SelfRepair = true        -- true | false (default is true)
+NpcRepair = false        -- true | false (default is false)
 StopTheScripIfThereIsNoDarkMatter = false -- true | false (default is false)
 RepairAmount = 99        -- Number between 1 to 99 
 
@@ -131,8 +140,10 @@ function LetsBuySomeStuff()
         local DiademHoverwormCount = GetItemCount(30281)
         local Grade8DarkMatterCount = GetItemCount(33916)
         local distance = GetDistanceToPoint(-641.2, 285.3, -138.7)
+        local BuyBaitMinimum = MinimumBait / 4
+        local BuyDarkMatterMinimum = MinimumDarkMatter / 4
 
-        if DiademHoverwormCount < 99 and BuyBait then
+        if DiademHoverwormCount < BuyBaitMinimum and BuyBait then
             if distance >= 4 then
                 if distance <= 50 and GetCharacterCondition(77, false) then
                     WalkTo(-641.2, 285.3, -138.7)
@@ -141,7 +152,7 @@ function LetsBuySomeStuff()
                 end
             end
         end
-        if Grade8DarkMatterCount < 99 and BuyDarkMatter then
+        if Grade8DarkMatterCount < BuyDarkMatterMinimum and BuyDarkMatterMinimum then
             if distance >= 4 then
                 if distance <= 50 and GetCharacterCondition(77, false) then
                     WalkTo(-641.2, 285.3, -138.7)
@@ -153,7 +164,7 @@ function LetsBuySomeStuff()
 
 
         local distance = GetDistanceToPoint(-641.2, 285.3, -138.7)
-        if BuyBait and distance <= 4 and DiademHoverwormCount < 99 then
+        if BuyBait and distance <= 4 and DiademHoverwormCount < BuyBaitMinimum then
             while true do
                 local newDiademHoverwormCount = GetItemCount(30281)
                 if GetTargetName() ~= "Mender" then
@@ -164,7 +175,7 @@ function LetsBuySomeStuff()
                 elseif IsAddonVisible("SelectYesno") then
                     yield("/pcall SelectYesno true 0")
                     yield("/wait 0.1")
-                elseif DiademHoverwormCount < newDiademHoverwormCount then
+                elseif newDiademHoverwormCount  > MinimumBait then
                     break
                 elseif IsAddonVisible("Shop") then
                     yield("/pcall Shop true 0 6 99")
@@ -174,13 +185,13 @@ function LetsBuySomeStuff()
                 yield("/wait 0.1")
             end
             LogInfo("[Debug]Bought Diadem Hoverworm.")
-        elseif not BuyBait and DiademHoverwormCount < 99 then
+        elseif not BuyBait and DiademHoverwormCount < BuyBaitMinimum then
             LogInfo("[Debug]BuyBait is False and Bait is running out, continue.")
         end
 
         yield("/wait 1") -- :D go ahed delete it don't cry to me if its broke tho.
 
-        if BuyDarkMatter and distance <= 4 and Grade8DarkMatterCount < 99 then
+        if BuyDarkMatter and distance <= 4 and Grade8DarkMatterCount < BuyDarkMatterMinimum then
             while true do
                 local newGrade8DarkMatterCount = GetItemCount(33916)
                 if GetTargetName() ~= "Mender" then
@@ -190,7 +201,7 @@ function LetsBuySomeStuff()
                     yield("/pcall SelectIconString true 0")
                 elseif IsAddonVisible("SelectYesno") then
                     yield("/pcall SelectYesno true 0")
-                elseif Grade8DarkMatterCount < newGrade8DarkMatterCount then
+                elseif newGrade8DarkMatterCount > MinimumDarkMatter then
                     break
                 elseif IsAddonVisible("Shop") then
                     yield("/pcall Shop true 0 14 99")
@@ -200,7 +211,7 @@ function LetsBuySomeStuff()
                 yield("/wait 0.1")
             end
             LogInfo("[Debug]Bought Grade8 DarkMatter.")
-        elseif not BuyDarkMatter and Grade8DarkMatterCount < 99 then
+        elseif not BuyDarkMatter and Grade8DarkMatterCount < BuyDarkMatterMinimum then
             LogInfo("[Debug]BuyDarkMatter is False and DarkMatter is running out, continue.")
         end
 
@@ -271,6 +282,32 @@ function MountAndFly()
     LogInfo("[MountAndFly] Completed")
 end
 
+function NpcRepairMenu(Name)
+    while true do
+        if not NeedsRepair(RepairAmount) then
+            break
+        elseif GetTargetName() ~= Name then
+            yield("/target "..Name)
+            yield("/wait 0.1")
+        elseif IsAddonVisible("SelectIconString") then
+            yield("/pcall SelectIconString true 1")
+        elseif IsAddonVisible("SelectYesno") then
+            yield("/pcall SelectYesno true 0")
+            yield("/wait 0.1")
+        elseif IsAddonVisible("Repair") then
+            yield("/pcall Repair true 0")
+        else
+            yield("/interact")
+        end
+        yield("/wait 0.1")
+    end
+    while IsAddonVisible("Repair") do
+        yield("/pcall Repair true -1")
+        yield("/wait 0.1")
+    end
+    LogInfo("[RepairNpc]Got Repaired by "..Name .." .")
+end
+
 function Repair()
     if NeedsRepair(RepairAmount) and SelfRepair then
         while not IsAddonVisible("Repair") do
@@ -300,9 +337,30 @@ function Repair()
         if IsAddonVisible("Repair") then
             yield("/pcall Repair true -1")
         end
-        PlayerTest()
-        LogInfo("[Repair] Completed")
     end
+
+    if NeedsRepair(RepairAmount) and NpcRepair then
+        if IsInZone(886) then
+            WalkTo(47, -16, 151)
+            if GetDistanceToPoint(47, -16, 151) <= 4 then
+                NpcRepairMenu("Eilonwy")
+            end
+        end
+        if IsInZone(939) then
+            if GetDistanceToPoint(-641.2, 285.3, -138.7) >= 4 then
+                if GetDistanceToPoint(-641.2, 285.3, -138.7) <= 50 and GetCharacterCondition(77, false) then
+                    WalkTo(-641.2, 285.3, -138.7)
+                else
+                    FlyTo(-641.2, 285.3, -138.7)
+                end
+            end
+            if GetDistanceToPoint(-641.2, 285.3, -138.7) <= 4 then
+                NpcRepairMenu("Mender")
+            end
+        end
+    end
+    PlayerTest()
+    LogInfo("[Repair] Completed")
 end
 
 function WalkTo(valuex, valuey, valuez)
@@ -420,6 +478,7 @@ end
 
 function Dofishing()
     local MoveEveryMin = HowManyMinutes * 60
+    NomNomDelish()
     if IsInZone(939) then
         SetAutoHookPreset()
         if ForceAutoHookPreset then
@@ -430,7 +489,7 @@ function Dofishing()
         yield("/ahon")
         fishing_start_time = os.time()
         yield("/ac Cast")
-        while fishing_start_time + MoveEveryMin > os.time() and IsInZone(939) do
+        while fishing_start_time + MoveEveryMin > os.time() and IsInZone(939) and GetItemCount(30281) > 0 do
             if GetNodeText("_TextError", 1) ==
                 "The fish here have grown wise to your presence. You might have better luck in a new location..." and
                 IsAddonVisible("_TextError") then
@@ -487,6 +546,14 @@ end
 -- Setting up the some stuff
 CurrentJob = GetClassJobId()
 DiademHoverwormCount = GetItemCount(30281)
+PandoraSetFeatureState("Auto-Cordial",UseCordial)
+if not SelfRepair then
+    BuyDarkMatter = false
+end
+if NpcRepair and SelfRepair then
+    NpcRepair = false
+    yield("You can only select one repair setting. Setting Npc Repair false")
+end
 
 -- Set properties if they are not already set
 setPropertyIfNotSet("UseItemStructsVersion")
@@ -524,12 +591,10 @@ while true do
         WeGoIn()
         LetsBuySomeStuff()
         MoveToDiadem(0)
-        Repair()
-        NomNomDelish()
         Dofishing()
-        MoveToDiadem(1)
         Repair()
-        NomNomDelish()
+        LetsBuySomeStuff()
+        MoveToDiadem(1)
         Dofishing()
     else
         yield("/e Maybe go into firmament hee ?")
