@@ -7,9 +7,10 @@
     Author: UcanPatates  
 
     **********************
-    * Version  |  1.0.7  *
+    * Version  |  1.0.8  *
     **********************
 
+    -> 1.0.8  : Some tweaks to the pathing to fix a jumping issue.
     -> 1.0.7  : 500 Cast and Super amiss check fixes.
     -> 1.0.6  : Added NPC repair option and the ability to set a minimum number of baits to buy and Auto Cordial usage.
     -> 1.0.5  : Buying fix for user error.
@@ -432,25 +433,27 @@ function MoveToDiadem(RandomSelect)
             if not (GetCharacterCondition(4) and GetCharacterCondition(77)) then
                 MountAndFly()
             end
-            if not (PathIsRunning() or IsMoving()) then
-                PathfindAndMoveTo(X, Y, Z, true) -- Fly to spot
-                while PathfindInProgress() or PathIsRunning() and IsInZone(939) do
-                    yield("/wait 0.1")
-                    if not (GetCharacterCondition(4) and GetCharacterCondition(77)) then
-                        MountAndFly()
-                    end
+            PathfindAndMoveTo(X, Y, Z, true) -- Fly to spot
+            while GetDistanceToPoint(X, Y, Z) > 1 and IsInZone(939) do
+                yield("/wait 0.5")
+                if not (PathIsRunning() or IsMoving()) then
+                    PathfindAndMoveTo(X, Y, Z, true) -- Fly to spot
                 end
-                Dismount()
+                if not (GetCharacterCondition(4) and GetCharacterCondition(77)) then
+                    MountAndFly()
+                end
             end
+            Dismount()
         else
-            if not (PathIsRunning() or IsMoving()) then
-                PathfindAndMoveTo(X, Y, Z, false) -- Walk to spot
-                while PathfindInProgress() or PathIsRunning() and IsInZone(939) do
-                    yield("/wait 0.1")
+            while GetDistanceToPoint(X, Y, Z) > 1 and IsInZone(939) do
+                yield("/wait 0.5")
+                if not (PathIsRunning() or IsMoving()) then
+                    PathfindAndMoveTo(X, Y, Z, false) -- Walk to spot
                 end
-                Dismount()
             end
+            Dismount()
         end
+        yield("/wait 0.3")
         if RandomSelect == 0 then
             local oceanX, oceanY, oceanZ = X - 1.2, Y, Z - 1.2
             WalkTo(oceanX, oceanY, oceanZ)
@@ -483,36 +486,44 @@ function Bailout500Cast()
 end
 
 function Dofishing()
-    local MoveEveryMin = HowManyMinutes * 60
-    NomNomDelish()
-    if IsInZone(939) then
-        SetAutoHookPreset()
-        if ForceAutoHookPreset then
-            yield("/wait 0.3")
-        yield("/bait Diadem Hoverworm")
-        end
-        yield("/wait 0.3")
-        yield("/ahon")
-        fishing_start_time = os.time()
-        yield("/ac Cast")
-        yield("/wait 0.3")
-        while fishing_start_time + MoveEveryMin > os.time() and IsInZone(939) and GetItemCount(30281) > 0 do
-            if (GetNodeText("_ScreenText", 11, 8) == "The fish here have grown wise to your presence. You might have better luck in a new location..." or
-            GetNodeText("_ScreenText", 11, 8) == "The fish sense something amiss. Perhaps it is time to try another location.") and
-            IsNodeVisible("_ScreenText", 1, 40001) then
-            Bailout500Cast()
-            break
+    if not GetCharacterCondition(4) then
+        local MoveEveryMin = HowManyMinutes * 60
+        NomNomDelish()
+        if IsInZone(939) then
+            SetAutoHookPreset()
+            if ForceAutoHookPreset then
+                yield("/wait 0.3")
+                yield("/bait Diadem Hoverworm")
             end
-            yield("/wait 2")
+            yield("/wait 0.3")
+            yield("/ahon")
+            fishing_start_time = os.time()
+            yield("/ac Cast")
+            yield("/wait 0.3")
+            while fishing_start_time + MoveEveryMin > os.time() and IsInZone(939) and GetItemCount(30281) > 0 do
+                if (GetNodeText("_ScreenText", 11, 8) ==
+                    "The fish here have grown wise to your presence. You might have better luck in a new location..." or
+                    GetNodeText("_ScreenText", 11, 8) ==
+                    "The fish sense something amiss. Perhaps it is time to try another location.") and
+                    IsNodeVisible("_ScreenText", 1, 40001) then
+                    Bailout500Cast()
+                    break
+                end
+                if not GetCharacterCondition(6) then
+                    yield("/ac Cast")
+                end
+                yield("/wait 2")
+            end
+            while GetCharacterCondition(6) do
+                yield("/ac Quit")
+                yield("/wait 1")
+            end
+            PlayerTest()
+            LogInfo("[Fishing] Completed")
         end
-        while GetCharacterCondition(6) do
-            yield("/ac Quit")
-            yield("/wait 1")
-        end
-        PlayerTest()
-        LogInfo("[Fishing] Completed")
     end
 end
+
 
 function WeGoIn()
     while IsInZone(886) do
