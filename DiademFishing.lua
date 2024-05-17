@@ -7,10 +7,11 @@
     Author: UcanPatates  
 
     **********************
-    * Version  |  1.0.8  *
+    * Version  |  1.0.9  *
     **********************
 
-    -> 1.0.8  : Some tweaks to the pathing to fix a jumping issue.
+    -> 1.0.9  : Now purchases the exact amount of bait and dark matter.
+    -> 1.0.8  : Some tweaks to the pathing to fix a jumping when not supposed to issue.
     -> 1.0.7  : 500 Cast and Super amiss check fixes.
     -> 1.0.6  : Added NPC repair option and the ability to set a minimum number of baits to buy and Auto Cordial usage.
     -> 1.0.5  : Buying fix for user error.
@@ -49,10 +50,10 @@
 
 --Do you want to buy Diadem Hoverworm and DarkMatter if you don't have it ?
 BuyBait = true           -- true | false (default is true)
-MinimumBait = 200        -- Minimum number of Baits you want. Will buy 99 at a time.
+MinimumBait = 200        -- Minimum number of Baits you want.
 
 BuyDarkMatter = true     -- true | false (default is true)
-MinimumDarkMatter = 99   -- Minimum number of DarkMatter you want. Will buy 99 at a time.
+MinimumDarkMatter = 99   -- Minimum number of DarkMatter you want.
 
 --Auto use Cordial this is a pandora setting.
 UseCordial = true        -- true | false (default is true)
@@ -116,6 +117,51 @@ function unsetPropertyIfSet(propertyName)
     end
 end
 
+function BuyPcall(ItemID, NpcName, ShopAddonName, SelectIconString, WhichSlotToBuy, TotalAmount)
+    local PurchaseLimit = 99
+    local FullBatches = TotalAmount / PurchaseLimit
+    local RemainingItems = TotalAmount % PurchaseLimit
+    local ItemCount = GetItemCount(ItemID)
+
+
+    local function PerformPurchase(Slot, Amount)
+        local ExpectedItemCount = ItemCount + Amount
+        while true do
+            yield("/wait 0.1")
+            ItemCount = GetItemCount(ItemID)
+            if GetTargetName() ~= NpcName then
+                yield("/target " .. NpcName)
+            elseif IsAddonVisible("SelectIconString") then
+                yield("/pcall SelectIconString true "..SelectIconString)
+            elseif IsAddonVisible("SelectYesno") then
+                yield("/pcall SelectYesno true 0")
+                yield("/wait 0.1")
+            elseif ItemCount  >= ExpectedItemCount then
+                break --Exit the loop
+            elseif IsAddonVisible(ShopAddonName) then
+                yield("/pcall " .. ShopAddonName .. " true 0 " .. Slot .. " " .. Amount)
+                yield("/wait 0.1")
+            else
+                yield("/interact")
+            end
+        end
+    end
+
+    for i = 1, FullBatches do
+        PerformPurchase(WhichSlotToBuy, PurchaseLimit)
+        yield("/wait 0.1")
+    end
+
+    if RemainingItems > 0 then
+        PerformPurchase(WhichSlotToBuy, RemainingItems)
+    end
+
+    while IsAddonVisible(ShopAddonName) do
+        yield("/pcall " .. ShopAddonName .. " true -1")
+        yield("/wait 0.1")
+    end
+end
+
 function NomNomDelish()
     local EatThreshold = HowManyMinutes * 60
     while (GetStatusTimeRemaining(48) <= EatThreshold or HasStatusId(48) == false) and UseFood do
@@ -167,25 +213,8 @@ function LetsBuySomeStuff()
 
         local distance = GetDistanceToPoint(-641.2, 285.3, -138.7)
         if BuyBait and distance <= 4 and DiademHoverwormCount < BuyBaitMinimum then
-            while true do
-                local newDiademHoverwormCount = GetItemCount(30281)
-                if GetTargetName() ~= "Mender" then
-                    yield("/target Mender")
-                    yield("/wait 0.1")
-                elseif IsAddonVisible("SelectIconString") then
-                    yield("/pcall SelectIconString true 0")
-                elseif IsAddonVisible("SelectYesno") then
-                    yield("/pcall SelectYesno true 0")
-                    yield("/wait 0.1")
-                elseif newDiademHoverwormCount  > MinimumBait then
-                    break
-                elseif IsAddonVisible("Shop") then
-                    yield("/pcall Shop true 0 6 99")
-                else
-                    yield("/interact")
-                end
-                yield("/wait 0.1")
-            end
+            local BuyAmount = MinimumBait - DiademHoverwormCount 
+            BuyPcall(30281, "Mender", "Shop", 0, 6, BuyAmount)
             LogInfo("[Debug]Bought Diadem Hoverworm.")
         elseif not BuyBait and DiademHoverwormCount < BuyBaitMinimum then
             LogInfo("[Debug]BuyBait is False and Bait is running out, continue.")
@@ -194,24 +223,8 @@ function LetsBuySomeStuff()
         yield("/wait 1") -- :D go ahed delete it don't cry to me if its broke tho.
 
         if BuyDarkMatter and distance <= 4 and Grade8DarkMatterCount < BuyDarkMatterMinimum then
-            while true do
-                local newGrade8DarkMatterCount = GetItemCount(33916)
-                if GetTargetName() ~= "Mender" then
-                    yield("/target Mender")
-                    yield("/wait 0.1")
-                elseif IsAddonVisible("SelectIconString") then
-                    yield("/pcall SelectIconString true 0")
-                elseif IsAddonVisible("SelectYesno") then
-                    yield("/pcall SelectYesno true 0")
-                elseif newGrade8DarkMatterCount > MinimumDarkMatter then
-                    break
-                elseif IsAddonVisible("Shop") then
-                    yield("/pcall Shop true 0 14 99")
-                else
-                    yield("/interact")
-                end
-                yield("/wait 0.1")
-            end
+            local BuyAmount = MinimumDarkMatter - Grade8DarkMatterCount 
+            BuyPcall(33916, "Mender", "Shop", 0, 14, BuyAmount)
             LogInfo("[Debug]Bought Grade8 DarkMatter.")
         elseif not BuyDarkMatter and Grade8DarkMatterCount < BuyDarkMatterMinimum then
             LogInfo("[Debug]BuyDarkMatter is False and DarkMatter is running out, continue.")
