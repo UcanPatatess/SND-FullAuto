@@ -7,9 +7,10 @@
     Author: UcanPatates  
 
     **********************
-    * Version  |  0.0.3  *
+    * Version  |  0.0.4  *
     **********************
 
+    -> 0.0.4  : Added FateProgressThreshold now you can configure the fate progress.
     -> 0.0.3  : Rework to the Distance calculation and more.
     -> 0.0.1  : When run it will tel you the nearest fate, and closes teleport aetherite.
 
@@ -27,7 +28,22 @@
 
     -> SomethingNeedDoing (Expanded Edition) [Make sure to press the lua button when you import this] -> https://puni.sh/api/repository/croizat
     
+
+    **************
+    *  SETTINGS  *
+    **************
 ]]
+
+
+FateProgressThreshold = 90 -- 1 to 99 FateProgress
+
+
+--[[
+    ************
+    *  Script  *
+    *   Start  *
+    ************
+  ]]
 
 
 Aetherites = {
@@ -60,7 +76,9 @@ FateNames = {
     [1624] = "Demonstrably Demonic",
     [1614] = "Scavengers Of Man's Sorrow",
     [1606] = "Brought to Heal",
-    [1607] = "The Monster Mash"
+    [1607] = "The Monster Mash",
+    [1598] = "None Of Them Knew They Were Robots",
+    [1618] = "The Wild Bunch"
 }
 
 function DistanceBetween(x1, y1, z1, x2, y2, z2)
@@ -76,8 +94,9 @@ local ShouldRunToFate = false
 
 for i = 0, ActiveFates.Count - 1 do
     local Duration = GetFateDuration(ActiveFates[i])
-    
-    if Duration > 0 then
+    local FateProgress = GetFateProgress(ActiveFates[i])
+
+    if Duration > 0 and FateProgress < FateProgressThreshold then
         local FateX, FateY, FateZ = GetFateLocationX(ActiveFates[i]), GetFateLocationY(ActiveFates[i]), GetFateLocationZ(ActiveFates[i])
         
         local DirectDistanceToFate = GetDistanceToPoint(FateX, FateY, FateZ)
@@ -114,18 +133,22 @@ for i = 0, ActiveFates.Count - 1 do
         end
     end
 end
-
-if NearestFateId == nil then
-    yield("No active fates found.")
-else
-    local NearestFateName = FateNames[NearestFateId] or "Unknown Fate"
-    yield("Nearest Fate Name: " .. NearestFateName)
-    yield("Nearest Fate ID: " .. NearestFateId)
-    yield("Nearest Fate Distance: " .. MinTotalDistance)
-    if ShouldRunToFate then
-        yield("Run directly to the fate.")
+if IsInZone(920) then
+    if NearestFateId == nil then
+        yield("No active fates found.")
     else
-        yield("Nearest Aether Name: " .. NearestAetheriteName)
-        yield("Nearest Aether To Fate Distance: " .. MinDistanceToAetherite)
+        local NearestFateName = FateNames[NearestFateId] or "Unknown Fate"
+        yield("Nearest Fate Name: " .. NearestFateName)
+        yield("Nearest Fate ID: " .. NearestFateId)
+        if ShouldRunToFate then
+            yield("Nearest Fate Distance: " .. MinTotalDistance)
+            yield("Run directly to the fate.")
+
+        else
+            yield("Teleport to : " .. NearestAetheriteName)
+            yield(""..NearestAetheriteName.." To Fate Distance: " .. MinDistanceToAetherite)
+        end
     end
+else
+    yield("Not in Bozja")
 end
