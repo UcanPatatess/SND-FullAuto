@@ -7,9 +7,10 @@
     Author: UcanPatates  
 
     **********************
-    * Version  |  0.0.2  *
+    * Version  |  0.0.3  *
     **********************
 
+    -> 0.0.3  : Rework to the Distance calculation and more.
     -> 0.0.1  : When run it will tel you the nearest fate, and closes teleport aetherite.
 
 
@@ -58,7 +59,8 @@ FateNames = {
     [1597] = "Sneak & Spell",
     [1624] = "Demonstrably Demonic",
     [1614] = "Scavengers Of Man's Sorrow",
-    [1606] = "Brought to Heal"
+    [1606] = "Brought to Heal",
+    [1607] = "The Monster Mash"
 }
 
 function DistanceBetween(x1, y1, z1, x2, y2, z2)
@@ -70,6 +72,7 @@ local ActiveFates = GetActiveFates()
 
 local NearestFateId, MinTotalDistance = nil, math.huge
 local NearestAetheriteName, MinDistanceToAetherite = nil, math.huge
+local ShouldRunToFate = false
 
 for i = 0, ActiveFates.Count - 1 do
     local Duration = GetFateDuration(ActiveFates[i])
@@ -106,6 +109,8 @@ for i = 0, ActiveFates.Count - 1 do
             MinTotalDistance = EffectiveDistanceToFate
             NearestFateId = ActiveFates[i]
             NearestAetheriteName = NearestAetheriteToFate
+            MinDistanceToAetherite = DistanceToFateAetherite
+            ShouldRunToFate = DirectDistanceToFate < TotalDistanceViaAetherite
         end
     end
 end
@@ -117,5 +122,10 @@ else
     yield("Nearest Fate Name: " .. NearestFateName)
     yield("Nearest Fate ID: " .. NearestFateId)
     yield("Nearest Fate Distance: " .. MinTotalDistance)
-    yield("Nearest Aether Name: " .. NearestAetheriteName)
+    if ShouldRunToFate then
+        yield("Run directly to the fate.")
+    else
+        yield("Nearest Aether Name: " .. NearestAetheriteName)
+        yield("Nearest Aether To Fate Distance: " .. MinDistanceToAetherite)
+    end
 end
