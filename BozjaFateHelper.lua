@@ -7,7 +7,7 @@
     Author: UcanPatates  
 
     **********************
-    * Version  |  0.0.1  *
+    * Version  |  0.0.2  *
     **********************
 
     -> 0.0.1  : When run it will tel you the nearest fate, and closes teleport aetherite.
@@ -42,62 +42,70 @@ FateNames = {
     [1604] = "All Pets Are Off",
     [1599] = "The Beast Must Die",
     [1600] = "Unrest For The Wicked",
-    [1622] = "Desperetly Seeking Something",
+    [1622] = "Desperately Seeking Something",
     [1611] = "The Element Of Supplies",
     [1615] = "Help Wanted",
-    [1619] = "My Familiy And Other Animals",
+    [1619] = "My Family And Other Animals",
     [1621] = "Murder Death Kill",
     [1610] = "Parts And Recreation",
     [1605] = "Conflicting With The First Law",
-    [1628] = "The War Againts The Machines",
+    [1628] = "The War Against The Machines",
     [1616] = "Pyromancer Supreme",
     [1602] = "Can Carnivorous Plants Bloom Even on a Battlefield?",
     [1603] = "Seeq And Destroy",
     [1617] = "Waste The Rainbow",
     [1612] = "Heavy Boots Of Lead",
     [1597] = "Sneak & Spell",
-    [1624] = "Demonstrably Demonic"
+    [1624] = "Demonstrably Demonic",
+    [1614] = "Scavengers Of Man's Sorrow",
+    [1606] = "Brought to Heal"
 }
 
 function DistanceBetween(x1, y1, z1, x2, y2, z2)
     return math.sqrt((x2 - x1)^2 + (y2 - y1)^2 + (z2 - z1)^2)
 end
 
-ActiveFates = GetActiveFates()
 
-local NearestFateId = nil
-local MinDistance = math.huge
-local NearestAetherName = nil
+local ActiveFates = GetActiveFates()
+
+local NearestFateId, MinTotalDistance = nil, math.huge
+local NearestAetheriteName, MinDistanceToAetherite = nil, math.huge
 
 for i = 0, ActiveFates.Count - 1 do
     local Duration = GetFateDuration(ActiveFates[i])
     
     if Duration > 0 then
         local FateX, FateY, FateZ = GetFateLocationX(ActiveFates[i]), GetFateLocationY(ActiveFates[i]), GetFateLocationZ(ActiveFates[i])
-        local DistanceToFate = GetDistanceToPoint(FateX, FateY, FateZ)
         
-        local NearestAetheriteDistance = math.huge
-        local NearestAetheriteName = nil
+        local DirectDistanceToFate = GetDistanceToPoint(FateX, FateY, FateZ)
+        
+        local NearestAetheriteToFate, DistanceToFateAetherite = nil, math.huge
         for _, Aetherite in ipairs(Aetherites) do
             local AetheriteX, AetheriteY, AetheriteZ, AetheriteName = Aetherite[1], Aetherite[2], Aetherite[3], Aetherite[4]
-            local DistanceToAetherite = DistanceBetween(AetheriteX, AetheriteY, AetheriteZ, FateX, FateY, FateZ)
-            if DistanceToAetherite < NearestAetheriteDistance then
-                NearestAetheriteDistance = DistanceToAetherite
-                NearestAetheriteName = AetheriteName
+            local DistanceToAetherite = DistanceBetween(FateX, FateY, FateZ, AetheriteX, AetheriteY, AetheriteZ)
+            if DistanceToAetherite < DistanceToFateAetherite then
+                DistanceToFateAetherite = DistanceToAetherite
+                NearestAetheriteToFate = AetheriteName
             end
         end
         
-        local CombinedDistance
-        if DistanceToFate > NearestAetheriteDistance then
-            CombinedDistance = DistanceToFate + NearestAetheriteDistance
-        else
-            CombinedDistance = DistanceToFate
+        local DistanceToNearestAetheriteFromPlayer = math.huge
+        for _, Aetherite in ipairs(Aetherites) do
+            local AetheriteX, AetheriteY, AetheriteZ = Aetherite[1], Aetherite[2], Aetherite[3]
+            local DistanceToAetherite = GetDistanceToPoint(AetheriteX, AetheriteY, AetheriteZ)
+            if DistanceToAetherite < DistanceToNearestAetheriteFromPlayer then
+                DistanceToNearestAetheriteFromPlayer = DistanceToAetherite
+            end
         end
         
-        if CombinedDistance < MinDistance then
-            MinDistance = CombinedDistance
+        local TotalDistanceViaAetherite = DistanceToNearestAetheriteFromPlayer + DistanceToFateAetherite
+        
+        local EffectiveDistanceToFate = math.min(DirectDistanceToFate, TotalDistanceViaAetherite)
+        
+        if EffectiveDistanceToFate < MinTotalDistance then
+            MinTotalDistance = EffectiveDistanceToFate
             NearestFateId = ActiveFates[i]
-            NearestAetherName = NearestAetheriteName
+            NearestAetheriteName = NearestAetheriteToFate
         end
     end
 end
@@ -107,7 +115,7 @@ if NearestFateId == nil then
 else
     local NearestFateName = FateNames[NearestFateId] or "Unknown Fate"
     yield("Nearest Fate Name: " .. NearestFateName)
-    yield("Nearest FateID: " .. NearestFateId)
-    yield("Nearest Fate Distance: " .. MinDistance)
-    yield("Nearest AetherName: " .. NearestAetherName)
+    yield("Nearest Fate ID: " .. NearestFateId)
+    yield("Nearest Fate Distance: " .. MinTotalDistance)
+    yield("Nearest Aether Name: " .. NearestAetheriteName)
 end
