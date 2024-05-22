@@ -7,9 +7,10 @@
     Author: UcanPatates  
 
     **********************
-    * Version  |  1.0.9  *
+    * Version  |  1.1.0  *
     **********************
 
+    -> 1.1.0  : Changed the forced preset and some fixes.
     -> 1.0.9  : Now purchases the exact amount of bait and dark matter.
     -> 1.0.8  : Some tweaks to the pathing to fix a jumping when not supposed to issue.
     -> 1.0.7  : 500 Cast and Super amiss check fixes.
@@ -40,8 +41,8 @@
     -> SomethingNeedDoing (Expanded Edition) [Make sure to press the lua button when you import this] -> https://puni.sh/api/repository/croizat
     -> AutoHook : https://love.puni.sh/ment.json
     -> vnavmesh : https://puni.sh/api/repository/veyn
-    -> Pandora's Box -> https://love.puni.sh/ment.json
-    -> Simple Tweaks  
+    -> Pandora's Box : https://love.puni.sh/ment.json
+    -> Simple Tweaks : you need to enable /bait.
     
     **************
     *  SETTINGS  *
@@ -200,7 +201,7 @@ function LetsBuySomeStuff()
                 end
             end
         end
-        if Grade8DarkMatterCount < BuyDarkMatterMinimum and BuyDarkMatterMinimum then
+        if Grade8DarkMatterCount < BuyDarkMatterMinimum and BuyDarkMatter then
             if distance >= 4 then
                 if distance <= 50 and GetCharacterCondition(77, false) then
                     WalkTo(-641.2, 285.3, -138.7)
@@ -537,7 +538,6 @@ function Dofishing()
     end
 end
 
-
 function WeGoIn()
     while IsInZone(886) do
         local distance = DistanceToAurvael()
@@ -569,7 +569,7 @@ end
 function SetAutoHookPreset()
     if ForceAutoHookPreset then
         DeleteAllAutoHookAnonymousPresets()
-        UseAutoHookAnonymousPreset("AH4_H4sIAAAAAAAACuVXS3PTMBD+KxlfuAQmcR5NejNpaZkppYPDcGA4qI4Sa6JYQZZbQif/nV1LcizHrlM4wAynuqvdb799SLt58oJMiRlJVTpbrrzzJ+8yIfecBpx750pmtOvh4Q1L6OFwYY/ew5c/mXa9O8mEZGrnnfdBml7+iHi2oIuDGPX3GuuDEFGMYPmHj185znjS9a6281jSNBYcJP1ez0F+HjrHmJ45Fr1WMrM421gGw35v2ELBWgnOaaRKhv2ymt/uVsgFI7whpX1/PJ5WmAxdJi7R4F48QH2WhKfWwzuWxpc7mpY4jiqQo5EDObb1IWsaxmyp3hKWh4iC1ApCRaI1oAKYqdoxbhl1alDviGI0iWiJz7hqN3aT7VtTyX7SGVG6az6n9GPCd1+YioNIsQcacrJ1GhIoVaH9Sh0HBnoeE87IOn1HHoREdEdgYx10XfknGkG+Qb+PGay7E0Bh6Dgc78Hj5Q8liblmmMu5CB/J9n2iMqaYSK4IS2x6XkND3ZINpMu7FXD3wLrG4kak6hmLO4if1nvxXnsN5xozPz94DLfQ7pLwWSYlTdTJTCt2L+Bb6/GIdS1+rhUkK06hgmKLN4Elq1BRaJN+mZ3WSQN5KqmyAXgpTo1J+EiJWoI78H/DUvVxib6ggb7qeiMT62nQ8ycHZxeMLOimc41t9SjkBqFv4S/h10Ks0cbeny+U5P/rrsNT8I/cbP+haM42VFb68gNLiiPIw/ANtK4xn++2QGLYP8PLah2FSookb1WjVeDlz0y3mUF+PWOa3Ap1fEMrLnuDkssbuqLJgshda4BVBHgULkRm9K2iltiE/XZe/DGmRYO1JqXR0ontdGMIbC7Z1g1MS/48sLORj8nTcC8MzbF9eXDGHO9nsFRUzki2imHN2ODIwTFbvEf2Anyi3zMm6QIeZZXhAMJ9oXorXtTQ7T1Yp3jcVad1ymktUdY6LvOppTu1RqcWA9WRR6XD8vYCCE0R061lmk+DsiWL6dTSglmDRYn5wQh9Fj3yDK9C55hgm3lFq5ZyG8axYjWIi+v5dY2xdt5wWKDWnDdV8ZudSWb//loI9FiCGeXMJ3+KO5OZT1cS5lNn2IHJx1KSEN4J17v7jPEFjMNXncPga24j3IxgRLMIpjVsXuhHKwQbkSWOGqRoNK2ucAN3W52gp0wuSWTGi1krR9NRy+43Ast/5jfIYRl5ZgXBY1ScYaLyHJWXErPw4KcWW7V9t/TrwrzCboknmKxKiZ3CBmn818tas183VflCJGpG4BXnpsAm6v+x+rpi7vK7/7b/BS5IxOjxDwAA")
+        UseAutoHookAnonymousPreset("AH4_H4sIAAAAAAAACu1Xy27bOhD9FUObbtLClh+xs9N10iRAmgaViy6K4oKRaIswTfpSVFK3yL93RiRtUZZtBV20i7uKMpw5c+ZBzvhnEBVaTkmu8+l8EVz8DK4EeeQ04jy40KqgZwEe3jFBd4epO7qFr3A8OQseFJOK6U1w0QNpfvU94UVK050Y9V8M1gcpkwzByo8Qv0qc0fgsuF7PMkXzTHKQ9LpdD/k4dIkxOfcsuifJTLNi5RgMet3BCQrOSnJOE10x7FXVwtNupUoZ4QdS2gtHo0mNycBn4hONHuUT1GdOeO48vGd5drWheYXjsAY5HHqQI1cfsqRxxub6H8LKEFGQO0GsSbIEVACzVdvHraJOLOoD0YyKhFb4jOp2Iz/ZoTNV7AedEm265nNOPwq++cJ0FiWaPdGYk7XXkECpDh3W6ti30LOMcEaW+XvyJBWiewIXa//Ml3+iCeQb9HuYwaY7ARQGnsPRC3i8+q4VsdcMczmT8TNZ3wpdMM2kuCZMuPS8hYa6JytIV3Av4e6BdYPFncz1EYsHiJ82ewneBgfODWZ5vvMYr6HdFeHTQikqdGumNbtX8G30uMe6Eb/UisSCU6igXONNYGIRawpt0quyMzp5pNqSqhqAl+2pNSFCin/jZ0r0HHwCiTuW649zdAhd9NUUHek4d/1uON55vGQkpavODfbWs1QrxL+Hv4TfSLlEG3eJvlBS/m9aD0+BBBJ0TWhFs80agAe9c7yFzjjWSorFUfPygmVU3Eu9f8dq2N1+BfuOLqhIidq8hl2JANf6UhZW3ykaiYsWT2ZsRVXtxn1gYnsEFR6869ZchCOM34DtorcqW7Dy9Txi6cXW3hgCmym29gMzkt8P7HwYYvIM3CtD82xfH5w1xxsWzTVVU1IsMlgUVjg0oKn3rx4OaffKuI7+RP8rmKIpPLW6wLGCW0C9zdt1c+u+bFLc77R23dOuTapa+6VvW862dfudAiEEcqt1YtmGAGtoYwmMzHA8oOwCwBQb6ZbtAYtKNDsj9LntmyO8tjr7BE+Z17QaKZ/C2FesB3F5M7tpMDbODxxuURvOD1T25ZsbPHbT/roVmNkDg8gbQuEEtyM7hK4VDKHOoAMzjuVEEN6Jl5vHgvEUBt+bzm66HWut2xSGMUtgLsOOhX6MQrSShfDUIEXDSX1Z6/t76Rg9FWpOEjuG7AI5nAxPbHlDsPxrfm3s1o4jywYeo+IUE1XmqLp+2NUGP414p9Z0mSu/LewL7pd9jAmsld0rdpRnf7zUDdv1ocpfSqGnBF57botuo/6/I2xHfHv5BT8WQx/vDwAA")
     else
         yield("/ahpreset " .. CustomAutoHookPreset)
     end
@@ -579,12 +579,12 @@ end
 CurrentJob = GetClassJobId()
 DiademHoverwormCount = GetItemCount(30281)
 PandoraSetFeatureState("Auto-Cordial",UseCordial)
-if not SelfRepair then
-    BuyDarkMatter = false
-end
 if NpcRepair and SelfRepair then
     NpcRepair = false
     yield("You can only select one repair setting. Setting Npc Repair false")
+end
+if NpcRepair then
+    BuyDarkMatter = false
 end
 
 -- Set properties if they are not already set
