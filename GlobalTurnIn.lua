@@ -6,10 +6,11 @@
 
     Author: UcanPatates  
 
-    ************************
-    * Version  |  1.0.6.1  *
-    ************************
+    **********************
+    * Version  |  1.0.7  *
+    **********************
 
+    -> 1.0.7  : Added Option to use tickets.
     -> 1.0.6  : Fix for faster buy with 2 different exchange items.
     -> 1.0.5  : Added Alexandrian Exchange.
     -> 1.0.4  : Added Omega exchange.
@@ -33,7 +34,7 @@
 
     -> SomethingNeedDoing (Expanded Edition) [Make sure to press the lua button when you import this] -> https://puni.sh/api/repository/croizat
     -> Teleporter | 1st Party Plugin
-    -> Lifestream 
+    -> Lifestream : https://raw.githubusercontent.com/NightmareXIV/MyDalamudPlugins/main/pluginmaster.json
     -> Deliveroo : https://plugins.carvel.li/
     -> vnavmesh : https://puni.sh/api/repository/veyn
     -> Pandora's Box : https://love.puni.sh/ment.json
@@ -42,6 +43,9 @@
     *  SETTINGS  *
     **************
 ]] 
+
+UseTicket = false
+-- do you want to use tickets to teleport.
 
 
 MaxItem = true 
@@ -394,7 +398,7 @@ function TeleportGC()
         if GetCharacterCondition(27) then
             yield("/wait 2")
         else
-            TeleportToGCTown(false)
+            TeleportToGCTown(UseTicket)
             yield("/wait 2")
         end
     end
