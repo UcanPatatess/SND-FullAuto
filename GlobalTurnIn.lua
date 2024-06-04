@@ -6,9 +6,9 @@
 
     Author: UcanPatates  
 
-    **********************
-    * Version  |  1.0.6  *
-    **********************
+    ************************
+    * Version  |  1.0.6.1  *
+    ************************
 
     -> 1.0.6  : Fix for faster buy with 2 different exchange items.
     -> 1.0.5  : Added Alexandrian Exchange.
@@ -467,7 +467,7 @@ function IsThereTradeItem()
         return true
     end
     
-    if GordianTurnInCount < 1 and DeltascapeTurnInCount < 1 and DeltascapeTurnInCount < 1 then
+    if GordianTurnInCount < 1 and DeltascapeTurnInCount < 1 and AlexandrianTurnInCount < 1 then
         return false
     else
         return true
