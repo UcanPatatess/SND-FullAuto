@@ -7,9 +7,10 @@
     Author: UcanPatates  
 
     **********************
-    * Version  |  1.0.7  *
+    * Version  |  1.0.8  *
     **********************
 
+    -> 1.0.8  : Fixed a issue with deltascape shops not opening up correctly.
     -> 1.0.7  : Added Option to use tickets.
     -> 1.0.6  : Fix for faster buy with 2 different exchange items.
     -> 1.0.5  : Added Alexandrian Exchange.
@@ -119,39 +120,39 @@ GelfradusTable =
 {0,DeltascapeLensID,LensBuyAmount,19443,1,0},
 {0,DeltascapeLensID,LensBuyAmount,19437,0,0},
 -- shop 2/dow2 
-{1, DeltascapeBoltID, BoltBuyAmount, 19496, 13,0},
-{1, DeltascapeBoltID, BoltBuyAmount, 19491, 12,0},
-{1, DeltascapeBoltID, BoltBuyAmount, 19486, 11,0},
-{1, DeltascapeBoltID, BoltBuyAmount, 19481, 10,0},
-{1, DeltascapePedalID, PedalBuyAmount, 19459, 9,0},
-{1, DeltascapePedalID, PedalBuyAmount, 19465, 8,0},
-{1, DeltascapeSpringID, SpringBuyAmount, 19458, 7,0},
-{1, DeltascapeSpringID, SpringBuyAmount, 19464, 6,0},
-{1, DeltascapeCrankID, CrankBuyAmount, 19457, 5,0},
-{1, DeltascapeCrankID, CrankBuyAmount, 19463, 4,0},
-{1, DeltascapeShaftID, ShaftBuyAmount, 19456, 3,0},
-{1, DeltascapeShaftID, ShaftBuyAmount, 19462, 2,0},
-{1, DeltascapeLensID, LensBuyAmount, 19455, 1,0},
-{1, DeltascapeLensID, LensBuyAmount, 19461, 0,0},
+{1, DeltascapeBoltID, BoltBuyAmount, 19496, 13,1},
+{1, DeltascapeBoltID, BoltBuyAmount, 19491, 12,1},
+{1, DeltascapeBoltID, BoltBuyAmount, 19486, 11,1},
+{1, DeltascapeBoltID, BoltBuyAmount, 19481, 10,1},
+{1, DeltascapePedalID, PedalBuyAmount, 19459, 9,1},
+{1, DeltascapePedalID, PedalBuyAmount, 19465, 8,1},
+{1, DeltascapeSpringID, SpringBuyAmount, 19458, 7,1},
+{1, DeltascapeSpringID, SpringBuyAmount, 19464, 6,1},
+{1, DeltascapeCrankID, CrankBuyAmount, 19457, 5,1},
+{1, DeltascapeCrankID, CrankBuyAmount, 19463, 4,1},
+{1, DeltascapeShaftID, ShaftBuyAmount, 19456, 3,1},
+{1, DeltascapeShaftID, ShaftBuyAmount, 19462, 2,1},
+{1, DeltascapeLensID, LensBuyAmount, 19455, 1,1},
+{1, DeltascapeLensID, LensBuyAmount, 19461, 0,1},
 -- shop 3/dom 
-{2, DeltascapeBoltID, BoltBuyAmount, 19497, 17,0},
-{2, DeltascapeBoltID, BoltBuyAmount, 19498, 16,0},
-{2, DeltascapeBoltID, BoltBuyAmount, 19492, 15,0},
-{2, DeltascapeBoltID, BoltBuyAmount, 19493, 14,0},
-{2, DeltascapeBoltID, BoltBuyAmount, 19487, 13,0},
-{2, DeltascapeBoltID, BoltBuyAmount, 19488, 12,0},
-{2, DeltascapeBoltID, BoltBuyAmount, 19482, 11,0},
-{2, DeltascapeBoltID, BoltBuyAmount, 19483, 10,0},
-{2, DeltascapePedalID, PedalBuyAmount, 19471, 9,0},
-{2, DeltascapePedalID, PedalBuyAmount, 19477, 8,0},
-{2, DeltascapeSpringID, SpringBuyAmount, 19470, 7,0},
-{2, DeltascapeSpringID, SpringBuyAmount, 19476, 6,0},
-{2, DeltascapeCrankID, CrankBuyAmount, 19469, 5,0},
-{2, DeltascapeCrankID, CrankBuyAmount, 19475, 4,0},
-{2, DeltascapeShaftID, ShaftBuyAmount, 19468, 3,0},
-{2, DeltascapeShaftID, ShaftBuyAmount, 19474, 2,0},
-{2, DeltascapeLensID, LensBuyAmount, 19467, 1,0},
-{2, DeltascapeLensID, LensBuyAmount, 19473, 0,0},
+{2, DeltascapeBoltID, BoltBuyAmount, 19497, 17,2},
+{2, DeltascapeBoltID, BoltBuyAmount, 19498, 16,2},
+{2, DeltascapeBoltID, BoltBuyAmount, 19492, 15,2},
+{2, DeltascapeBoltID, BoltBuyAmount, 19493, 14,2},
+{2, DeltascapeBoltID, BoltBuyAmount, 19487, 13,2},
+{2, DeltascapeBoltID, BoltBuyAmount, 19488, 12,2},
+{2, DeltascapeBoltID, BoltBuyAmount, 19482, 11,2},
+{2, DeltascapeBoltID, BoltBuyAmount, 19483, 10,2},
+{2, DeltascapePedalID, PedalBuyAmount, 19471, 9,2},
+{2, DeltascapePedalID, PedalBuyAmount, 19477, 8,2},
+{2, DeltascapeSpringID, SpringBuyAmount, 19470, 7,2},
+{2, DeltascapeSpringID, SpringBuyAmount, 19476, 6,2},
+{2, DeltascapeCrankID, CrankBuyAmount, 19469, 5,2},
+{2, DeltascapeCrankID, CrankBuyAmount, 19475, 4,2},
+{2, DeltascapeShaftID, ShaftBuyAmount, 19468, 3,2},
+{2, DeltascapeShaftID, ShaftBuyAmount, 19474, 2,2},
+{2, DeltascapeLensID, LensBuyAmount, 19467, 1,2},
+{2, DeltascapeLensID, LensBuyAmount, 19473, 0,2},
 }
 ------------------------------------------------------------------------------
 -- tarnished gordian item ids / tablolar ve idler
@@ -363,7 +364,7 @@ function TeleportToIdlishire()
         LogInfo("[Debug]Tried Teleporting but already at zone: 478(Idlishire)")
     else
         while GetZoneID() ~= 478 do
-            yield("/wait 0.1")
+            yield("/wait 0.14")
             if GetCharacterCondition(27) then
                 yield("/wait 2")
             else
@@ -380,7 +381,7 @@ function TeleportToRhalgr()
         LogInfo("[Debug]Tried Teleporting but already at zone: 635(Rhalgr)")
     else
         while GetZoneID() ~= 635 do
-            yield("/wait 0.1")
+            yield("/wait 0.13")
             if GetCharacterCondition(27) then
                 yield("/wait 2")
             else
@@ -394,7 +395,7 @@ end
 
 function TeleportGC()
     while GetZoneID() == 478 or GetZoneID() == 635 do
-        yield("/wait 0.1")
+        yield("/wait 0.15")
         if GetCharacterCondition(27) then
             yield("/wait 2")
         else
@@ -451,7 +452,8 @@ function IsThereTradeItem()
     math.floor(AlexandrianPedalCount / PedalBuyAmount) +
     math.floor(AlexandrianBoltCount / BoltBuyAmount)
 
-----------------------------------------------------------------------------
+------------------------------  Deltascape  ----------------------------------------------
+
     DeltascapeLensCount = GetItemCount(DeltascapeLensID)
     DeltascapeShaftCount = GetItemCount(DeltascapeShaftID)
     DeltascapeCrankCount = GetItemCount(DeltascapeCrankID)
@@ -490,8 +492,13 @@ function GetOUT()
         if IsAddonVisible("ShopExchangeItem") then
             yield("/pcall ShopExchangeItem True -1")
         end
+        if IsAddonVisible("RetainerList") then
+            yield("/pcall RetainerList True -1")
+        end
+        if IsAddonVisible("InventoryRetainer") then
+            yield("/pcall InventoryRetainer True -1")
+        end
     until IsPlayerAvailable()
-
 end
 
 function TurnIn(TableName)
@@ -506,6 +513,10 @@ function TurnIn(TableName)
         
 
     local function OpenShopMenu(SelectIconString,SelectString,Npc)
+        while IsAddonVisible("ShopExchangeItem") do
+            yield("/pcall ShopExchangeItem True -1")
+            yield("/wait 0.1")
+        end
         while not IsAddonVisible("ShopExchangeItem") do
             yield("/wait 0.11")
             if GetTargetName() ~= Npc then
@@ -519,10 +530,11 @@ function TurnIn(TableName)
             end
         end
         yield("/wait 0.1")
-        LogInfo("[ShopMenu]Should open "..SelectString)
+        LogInfo("[ShopMenu]Should open SelectString "..SelectString)
+        LogInfo("[ShopMenu]Should open SelectIconString "..SelectIconString)
     end
 
-    function Exchange(ItemID, List, Amount)
+    local function Exchange(ItemID, List, Amount)
         local ItemCount = GetItemCount(ItemID)
         local ExpectedItemCount
 
@@ -594,12 +606,6 @@ function TurnIn(TableName)
                 Exchange(gearItem, pcallValue, 1)
             end
 
-            if i == #TableName or (i < #TableName and TableName[i + 1][1] ~= shopType) then
-                yield("/pcall ShopExchangeItem True -1")
-                while not IsAddonVisible("SelectString") do
-                    yield("/wait 0.1")
-                end
-            end
             if LastIconShopType ~= nil and iconShopType ~= LastIconShopType then
                 GetOUT()
             end
@@ -607,12 +613,7 @@ function TurnIn(TableName)
         end
     end
     yield("/wait 0.1")
-    while IsAddonVisible("ShopExchangeItem") do
-        yield("/wait 0.1")
-        yield("/pcall ShopExchangeItem True -1")
-    end
     GetOUT()
-    PlayerTest()
 end
 
 function DeliverooEnable()
@@ -683,7 +684,7 @@ function SummoningBellSell()
         SummoningBellSell()
     end
     while TotalExchangeItem > 0 do
-        if GetTargetName() ~= "Summoning Bell" or IsAddonReady("RetainerList")==false then
+        if not IsAddonReady("InventoryRetainer") then
             yield("/target Summoning Bell")
             yield("/wait 0.1")
             yield("/interact")
