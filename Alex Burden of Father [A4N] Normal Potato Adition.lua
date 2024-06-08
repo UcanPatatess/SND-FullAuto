@@ -247,6 +247,7 @@
   end
   
   function Fight()
+    yield("/rotation manual")
       while IsInZone(445) do
           yield("/wait 0.3")
           for i = 1, #TargetTable do
