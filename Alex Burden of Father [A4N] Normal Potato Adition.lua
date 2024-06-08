@@ -8,9 +8,10 @@
     Author: UcanPatates  
 
     **********************
-    * Version  |  1.0.0  *
+    * Version  |  1.0.1  *
     **********************
 
+    -> 1.0.1  : Added Npc Repair for Limsa,Ul'dah,Gridania inns.
     -> 1.0.0  : Working a4n farmer with AutoRetainer.
 
     ***************
@@ -46,9 +47,10 @@
   -- false means it will continue even if your retainer is ready.
   
   SelfRepair = false
-  RepairAmount = 90
   -- use this if you are able to repair your equipment.
-  
+  NpcRepair = false
+  -- only works if you are in Limsa , Ul'dah or gridania inn
+  RepairAmount = 90
   
   --[[
   
@@ -77,6 +79,20 @@
       return LensCount + ShaftCount + CrankCount + SpringCount + PedalCount + BoltCount
   end
   
+  MenderNpcTable =
+  {
+      {"Zuzutyro"},
+      {"Erkenbaud"},
+      {"Leofrun"}
+  }
+  
+  InNpcTable =
+  {
+      {"Otopa Pottopa"},
+      {"Antoinaut"},
+      {"Mytesyn"}
+  }
+  
   TargetTable=
   {
       {"Right Foreleg"},
@@ -100,6 +116,55 @@
           LogInfo("[SetSNDPropertys] " .. propertyName .. " set to False")
       end
   end
+  
+  function NpcRepairMenu(Name)
+      while true do
+          if not NeedsRepair(RepairAmount) then
+              break
+          elseif GetTargetName() ~= Name then
+              yield("/target "..Name)
+              yield("/wait 0.1")
+          elseif IsAddonVisible("SelectIconString") then
+              yield("/pcall SelectIconString true 1")
+          elseif IsAddonVisible("SelectYesno") then
+              yield("/pcall SelectYesno true 0")
+              yield("/wait 0.1")
+          elseif IsAddonVisible("Repair") then
+              yield("/pcall Repair true 0")
+          else
+              yield("/interact")
+          end
+          yield("/wait 0.1")
+      end
+      while IsAddonVisible("Repair") do
+          yield("/pcall Repair true -1")
+          yield("/wait 0.1")
+      end
+      LogInfo("[RepairNpc]Got Repaired by "..Name .." .")
+  end
+  
+  function GetInTheInn(Name)
+      local WhereWasI = GetZoneID()
+      local WhereAmI = GetZoneID()
+      while WhereWasI == WhereAmI do
+          yield("/wait 0.11")
+          WhereAmI = GetZoneID()
+          if GetCharacterCondition(45) then
+          else
+              if IsAddonVisible("Talk") then
+                  yield("/click talk")
+              elseif IsAddonVisible("SelectString") then
+                  yield("/pcall SelectString true 0")
+              elseif GetTargetName() ~= Name then
+                  yield("/target " .. Name)
+              else
+                  yield("/interact")
+              end
+          end
+      end
+      LogInfo("[GetInTheInn] Completed. Npc: " .. Name)
+  end
+  
   
   function Repair()
       if NeedsRepair(RepairAmount) and SelfRepair then
@@ -125,6 +190,39 @@
               yield("/pcall Repair true -1")
           end
           yield("/wait 2")
+      end
+      if NeedsRepair(RepairAmount) and NpcRepair then
+          if IsInZone(177) or IsInZone(178) or IsInZone(179) then
+              yield("/target Heavy Oaken Door")
+              if GetDistanceToTarget() < 4.5 then
+                  yield("/wait 0.1")
+                  yield("/interact")
+                  ZoneTransition()
+              else
+                  yield("Get Closer to door.")
+              end
+          end
+          for i = 1, #MenderNpcTable do
+              yield("/target "..MenderNpcTable[i][1])
+              if GetTargetName() == MenderNpcTable[i][1] then
+                  NpcRepairMenu(MenderNpcTable[i][1])
+                  break
+              end
+          end
+          for i = 1, #InNpcTable do
+              yield("/target "..InNpcTable[i][1])
+              if GetTargetName() == InNpcTable[i][1] then
+                  if GetTargetName() == "Antoinaut" then
+                      local X = GetTargetRawXPos()
+                      local Y = GetTargetRawYPos()
+                      local Z = GetTargetRawZPos()
+                      WalkTo(X,Y,Z,3)
+                  end
+                  GetInTheInn(InNpcTable[i][1])
+                  break
+              end
+          end
+          PlayerTest()
       end
   end
   
@@ -271,7 +369,7 @@
                   LeaveDuty()
                   ZoneTransition()
               else
-                  if GetTargetName() ~= TargetTable[i][1] and GetTargetHP() > 1.0 then
+                  if GetTargetName() == TargetTable[i][1] and GetTargetHP() > 1.0 then
                       local X = GetTargetRawXPos()
                       local Y = GetTargetRawYPos()
                       local Z = GetTargetRawZPos()
@@ -296,6 +394,10 @@
   local loop = 1
   local LoopAmount 
   
+  if SelfRepair and NpcRepair then
+      NpcRepair = true
+  end
+  
   if HowManyLoops == "true" or HowManyLoops == "0" then
       LoopAmount = true  
   else
@@ -305,8 +407,8 @@
   
   while LoopAmount == true or loop <= LoopAmount do
       yield("Current loop: "..loop)
-      DoAR()
       Repair()
+      DoAR()
       CorrectSelect()
       Fight()
       loop = loop + 1
