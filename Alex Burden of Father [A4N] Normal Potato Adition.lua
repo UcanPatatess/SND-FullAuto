@@ -8,9 +8,10 @@
     Author: UcanPatates  
 
     **********************
-    * Version  |  1.0.1  *
+    * Version  |  1.0.2  *
     **********************
 
+    -> 1.0.2  : Fixed the door and the rare crash.
     -> 1.0.1  : Added Npc Repair for Limsa,Ul'dah,Gridania inns.
     -> 1.0.0  : Working a4n farmer with AutoRetainer.
 
@@ -122,7 +123,7 @@
           if not NeedsRepair(RepairAmount) then
               break
           elseif GetTargetName() ~= Name then
-              yield("/target "..Name)
+              yield("/target " .. Name)
               yield("/wait 0.1")
           elseif IsAddonVisible("SelectIconString") then
               yield("/pcall SelectIconString true 1")
@@ -140,7 +141,7 @@
           yield("/pcall Repair true -1")
           yield("/wait 0.1")
       end
-      LogInfo("[RepairNpc]Got Repaired by "..Name .." .")
+      LogInfo("[RepairNpc]Got Repaired by " .. Name .. " .")
   end
   
   function GetInTheInn(Name)
@@ -164,7 +165,6 @@
       end
       LogInfo("[GetInTheInn] Completed. Npc: " .. Name)
   end
-  
   
   function Repair()
       if NeedsRepair(RepairAmount) and SelfRepair then
@@ -193,30 +193,48 @@
       end
       if NeedsRepair(RepairAmount) and NpcRepair then
           if IsInZone(177) or IsInZone(178) or IsInZone(179) then
+              yield("/wait 0.1")
               yield("/target Heavy Oaken Door")
-              if GetDistanceToTarget() < 4.5 then
-                  yield("/wait 0.1")
-                  yield("/interact")
-                  ZoneTransition()
+              yield("/wait 0.1")
+              if GetDistanceToTarget() < 4.5 and GetTargetName() == "Heavy Oaken Door" then
+                  local WhereWasI = GetZoneID()
+                  local WhereAmI = GetZoneID()
+                  while WhereWasI == WhereAmI do
+                    yield("/wait 0.1")
+                      WhereAmI = GetZoneID()
+                      if GetCharacterCondition(45) then
+                      else
+                          if IsAddonVisible("SelectYesno") then
+                              yield("/pcall SelectYesno true 0")
+                          else
+                              yield("/wait 0.1")
+                              yield("/interact")
+                          end
+                      end
+                  end
+                  PlayerTest()
               else
                   yield("Get Closer to door.")
+                  if GetTargetName() ~= "" then
+                      ClearTarget()
+                  end
               end
           end
           for i = 1, #MenderNpcTable do
-              yield("/target "..MenderNpcTable[i][1])
+              yield("/target " .. MenderNpcTable[i][1])
               if GetTargetName() == MenderNpcTable[i][1] then
                   NpcRepairMenu(MenderNpcTable[i][1])
                   break
               end
           end
           for i = 1, #InNpcTable do
-              yield("/target "..InNpcTable[i][1])
+              yield("/target " .. InNpcTable[i][1])
               if GetTargetName() == InNpcTable[i][1] then
                   if GetTargetName() == "Antoinaut" then
                       local X = GetTargetRawXPos()
                       local Y = GetTargetRawYPos()
                       local Z = GetTargetRawZPos()
-                      WalkTo(X,Y,Z,3)
+                      WalkTo(X, Y, Z, 3)
                   end
                   GetInTheInn(InNpcTable[i][1])
                   break
@@ -227,6 +245,7 @@
   end
   
   function CorrectSelect()
+      yield("/wait 0.2")
       local WhereAmI = GetZoneID()
       if not IsInZone(445) then
           OpenRegularDuty(115)
@@ -260,16 +279,16 @@
   
   function PlayerTest()
       repeat
-          yield("/wait 0.1")
+          yield("/wait 0.5")
       until IsPlayerAvailable()
   end
   
   function ZoneTransition()
-      repeat 
-          yield("/wait 0.3")
+      repeat
+          yield("/wait 0.5")
       until not IsPlayerAvailable()
-      repeat 
-          yield("/wait 0.3")
+      repeat
+          yield("/wait 0.5")
       until IsPlayerAvailable()
   end
   
@@ -336,7 +355,7 @@
       while ((PathIsRunning() or PathfindInProgress()) and GetDistanceToPoint(valuex, valuey, valuez) > stopdistance) do
           yield("/wait 0.1")
           local Y = GetTargetRawYPos()
-          if  Y > 11 or Y == 0 then
+          if Y > 11 or Y == 0 then
               break
           end
       end
@@ -345,7 +364,7 @@
   end
   
   function Fight()
-    yield("/rotation manual")
+      yield("/rotation manual")
       while IsInZone(445) do
           yield("/wait 0.3")
           for i = 1, #TargetTable do
@@ -389,27 +408,27 @@
   
   setSNDPropertyIfNotSet("UseSNDTargeting")
   unsetSNDPropertyIfSet("StopMacroIfTargetNotFound")
-  PandoraSetFeatureState("Automatically Open Chests",true)
+  PandoraSetFeatureState("Automatically Open Chests", true)
   
   local loop = 1
-  local LoopAmount 
+  local LoopAmount
   
   if SelfRepair and NpcRepair then
       NpcRepair = true
   end
   
   if HowManyLoops == "true" or HowManyLoops == "0" then
-      LoopAmount = true  
+      LoopAmount = true
   else
       LoopAmount = HowManyLoops
   end
   
-  
   while LoopAmount == true or loop <= LoopAmount do
-      yield("Current loop: "..loop)
+      yield("Current loop: " .. loop)
       Repair()
       DoAR()
       CorrectSelect()
       Fight()
       loop = loop + 1
   end
+  
