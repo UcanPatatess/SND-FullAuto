@@ -8,9 +8,10 @@
     Author: UcanPatates  
 
     **********************
-    * Version  |  1.0.2  *
+    * Version  |  1.0.3  *
     **********************
 
+    -> 1.0.3  : Real fix to the crash.
     -> 1.0.2  : Fixed the door and the rare crash.
     -> 1.0.1  : Added Npc Repair for Limsa,Ul'dah,Gridania inns.
     -> 1.0.0  : Working a4n farmer with AutoRetainer.
@@ -245,13 +246,13 @@
   end
   
   function CorrectSelect()
-      yield("/wait 0.2")
       local WhereAmI = GetZoneID()
       if not IsInZone(445) then
-          OpenRegularDuty(115)
+        yield("/dutyfinder")
           while not IsAddonReady("ContentsFinder") do
               yield("/wait 0.5")
           end
+          OpenRegularDuty(115)
           SetDFUnrestricted(true)
           if GetNodeText("ContentsFinder", 14) == "" then
               yield("Select Alexander - The Burden of the Father")
