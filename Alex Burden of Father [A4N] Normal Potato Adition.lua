@@ -8,9 +8,10 @@
     Author: UcanPatates  
 
     **********************
-    * Version  |  1.0.3  *
+    * Version  |  1.0.4  *
     **********************
 
+    -> 1.0.4  : Fixed the very rare case of not getting in the inn, now it walks up to the npc.
     -> 1.0.3  : Real fix to the crash.
     -> 1.0.2  : Fixed the door and the rare crash.
     -> 1.0.1  : Added Npc Repair for Limsa,Ul'dah,Gridania inns.
@@ -231,12 +232,10 @@
           for i = 1, #InNpcTable do
               yield("/target " .. InNpcTable[i][1])
               if GetTargetName() == InNpcTable[i][1] then
-                  if GetTargetName() == "Antoinaut" then
-                      local X = GetTargetRawXPos()
-                      local Y = GetTargetRawYPos()
-                      local Z = GetTargetRawZPos()
-                      WalkTo(X, Y, Z, 3)
-                  end
+                    local X = GetTargetRawXPos()
+                    local Y = GetTargetRawYPos()
+                    local Z = GetTargetRawZPos()
+                    WalkTo(X, Y, Z, 3)
                   GetInTheInn(InNpcTable[i][1])
                   break
               end
@@ -354,10 +353,12 @@
       MeshCheck()
       PathfindAndMoveTo(valuex, valuey, valuez, false)
       while ((PathIsRunning() or PathfindInProgress()) and GetDistanceToPoint(valuex, valuey, valuez) > stopdistance) do
-          yield("/wait 0.1")
-          local Y = GetTargetRawYPos()
-          if Y > 11 or Y == 0 then
-              break
+          yield("/wait 0.3")
+          if IsInZone(445) then
+            local Y = GetTargetRawYPos()
+            if Y > 11 or Y == 0 then
+                break
+            end
           end
       end
       PathStop()
