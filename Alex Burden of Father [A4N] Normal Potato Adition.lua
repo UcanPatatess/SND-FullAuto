@@ -8,9 +8,10 @@
     Author: UcanPatates  
 
     **********************
-    * Version  |  1.0.4  *
+    * Version  |  1.0.5  *
     **********************
 
+    -> 1.0.5  : Added automatic selection of the duty (not stolen from ice at all)
     -> 1.0.4  : Fixed the very rare case of not getting in the inn, now it walks up to the npc.
     -> 1.0.3  : Real fix to the crash.
     -> 1.0.2  : Fixed the door and the rare crash.
@@ -247,12 +248,37 @@
   function CorrectSelect()
       local WhereAmI = GetZoneID()
       if not IsInZone(445) then
-        yield("/dutyfinder")
+          if IsAddonReady("ContentsFinder") then
+          else 
+          yield("/dutyfinder")
+          end
           while not IsAddonReady("ContentsFinder") do
               yield("/wait 0.5")
           end
-          OpenRegularDuty(115)
-          SetDFUnrestricted(true)
+          if FirstTime then
+              SetDFUnrestricted(true)
+              yield("/pcall ContentsFinder true 1 6")
+              yield("/wait 0.1")
+              if GetNodeText("ContentsFinder", 14) == "Alexander - The Burden of the Father" then 
+              else
+              for i = 1, 501 do
+                  if IsAddonReady("ContentsFinder") then
+                      yield("/pcall ContentsFinder True 3 "..i)
+                      yield("/wait 0.1")
+                      if GetNodeText("ContentsFinder", 14) == "Alexander - The Burden of the Father" then
+                          FoundTheDuty = true
+                          break 
+                      end
+                  end
+              end
+              if FoundTheDuty == false then
+                  yield("You don't have the Duty")
+                  yield("/snd stop")
+              end
+              LogInfo("First time selecting duty.")
+              FirstTime = false
+              end
+          end
           if GetNodeText("ContentsFinder", 14) == "" then
               yield("Select Alexander - The Burden of the Father")
           end
@@ -412,6 +438,9 @@
   unsetSNDPropertyIfSet("StopMacroIfTargetNotFound")
   PandoraSetFeatureState("Automatically Open Chests", true)
   
+  FoundTheDuty = false
+  FirstTime = true
+  
   local loop = 1
   local LoopAmount
   
@@ -433,4 +462,3 @@
       Fight()
       loop = loop + 1
   end
-  
