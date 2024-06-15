@@ -8,9 +8,10 @@
     Author: UcanPatates  
 
     **********************
-    * Version  |  1.0.5  *
+    * Version  |  1.0.6  *
     **********************
 
+    -> 1.0.6  : Better duty select.
     -> 1.0.5  : Added automatic selection of the duty (not stolen from ice at all)
     -> 1.0.4  : Fixed the very rare case of not getting in the inn, now it walks up to the npc.
     -> 1.0.3  : Real fix to the crash.
@@ -33,18 +34,17 @@
     -> SomethingNeedDoing (Expanded Edition) [Make sure to press the lua button when you import this] -> https://puni.sh/api/repository/croizat
     -> vnavmesh : https://puni.sh/api/repository/veyn
     -> Pandora's Box : https://love.puni.sh/ment.json
-    -> Rotation Solver : https://puni.sh/api/repository/croizat
+    -> Rotation Solver : https://puni.sh/api/repository/croizat or https://raw.githubusercontent.com/FFXIV-CombatReborn/CombatRebornRepo/main/pluginmaster.json
     -> AutoRetainer : https://love.puni.sh/ment.json
 
     **************
     *  SETTINGS  *
     **************
-  --]]
-
+  --]] 
+  
   HowManyLoops = 10
   -- true means infinite loops.
   -- numbers are loop numbers.
-  
   
   ReasignRetainers = false
   -- true means script will use AutoRetainer.
@@ -64,7 +64,6 @@
   **************
   
   ]]
-  
   
   LensID = 12674
   ShaftID = 12675
@@ -203,7 +202,7 @@
                   local WhereWasI = GetZoneID()
                   local WhereAmI = GetZoneID()
                   while WhereWasI == WhereAmI do
-                    yield("/wait 0.1")
+                      yield("/wait 0.1")
                       WhereAmI = GetZoneID()
                       if GetCharacterCondition(45) then
                       else
@@ -233,10 +232,10 @@
           for i = 1, #InNpcTable do
               yield("/target " .. InNpcTable[i][1])
               if GetTargetName() == InNpcTable[i][1] then
-                    local X = GetTargetRawXPos()
-                    local Y = GetTargetRawYPos()
-                    local Z = GetTargetRawZPos()
-                    WalkTo(X, Y, Z, 3)
+                  local X = GetTargetRawXPos()
+                  local Y = GetTargetRawYPos()
+                  local Z = GetTargetRawZPos()
+                  WalkTo(X, Y, Z, 3)
                   GetInTheInn(InNpcTable[i][1])
                   break
               end
@@ -261,29 +260,24 @@
               yield("/wait 0.1")
               if GetNodeText("ContentsFinder", 14) == "Alexander - The Burden of the Father" then 
               else
-              for i = 1, 501 do
-                  if IsAddonReady("ContentsFinder") then
-                      yield("/pcall ContentsFinder True 3 "..i)
-                      yield("/wait 0.1")
-                      if GetNodeText("ContentsFinder", 14) == "Alexander - The Burden of the Father" then
-                          FoundTheDuty = true
-                          break 
+                  yield("/pcall ContentsFinder True 12 1")
+                  for i = 1, 501 do
+                      if IsAddonReady("ContentsFinder") then
+                          yield("/pcall ContentsFinder True 3 "..i)
+                          yield("/wait 0.1")
+                          if GetNodeText("ContentsFinder", 14) == "Alexander - The Burden of the Father" then
+                              FoundTheDuty = true
+                              break 
+                          end
                       end
                   end
+                  if FoundTheDuty == false then
+                      yield("You don't have the Duty")
+                      yield("/snd stop")
+                  end
+                  LogInfo("First time selecting duty.")
+                  FirstTime = false
               end
-              if FoundTheDuty == false then
-                  yield("You don't have the Duty")
-                  yield("/snd stop")
-              end
-              LogInfo("First time selecting duty.")
-              FirstTime = false
-              end
-          end
-          if GetNodeText("ContentsFinder", 14) == "" then
-              yield("Select Alexander - The Burden of the Father")
-          end
-          while GetNodeText("ContentsFinder", 14) == "" do
-              yield("/wait 0.5")
           end
           if GetNodeText("ContentsFinder", 14) == "Alexander - The Burden of the Father" then
               yield("/pcall ContentsFinder True 12 0")
@@ -381,10 +375,10 @@
       while ((PathIsRunning() or PathfindInProgress()) and GetDistanceToPoint(valuex, valuey, valuez) > stopdistance) do
           yield("/wait 0.3")
           if IsInZone(445) then
-            local Y = GetTargetRawYPos()
-            if Y > 11 or Y == 0 then
-                break
-            end
+              local Y = GetTargetRawYPos()
+              if Y > 11 or Y == 0 then
+                  break
+              end
           end
       end
       PathStop()
@@ -443,7 +437,6 @@
   
   local loop = 1
   local LoopAmount
-  
   if SelfRepair and NpcRepair then
       NpcRepair = true
   end
