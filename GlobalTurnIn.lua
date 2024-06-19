@@ -7,9 +7,10 @@
     Author: UcanPatates  
 
     **********************
-    * Version  |  1.0.8  *
+    * Version  |  1.0.9  *
     **********************
 
+    -> 1.0.9  : Added the option to buy to the armory first to fill it up.
     -> 1.0.8  : Fixed a issue with deltascape shops not opening up correctly.
     -> 1.0.7  : Added Option to use tickets.
     -> 1.0.6  : Fix for faster buy with 2 different exchange items.
@@ -54,6 +55,9 @@ MaxItem = true
 -- true = buy one single item to fill up the inventory
 -- false = buy 1 of each item (Technically safer, but if you're already farming A4N... >.>
 
+MaxArmory = false
+-- do you want to fill your armory, MaxItem should be true to use this option.
+
 VendorTurnIn = false
 -- If you DON'T want FC points, and wanna stay off the marketboard
 -- use this to sell to your retainer, you'll lose some gil profit in the end, but you'll also stay more off the radar..
@@ -75,6 +79,220 @@ SpringBuyAmount = 4
 PedalBuyAmount = 2
 BoltBuyAmount = 1
 
+ItemIdArmoryTable =
+{
+ -- ArmoryHead = 3201
+ -- Deltascape
+    [19437] = 3201,
+    [19443] = 3201,
+    [19449] = 3201,
+    [19461] = 3201,
+    [19455] = 3201,
+    [19467] = 3201,
+    [19473] = 3201,
+ -- Gordian
+ -- MIDAN
+ -- Alexandiran
+    [16439] = 3201,
+    [16433] = 3201,
+    [16415] = 3201,
+    [16409] = 3201,
+    [16403] = 3201,
+    [16421] = 3201,
+    [16427] = 3201,
+
+ -- ArmoryBody = 3202
+ -- Deltascape
+    [19474] = 3202,
+    [19468] = 3202,
+    [19462] = 3202,
+    [19456] = 3202,
+    [19438] = 3202,
+    [19444] = 3202,
+    [19450] = 3202,
+ -- Gordian
+    [11461] = 3202,
+    [11460] = 3202,
+    [11459] = 3202,
+    [11458] = 3202,
+    [11455] = 3202,
+    [11456] = 3202,
+    [11457] = 3202,
+ -- MIDAN
+ -- Alexandrian
+    [16440] = 3202,
+    [16434] = 3202,
+    [16428] = 3202,
+    [16422] = 3202,
+    [16404] = 3202,
+    [16410] = 3202,
+    [16416] = 3202,
+
+ --ArmoryHands = 3203
+ -- Deltascape
+    [19475] = 3203,
+    [19469] = 3203,
+    [19463] = 3203,
+    [19457] = 3203,
+    [19439] = 3203,
+    [19445] = 3203,
+    [19451] = 3203,
+ -- Gordian
+    [11468] = 3203,
+    [11467] = 3203,
+    [11466] = 3203,
+    [11465] = 3203,
+    [11462] = 3203,
+    [11463] = 3203,
+    [11464] = 3203,
+ -- MIDAN
+ -- Alexandrian
+    [16441] = 3203,
+    [16435] = 3203,
+    [16429] = 3203,
+    [16423] = 3203,
+    [16405] = 3203,
+    [16411] = 3203,
+    [16417] = 3203,
+
+ --ArmoryLegs = 3205
+ -- Deltascape
+    [19476] = 3205,
+    [19470] = 3205,
+    [19464] = 3205,
+    [19458] = 3205,
+    [19440] = 3205,
+    [19446] = 3205,
+    [19452] = 3205,
+ -- Gordian
+    [11482] = 3205,
+    [11481] = 3205,
+    [11480] = 3205,
+    [11479] = 3205,
+    [11476] = 3205,
+    [11477] = 3205,
+    [11478] = 3205,
+ -- MIDAN
+ -- Alexandrian
+    [16442] = 3205,
+    [16436] = 3205,
+    [16430] = 3205,
+    [16424] = 3205,
+    [16406] = 3205,
+    [16412] = 3205,
+    [16418] = 3205,
+    
+ --ArmoryFeets = 3206
+ -- Deltascape
+    [19477] = 3206,
+    [19471] = 3206,
+    [19465] = 3206,
+    [19459] = 3206,
+    [19441] = 3206,
+    [19447] = 3206,
+    [19453] = 3206,
+ -- Gordian
+    [11489] = 3206,
+    [11488] = 3206,
+    [11487] = 3206,
+    [11486] = 3206,
+    [11483] = 3206,
+    [11484] = 3206,
+    [11485] = 3206,
+ -- MIDAN
+ -- Alexandrian
+    [16443] = 3206,
+    [16437] = 3206,
+    [16431] = 3206,
+    [16425] = 3206,
+    [16407] = 3206,
+    [16413] = 3206,
+    [16419] = 3206,
+
+ -- ArmoryEar = 3207
+ -- Deltascape
+    [19479] = 3207,
+    [19480] = 3207,
+    [19481] = 3207,
+    [19483] = 3207,
+    [19482] = 3207,
+ -- Gordian
+    [11490] = 3207,
+    [11491] = 3207,
+    [11492] = 3207,
+    [11494] = 3207,
+    [11493] = 3207,
+ -- MIDAN
+ -- Alexandrian
+    [16449] = 3207,
+    [16448] = 3207,
+    [16447] = 3207,
+    [16445] = 3207,
+    [16446] = 3207,
+
+ --ArmoryNeck = 3208
+ -- Deltascape
+    [19484] = 3208,
+    [19485] = 3208,
+    [19486] = 3208,
+    [19488] = 3208,
+    [19487] = 3208,
+ -- Gordian
+    [11495] = 3208,
+    [11496] = 3208,
+    [11497] = 3208,
+    [11499] = 3208,
+    [11498] = 3208,
+ -- MIDAN
+ -- Alexandrian
+    [16450] = 3208,
+    [16451] = 3208,
+    [16452] = 3208,
+    [16454] = 3208,
+    [16453] = 3208,
+
+ --ArmoryWrist = 3209
+ -- Deltascape
+    [19489] = 3209,
+    [19490] = 3209,
+    [19491] = 3209,
+    [19493] = 3209,
+    [19492] = 3209,
+ -- Gordian
+    [11500] = 3209,
+    [11501] = 3209,
+    [11502] = 3209,
+    [11504] = 3209,
+    [11503] = 3209,
+ -- MIDAN
+ -- Alexandrian
+    [16459] = 3209,
+    [16458] = 3209,
+    [16457] = 3209,
+    [16455] = 3209,
+    [16456] = 3209,
+
+ --ArmoryRings = 3300
+ -- Deltascape
+    [19494] = 3300,
+    [19495] = 3300,
+    [19496] = 3300,
+    [19498] = 3300,
+    [19497] = 3300,
+ -- Gordian
+    [11509] = 3300,
+    [11508] = 3300,
+    [11507] = 3300,
+    [11505] = 3300,
+    [11506] = 3300,
+ -- MIDAN
+ -- Alexandrian
+    [16464] = 3300,
+    [16463] = 3300,
+    [16462] = 3300,
+    [16460] = 3300,
+    [16461] = 3300,
+}
 
 ------------------------------------------------------------------------------
 -- Deltascape item ids / tables
@@ -420,7 +638,7 @@ function IsThereTradeItem()
     end
 
 
-----------------------------   GORDIAN   --------------------------------------------
+ ----------------------------   GORDIAN   --------------------------------------------
 
     GordianLensCount = GetItemCount(GordianLensID)
     GordianShaftCount = GetItemCount(GordianShaftID)
@@ -436,7 +654,7 @@ function IsThereTradeItem()
     math.floor(GordianPedalCount / PedalBuyAmount) +
     math.floor(GordianBoltCount / BoltBuyAmount)
 
-----------------------------   Alexandrian   --------------------------------------------
+ ----------------------------   Alexandrian   --------------------------------------------
 
     AlexandrianLensCount = GetItemCount(AlexandrianLensID)
     AlexandrianShaftCount = GetItemCount(AlexandrianShaftID)
@@ -452,7 +670,7 @@ function IsThereTradeItem()
     math.floor(AlexandrianPedalCount / PedalBuyAmount) +
     math.floor(AlexandrianBoltCount / BoltBuyAmount)
 
-------------------------------  Deltascape  ----------------------------------------------
+ ------------------------------  Deltascape  ----------------------------------------------
 
     DeltascapeLensCount = GetItemCount(DeltascapeLensID)
     DeltascapeShaftCount = GetItemCount(DeltascapeShaftID)
@@ -483,6 +701,9 @@ end
 function GetOUT()
     repeat
         yield("/wait 0.1")
+        if IsAddonVisible("SelectYesno") then
+            yield("/pcall SelectYesno true 0")
+        end
         if IsAddonVisible("SelectIconString") then
             yield("/pcall SelectIconString true -1")
         end
@@ -501,7 +722,12 @@ function GetOUT()
     until IsPlayerAvailable()
 end
 
-function TurnIn(TableName)
+function WhichArmoryItem(ItemToBuy)
+    local ArmoryId = ItemIdArmoryTable[ItemToBuy]
+    return ArmoryId
+end
+
+function TurnIn(TableName,MaxArmoryValue)
     local lastShopType = nil
     local LastIconShopType = nil
     local NpcName = "Sabina"
@@ -538,11 +764,16 @@ function TurnIn(TableName)
         local ItemCount = GetItemCount(ItemID)
         local ExpectedItemCount
 
-        if MaxItem then
-            ExpectedItemCount = ItemCount + math.max(1, math.floor(Amount / 2))
-        else
+        if MaxArmory then
             ExpectedItemCount = ItemCount + Amount
+        else
+            if MaxItem then
+                ExpectedItemCount = ItemCount + math.max(1, math.floor(Amount / 2))
+            else
+                ExpectedItemCount = ItemCount + Amount
+            end
         end
+
 
         while true do
             yield("/wait 0.12")
@@ -587,25 +818,38 @@ function TurnIn(TableName)
         local ItemAmount = GetItemCount(itemType)
         local GearAmount = GetItemCount(gearItem)
         local CanExchange = math.floor(ItemAmount / itemTypeBuy)
-        local SlotINV= GetInventoryFreeSlotCount()
+        local SlotINV = GetInventoryFreeSlotCount()
+        local ArmoryType = WhichArmoryItem(gearItem)
+        local SlotArmoryINV = GetFreeSlotsInContainer(ArmoryType)
 
         if CanExchange > 0 and GearAmount < 1 and SlotINV > 0 then
             LogInfo("SlotINV: "..SlotINV)
+            LogInfo("SlotArmoryINV: "..SlotArmoryINV)
             LogInfo("CanExchange: "..CanExchange)
             if shopType ~= lastShopType then
                 OpenShopMenu(iconShopType,shopType,NpcName)
                 lastShopType = shopType
             end
-            if MaxItem then
-                if CanExchange < SlotINV then
-                    Exchange(gearItem, pcallValue, CanExchange)
+            if MaxArmoryValue then
+                if SlotArmoryINV == 0 then
                 else
-                    Exchange(gearItem, pcallValue, SlotINV)
+                    if CanExchange < SlotArmoryINV then
+                        Exchange(gearItem, pcallValue, CanExchange)
+                    else
+                        Exchange(gearItem, pcallValue, SlotArmoryINV)
+                    end
                 end
             else
-                Exchange(gearItem, pcallValue, 1)
-            end
-
+                if MaxItem then
+                    if CanExchange < SlotINV then
+                        Exchange(gearItem, pcallValue, CanExchange)
+                    else
+                        Exchange(gearItem, pcallValue, SlotINV)
+                    end
+                else
+                    Exchange(gearItem, pcallValue, 1)
+                end
+            end    
             if LastIconShopType ~= nil and iconShopType ~= LastIconShopType then
                 GetOUT()
             end
@@ -692,19 +936,42 @@ function SummoningBellSell()
         yield("/wait 1")
         IsThereTradeItem()
     end
-    yield("/wait 1.5")
-    if IsAddonReady("SelectYesno") then
-        yield("/pcall SelectYesno true 0")
-    end
-    yield("/wait 6")
-    if IsAddonReady("RetainerList") then
-      yield("/pcall RetainerList true -1")
-    end
+    GetOUT()
 end
 
 -- Main code that runs it all
 
 LogInfo("Script has started")
+
+if MaxItem == false and MaxArmory then
+    MaxArmory = false
+    LogInfo("Wrong Option reverting MaxArmory.")
+end
+if MaxArmory then
+    if IsAddonReady("ConfigCharacter") then
+    else
+    yield("/characterconfig")
+    end
+
+    while not IsAddonReady("ConfigCharacter") do
+        yield("/wait 0.9")
+    end
+    yield("/pcall ConfigCharaItem true 18 286 1")
+    yield("/pcall ConfigCharacter true 0")
+    yield("/pcall ConfigCharacter true -1")
+else
+    if IsAddonReady("ConfigCharacter") then
+    else
+    yield("/characterconfig")
+    end
+
+    while not IsAddonReady("ConfigCharacter") do
+        yield("/wait 0.9")
+    end
+    yield("/pcall ConfigCharaItem true 18 286 0")
+    yield("/pcall ConfigCharacter true 0")
+    yield("/pcall ConfigCharacter true -1")
+end
 
 while IsThereTradeItem() do
     yield("/wait 0.1")
@@ -715,7 +982,10 @@ while IsThereTradeItem() do
             MountUp()
             WalkTo(-19.0, 211.0, -35.9, 1)
         end
-        TurnIn(SabinaTable)
+        if MaxArmory then
+            TurnIn(SabinaTable,true)
+        end
+        TurnIn(SabinaTable,false)
     elseif DeltascapeTurnInCount >= 1 then
         TeleportToRhalgr()
         local DistanceToGelfradus = GetDistanceToPoint(125.0,0.7,40.8)
@@ -723,7 +993,10 @@ while IsThereTradeItem() do
             MountUp()
             WalkTo(125.0,0.7,40.8, 1)
         end
-        TurnIn(GelfradusTable)
+        if MaxArmory then
+            TurnIn(GelfradusTable,true)
+        end
+        TurnIn(GelfradusTable,false)
     end
         
     if TotalExchangeItem > 0 then
