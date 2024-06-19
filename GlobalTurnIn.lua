@@ -7,9 +7,10 @@
     Author: UcanPatates  
 
     **********************
-    * Version  |  1.0.9  *
+    * Version  |  1.1.0  *
     **********************
 
+    -> 1.1.0  : Configuration for the empty inv slots.
     -> 1.0.9  : Added the option to buy to the armory first to fill it up.
     -> 1.0.8  : Fixed a issue with deltascape shops not opening up correctly.
     -> 1.0.7  : Added Option to use tickets.
@@ -56,7 +57,9 @@ MaxItem = true
 -- false = buy 1 of each item (Technically safer, but if you're already farming A4N... >.>
 
 MaxArmory = false
+MaxArmoryFreeSlot = 2
 -- do you want to fill your armory, MaxItem should be true to use this option.
+-- how many empty slots you want.
 
 VendorTurnIn = false
 -- If you DON'T want FC points, and wanna stay off the marketboard
@@ -821,6 +824,9 @@ function TurnIn(TableName,MaxArmoryValue)
         local SlotINV = GetInventoryFreeSlotCount()
         local ArmoryType = WhichArmoryItem(gearItem)
         local SlotArmoryINV = GetFreeSlotsInContainer(ArmoryType)
+        if MaxArmory then
+            SlotINV = SlotINV - MaxArmoryFreeSlot
+        end
 
         if CanExchange > 0 and GearAmount < 1 and SlotINV > 0 then
             LogInfo("SlotINV: "..SlotINV)
