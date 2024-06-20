@@ -8,9 +8,10 @@
     Author: UcanPatates  
 
     **********************
-    * Version  |  1.0.6  *
+    * Version  |  1.0.7  *
     **********************
 
+    -> 1.0.7  : Added Option to resend subs.
     -> 1.0.6  : Better duty select.
     -> 1.0.5  : Added automatic selection of the duty (not stolen from ice at all)
     -> 1.0.4  : Fixed the very rare case of not getting in the inn, now it walks up to the npc.
@@ -47,6 +48,7 @@
   -- numbers are loop numbers.
   
   ReasignRetainers = false
+  ResendSubs = false -- only supports Limsa , Ul'dah or gridania inn
   -- true means script will use AutoRetainer.
   -- false means it will continue even if your retainer is ready.
   
@@ -153,6 +155,7 @@
           yield("/wait 0.11")
           WhereAmI = GetZoneID()
           if GetCharacterCondition(45) then
+            yield("/wait 1")
           else
               if IsAddonVisible("Talk") then
                   yield("/click talk")
@@ -205,6 +208,7 @@
                       yield("/wait 0.1")
                       WhereAmI = GetZoneID()
                       if GetCharacterCondition(45) then
+                        yield("/wait 1")
                       else
                           if IsAddonVisible("SelectYesno") then
                               yield("/pcall SelectYesno true 0")
@@ -313,6 +317,9 @@
   end
   
   function MeshCheck()
+    local function Truncate1Dp(num)
+        return truncate and ("%.1f"):format(num) or num
+    end
       local was_ready = NavIsReady()
       if not NavIsReady() then
           while not NavIsReady() do
@@ -350,12 +357,12 @@
   end
   
   function DoAR()
-      if ARAnyWaitingToBeProcessed() and ReasignRetainers then
+      if ARRetainersWaitingToBeProcessed() and ReasignRetainers then
           yield("/target Summoning Bell")
           yield("/wait 0.1")
           if GetTargetName() == "Summoning Bell" and GetDistanceToTarget() <= 4.5 then
               yield("/interact")
-              while ARAnyWaitingToBeProcessed() do
+              while ARRetainersWaitingToBeProcessed() do
                   yield("/wait 1")
               end
               GetOUT()
@@ -367,6 +374,169 @@
           ClearTarget()
       end
       PlayerTest()
+      if ARSubsWaitingToBeProcessed() and ResendSubs and (IsInZone(177) or IsInZone(178) or IsInZone(179))then
+        local WhereToComeBack = GetZoneID()
+        yield("/li fc")
+        while WhereToComeBack == GetZoneID() do
+            yield("/wait 2")
+        end
+        PlayerTest()
+        local YardId = GetZoneID()
+        while YardId == GetZoneID() do
+            if GetCharacterCondition(45) then
+                yield("/wait 1")
+            else
+                if GetTargetName() ~= "Entrance" then
+                    yield("/target Entrance")
+                elseif IsAddonVisible("SelectYesno") then
+                    yield("/pcall SelectYesno true 0")
+                elseif GetDistanceToTarget() > 4  then
+                    local X = GetTargetRawXPos()
+                    local Y = GetTargetRawYPos()
+                    local Z = GetTargetRawZPos()
+                    WalkTo(X,Y,Z,4)
+                else
+                    yield("/interact")
+                end
+            end
+            yield("/wait 0.5")
+        end
+        PlayerTest()
+        local FcId = GetZoneID()
+        while FcId == GetZoneID()do
+            if GetCharacterCondition(45) then
+                yield("/wait 1")
+            else
+                if GetTargetName() ~= "Entrance to Additional Chambers" then
+                    yield("/target Entrance to Additional Chambers")
+                elseif GetDistanceToTarget() > 4 then
+                    local X = GetTargetRawXPos()
+                    local Y = GetTargetRawYPos()
+                    local Z = GetTargetRawZPos()
+                    WalkTo(X,Y,Z,4)
+                elseif IsAddonReady("SelectString") then
+                    yield("/pcall SelectString true 0")
+                else
+                    yield("/interact")
+                end
+                yield("/wait 0.5")
+            end
+        end
+        PlayerTest()
+        while not IsAddonReady("SelectString") do
+            if GetTargetName() ~= "Voyage Control Panel" then
+                yield("/target Voyage Control Panel")
+            elseif GetDistanceToTarget() > 4 then
+                local X = GetTargetRawXPos()
+                local Y = GetTargetRawYPos()
+                local Z = GetTargetRawZPos()
+                WalkTo(X,Y,Z,4)
+            else
+                yield("/interact")
+            end
+            yield("/wait 0.5")
+        end
+        while ARSubsWaitingToBeProcessed() do
+            yield("/wait 2")
+        end
+        GetOUT()
+        if WhereToComeBack == 177 then -- Limsa inn
+            local DidITeleport = GetZoneID()
+            while DidITeleport == GetZoneID() do
+                if GetCharacterCondition(45) then
+                    yield("/wait 1")
+                else
+                    if GetCharacterCondition(27) then
+                        yield("/wait 2")
+                    else
+                        yield("/tp limsa")
+                        yield("/wait 2")
+                    end
+                end
+            end
+            PlayerTest()
+            local GoInn = GetZoneID()
+            while GoInn == GetZoneID() do
+                if GetCharacterCondition(45) then
+                    yield("/wait 1")
+                else
+                    if GetTargetName() ~= "aetheryte" then
+                        yield("/target aetheryte")
+                    elseif GetDistanceToTarget() > 7 then
+                        local X = GetTargetRawXPos()
+                        local Y = GetTargetRawYPos()
+                        local Z = GetTargetRawZPos()
+                        WalkTo(X,Y,Z,7)
+                    else
+                        yield("/li Aftcastle")
+                        yield("/wait 2")
+                    end
+                    yield("/wait 0.5")
+                end
+            end
+            PlayerTest()
+            WalkTo(12.1,40.0,12.6,1)
+            GetInTheInn("Mytesyn")
+            PlayerTest()
+        end
+        if WhereToComeBack == 178 then -- Ul'dah inn
+            local DidITeleport = GetZoneID()
+            while DidITeleport == GetZoneID() do
+                if GetCharacterCondition(45) then
+                    yield("/wait 1")
+                else
+                    if GetCharacterCondition(27) then
+                        yield("/wait 2")
+                    else
+                        yield("/tp ul")
+                        yield("/wait 2")
+                    end
+                end
+            end
+            PlayerTest()
+            while IsPlayerAvailable() do
+                if GetCharacterCondition(45) then
+                    yield("/wait 1")
+                else
+                    if GetTargetName() ~= "aetheryte" then
+                        yield("/target aetheryte")
+                    elseif GetDistanceToTarget() > 7 then
+                        local X = GetTargetRawXPos()
+                        local Y = GetTargetRawYPos()
+                        local Z = GetTargetRawZPos()
+                        WalkTo(X,Y,Z,7)
+                    else
+                        yield("/li Adventurers")
+                        yield("/wait 2")
+                    end
+                    yield("/wait 0.5")
+                end
+            end
+            PlayerTest()
+            WalkTo(29.1,7.0,-81.1,1)
+            GetInTheInn("Otopa Pottopa")
+            PlayerTest()
+        end
+        if WhereToComeBack == 179 then -- New gridania inn
+            local DidITeleport = GetZoneID()
+            while DidITeleport == GetZoneID() do
+                if GetCharacterCondition(45) then
+                    yield("/wait 1")
+                else
+                    if GetCharacterCondition(27) then
+                        yield("/wait 2")
+                    else
+                        yield("/tp Gridania")
+                        yield("/wait 2")
+                    end
+                end
+            end
+            PlayerTest()
+            WalkTo(26.0,-8.0,102.0,1)
+            GetInTheInn("Antoinaut")
+            PlayerTest()
+        end
+      end
   end
   
   function WalkTo(valuex, valuey, valuez, stopdistance)
