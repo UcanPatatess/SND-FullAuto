@@ -158,7 +158,7 @@
             yield("/wait 1")
           else
               if IsAddonVisible("Talk") then
-                  yield("/click talk")
+                  yield("/click  Talk_Click")
               elseif IsAddonVisible("SelectString") then
                   yield("/pcall SelectString true 0")
               elseif GetTargetName() ~= Name then

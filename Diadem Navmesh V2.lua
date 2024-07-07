@@ -834,7 +834,7 @@ if IsInZone(886) then
         elseif GetCharacterCondition(32, false) then
             yield("/interact")
         end
-        if IsAddonVisible("Talk") then yield("/click talk") end
+        if IsAddonVisible("Talk") then yield("/click  Talk_Click") end
         if IsAddonVisible("SelectString") then yield("/pcall SelectString true 0") end
         if IsAddonVisible("SelectYesno") then yield("/pcall SelectYesno true 0") end
         yield("/wait 0.5")

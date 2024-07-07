@@ -553,7 +553,7 @@ function WeGoIn()
             elseif GetCharacterCondition(32, false) then
                 yield("/interact")
             elseif IsAddonVisible("Talk") then
-                yield("/click talk")
+                yield("/click  Talk_Click")
             elseif IsAddonVisible("SelectString") then
                 yield("/pcall SelectString true 0")
             elseif IsAddonVisible("SelectYesno") then
