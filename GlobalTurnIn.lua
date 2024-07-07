@@ -7,9 +7,10 @@
     Author: UcanPatates  
 
     **********************
-    * Version  |  1.1.0  *
+    * Version  |  1.1.1  *
     **********************
 
+    -> 1.1.1  : Fixed a crash with the gc town teleportation.
     -> 1.1.0  : Configuration for the empty inv slots.
     -> 1.0.9  : Added the option to buy to the armory first to fill it up.
     -> 1.0.8  : Fixed a issue with deltascape shops not opening up correctly.
@@ -620,8 +621,18 @@ function TeleportGC()
         if GetCharacterCondition(27) then
             yield("/wait 2")
         else
-            TeleportToGCTown(UseTicket)
-            yield("/wait 2")
+            if UseTicket then
+                TeleportToGCTown(UseTicket)
+                else
+                if GetPlayerGC() == 1 then
+                    yield("/tp Limsa")
+                elseif GetPlayerGC() == 2 then
+                    yield("/tp Gridania")
+                elseif GetPlayerGC() == 3 then
+                    yield("/tp Ul")
+                end
+                yield("/wait 2")
+            end
         end
     end
     PlayerTest()
@@ -714,13 +725,13 @@ function GetOUT()
             yield("/callback SelectString true -1")
         end
         if IsAddonVisible("ShopExchangeItem") then
-            yield("/callback ShopExchangeItem True -1")
+            yield("/callback ShopExchangeItem true -1")
         end
         if IsAddonVisible("RetainerList") then
-            yield("/callback RetainerList True -1")
+            yield("/callback RetainerList true -1")
         end
         if IsAddonVisible("InventoryRetainer") then
-            yield("/callback InventoryRetainer True -1")
+            yield("/callback InventoryRetainer true -1")
         end
     until IsPlayerAvailable()
 end
@@ -743,7 +754,7 @@ function TurnIn(TableName,MaxArmoryValue)
 
     local function OpenShopMenu(SelectIconString,SelectString,Npc)
         while IsAddonVisible("ShopExchangeItem") do
-            yield("/callback ShopExchangeItem True -1")
+            yield("/callback ShopExchangeItem true -1")
             yield("/wait 0.1")
         end
         while not IsAddonVisible("ShopExchangeItem") do
