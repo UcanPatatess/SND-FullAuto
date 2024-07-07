@@ -79,13 +79,13 @@ end
 function TurnIn()
     if IsIsgardianOpen() then
         if GetNodeText("HWDSupply" ,16) == "10/10" then
-            yield("/pcall HWDSupply true -1")
+            yield("/callback HWDSupply true -1")
             yield("/e Your Kupo Vouchers are full !!!")
         else    
             yield("/wait 0.1")
-            yield("/pcall HWDSupply true 1 "..WhicOne)
+            yield("/callback HWDSupply true 1 "..WhicOne)
             if GetNodeText("_TextError",1) == "You do not possess the requested item." and IsAddonVisible("_TextError") then
-                yield("/pcall HWDSupply true -1")
+                yield("/callback HWDSupply true -1")
             end
         end
     end
@@ -120,7 +120,7 @@ while AmIThere(886) do
     yield("/wait "..TurnInWait)
     if GetInventoryFreeSlotCount() == 0 and AmIThere(886) then
         if IsAddonReady("RecipeNote") then
-            yield("/pcall RecipeNote true -1")
+            yield("/callback RecipeNote true -1")
         end
         WalkTo(49.7,-16.0,169.6)
         yield("/target Potkin")

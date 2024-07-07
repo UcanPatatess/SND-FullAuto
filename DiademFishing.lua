@@ -134,14 +134,14 @@ function BuyPcall(ItemID, NpcName, ShopAddonName, SelectIconString, WhichSlotToB
             if GetTargetName() ~= NpcName then
                 yield("/target " .. NpcName)
             elseif IsAddonVisible("SelectIconString") then
-                yield("/pcall SelectIconString true "..SelectIconString)
+                yield("/callback SelectIconString true "..SelectIconString)
             elseif IsAddonVisible("SelectYesno") then
-                yield("/pcall SelectYesno true 0")
+                yield("/callback SelectYesno true 0")
                 yield("/wait 0.1")
             elseif ItemCount  >= ExpectedItemCount then
                 break --Exit the loop
             elseif IsAddonVisible(ShopAddonName) then
-                yield("/pcall " .. ShopAddonName .. " true 0 " .. Slot .. " " .. Amount)
+                yield("/callback " .. ShopAddonName .. " true 0 " .. Slot .. " " .. Amount)
                 yield("/wait 0.1")
             else
                 yield("/interact")
@@ -159,7 +159,7 @@ function BuyPcall(ItemID, NpcName, ShopAddonName, SelectIconString, WhichSlotToB
     end
 
     while IsAddonVisible(ShopAddonName) do
-        yield("/pcall " .. ShopAddonName .. " true -1")
+        yield("/callback " .. ShopAddonName .. " true -1")
         yield("/wait 0.1")
     end
 end
@@ -233,7 +233,7 @@ function LetsBuySomeStuff()
         end
 
         while IsAddonVisible("Shop") do
-            yield("/pcall Shop true -1")
+            yield("/callback Shop true -1")
             yield("/wait 0.1")
         end
         PlayerTest()
@@ -307,19 +307,19 @@ function NpcRepairMenu(Name)
             yield("/target "..Name)
             yield("/wait 0.1")
         elseif IsAddonVisible("SelectIconString") then
-            yield("/pcall SelectIconString true 1")
+            yield("/callback SelectIconString true 1")
         elseif IsAddonVisible("SelectYesno") then
-            yield("/pcall SelectYesno true 0")
+            yield("/callback SelectYesno true 0")
             yield("/wait 0.1")
         elseif IsAddonVisible("Repair") then
-            yield("/pcall Repair true 0")
+            yield("/callback Repair true 0")
         else
             yield("/interact")
         end
         yield("/wait 0.1")
     end
     while IsAddonVisible("Repair") do
-        yield("/pcall Repair true -1")
+        yield("/callback Repair true -1")
         yield("/wait 0.1")
     end
     LogInfo("[RepairNpc]Got Repaired by "..Name .." .")
@@ -331,7 +331,7 @@ function Repair()
             yield("/generalaction repair")
             yield("/wait 0.5")
         end
-        yield("/pcall Repair true 0")
+        yield("/callback Repair true 0")
         yield("/wait 0.1")
         if GetNodeText("_TextError", 1) == "You do not have the dark matter required to repair that item." and
             IsAddonVisible("_TextError") then
@@ -345,14 +345,14 @@ function Repair()
             end
         end
         if IsAddonVisible("SelectYesno") then
-            yield("/pcall SelectYesno true 0")
+            yield("/callback SelectYesno true 0")
         end
         while GetCharacterCondition(39) do
             yield("/wait 1")
         end
         yield("/wait 1")
         if IsAddonVisible("Repair") then
-            yield("/pcall Repair true -1")
+            yield("/callback Repair true -1")
         end
     end
 
@@ -547,7 +547,7 @@ function WeGoIn()
         end
         if distance and distance < 4 then
             if IsAddonVisible("ContentsFinderConfirm") then
-                yield("/pcall ContentsFinderConfirm true 8")
+                yield("/callback ContentsFinderConfirm true 8")
                 yield("/wait 1.5")
             elseif GetTargetName() ~= "Aurvael" then
                 yield("/target Aurvael")
@@ -556,9 +556,9 @@ function WeGoIn()
             elseif IsAddonVisible("Talk") then
                 yield("/click  Talk_Click")
             elseif IsAddonVisible("SelectString") then
-                yield("/pcall SelectString true 0")
+                yield("/callback SelectString true 0")
             elseif IsAddonVisible("SelectYesno") then
-                yield("/pcall SelectYesno true 0")
+                yield("/callback SelectYesno true 0")
             end
             yield("/wait 0.5")
         end

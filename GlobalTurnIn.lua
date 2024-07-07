@@ -705,22 +705,22 @@ function GetOUT()
     repeat
         yield("/wait 0.1")
         if IsAddonVisible("SelectYesno") then
-            yield("/pcall SelectYesno true 0")
+            yield("/callback SelectYesno true 0")
         end
         if IsAddonVisible("SelectIconString") then
-            yield("/pcall SelectIconString true -1")
+            yield("/callback SelectIconString true -1")
         end
         if IsAddonVisible("SelectString") then
-            yield("/pcall SelectString true -1")
+            yield("/callback SelectString true -1")
         end
         if IsAddonVisible("ShopExchangeItem") then
-            yield("/pcall ShopExchangeItem True -1")
+            yield("/callback ShopExchangeItem True -1")
         end
         if IsAddonVisible("RetainerList") then
-            yield("/pcall RetainerList True -1")
+            yield("/callback RetainerList True -1")
         end
         if IsAddonVisible("InventoryRetainer") then
-            yield("/pcall InventoryRetainer True -1")
+            yield("/callback InventoryRetainer True -1")
         end
     until IsPlayerAvailable()
 end
@@ -743,7 +743,7 @@ function TurnIn(TableName,MaxArmoryValue)
 
     local function OpenShopMenu(SelectIconString,SelectString,Npc)
         while IsAddonVisible("ShopExchangeItem") do
-            yield("/pcall ShopExchangeItem True -1")
+            yield("/callback ShopExchangeItem True -1")
             yield("/wait 0.1")
         end
         while not IsAddonVisible("ShopExchangeItem") do
@@ -751,9 +751,9 @@ function TurnIn(TableName,MaxArmoryValue)
             if GetTargetName() ~= Npc then
                 yield("/target "..Npc)
             elseif IsAddonVisible("SelectIconString") then
-                yield("/pcall SelectIconString true "..SelectIconString)
+                yield("/callback SelectIconString true "..SelectIconString)
             elseif IsAddonVisible("SelectString") then
-                yield("/pcall SelectString true " .. SelectString)
+                yield("/callback SelectString true " .. SelectString)
             else
                 yield("/interact")
             end
@@ -783,15 +783,15 @@ function TurnIn(TableName,MaxArmoryValue)
             ItemCount = GetItemCount(ItemID)
 
             if IsAddonVisible("SelectYesno") then
-                yield("/pcall SelectYesno true 0")
+                yield("/callback SelectYesno true 0")
             elseif IsAddonVisible("Request") then
                 yield("/wait 0.3")
             elseif IsAddonVisible("ShopExchangeItemDialog") then
-                yield("/pcall ShopExchangeItemDialog true 0")
+                yield("/callback ShopExchangeItemDialog true 0")
             elseif ItemCount >= ExpectedItemCount then 
                 break
             elseif IsAddonVisible("ShopExchangeItem") then
-                yield("/pcall ShopExchangeItem true 0 " .. List .. " " .. Amount)
+                yield("/callback ShopExchangeItem true 0 " .. List .. " " .. Amount)
                 yield("/wait 0.6")
             end
 
@@ -800,7 +800,7 @@ function TurnIn(TableName,MaxArmoryValue)
                 Amount = newAmount
                 ExpectedItemCount = ItemCount + Amount
                 if IsAddonVisible("Request") then
-                    yield("/pcall Request true -1")
+                    yield("/callback Request true -1")
                 end
                 LogInfo("[Exchange] Adjusting amount to " .. Amount .. " for item ID " .. ItemID)
             end
@@ -962,9 +962,9 @@ if MaxArmory then
     while not IsAddonReady("ConfigCharacter") do
         yield("/wait 0.9")
     end
-    yield("/pcall ConfigCharaItem true 18 286 1")
-    yield("/pcall ConfigCharacter true 0")
-    yield("/pcall ConfigCharacter true -1")
+    yield("/callback ConfigCharaItem true 18 286 1")
+    yield("/callback ConfigCharacter true 0")
+    yield("/callback ConfigCharacter true -1")
 else
     if IsAddonReady("ConfigCharacter") then
     else
@@ -974,9 +974,9 @@ else
     while not IsAddonReady("ConfigCharacter") do
         yield("/wait 0.9")
     end
-    yield("/pcall ConfigCharaItem true 18 286 0")
-    yield("/pcall ConfigCharacter true 0")
-    yield("/pcall ConfigCharacter true -1")
+    yield("/callback ConfigCharaItem true 18 286 0")
+    yield("/callback ConfigCharacter true 0")
+    yield("/callback ConfigCharacter true -1")
 end
 
 while IsThereTradeItem() do
