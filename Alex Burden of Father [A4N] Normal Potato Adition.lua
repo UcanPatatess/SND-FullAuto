@@ -8,9 +8,10 @@
     Author: UcanPatates  
 
     **********************
-    * Version  |  1.0.7  *
+    * Version  |  1.0.8  *
     **********************
 
+    -> 1.0.8  : Update for DT changed the /click talk to /click  Talk_Click.
     -> 1.0.7  : Added Option to resend subs.
     -> 1.0.6  : Better duty select.
     -> 1.0.5  : Added automatic selection of the duty (not stolen from ice at all)
