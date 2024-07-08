@@ -7,9 +7,9 @@
 
     Author: UcanPatates  
 
-    **********************
-    * Version  |  1.0.8  *
-    **********************
+    ************************
+    * Version  |  1.0.8.1  *
+    ************************
 
     -> 1.0.8  : Update for DT changed the /click talk to /click  Talk_Click.
     -> 1.0.7  : Added Option to resend subs.
@@ -112,7 +112,7 @@
   function setSNDPropertyIfNotSet(propertyName)
       if GetSNDProperty(propertyName) == false then
           SetSNDProperty(propertyName, "true")
-          LogInfo("[SetSNDPropertys] " .. propertyName .. " set to True")
+          LogInfo("[SetSNDPropertys] " .. propertyName .. " set to true")
       end
   end
   
@@ -265,10 +265,10 @@
               yield("/wait 0.1")
               if GetNodeText("ContentsFinder", 14) == "Alexander - The Burden of the Father" then 
               else
-                  yield("/callback ContentsFinder True 12 1")
+                  yield("/callback ContentsFinder true 12 1")
                   for i = 1, 501 do
                       if IsAddonReady("ContentsFinder") then
-                          yield("/callback ContentsFinder True 3 "..i)
+                          yield("/callback ContentsFinder true 3 "..i)
                           yield("/wait 0.1")
                           if GetNodeText("ContentsFinder", 14) == "Alexander - The Burden of the Father" then
                               FoundTheDuty = true
@@ -285,15 +285,15 @@
               end
           end
           if GetNodeText("ContentsFinder", 14) == "Alexander - The Burden of the Father" then
-              yield("/callback ContentsFinder True 12 0")
+              yield("/callback ContentsFinder true 12 0")
               while WhereAmI == GetZoneID() do
                   if IsAddonVisible("ContentsFinderConfirm") then
-                      yield("/callback ContentsFinderConfirm True 8")
+                      yield("/callback ContentsFinderConfirm true 8")
                   end
                   yield("/wait 1")
               end
           else
-              yield("/callback ContentsFinder True 12 1")
+              yield("/callback ContentsFinder true 12 1")
               yield("Select the correct Duty and start the script again.")
               yield("/snd stop")
           end
@@ -346,13 +346,13 @@
               yield("/callback SelectString true -1")
           end
           if IsAddonVisible("ShopExchangeItem") then
-              yield("/callback ShopExchangeItem True -1")
+              yield("/callback ShopExchangeItem true -1")
           end
           if IsAddonVisible("RetainerList") then
-              yield("/callback RetainerList True -1")
+              yield("/callback RetainerList true -1")
           end
           if IsAddonVisible("InventoryRetainer") then
-              yield("/callback InventoryRetainer True -1")
+              yield("/callback InventoryRetainer true -1")
           end
       until IsPlayerAvailable()
   end
