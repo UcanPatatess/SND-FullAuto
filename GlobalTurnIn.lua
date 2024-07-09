@@ -7,9 +7,10 @@
     Author: UcanPatates  
 
     **********************
-    * Version  |  1.1.1  *
+    * Version  |  1.1.2  *
     **********************
 
+    -> 1.1.2  : DT Update for callbacks.
     -> 1.1.1  : Fixed a crash with the gc town teleportation.
     -> 1.1.0  : Configuration for the empty inv slots.
     -> 1.0.9  : Added the option to buy to the armory first to fill it up.
@@ -973,7 +974,9 @@ if MaxArmory then
     while not IsAddonReady("ConfigCharacter") do
         yield("/wait 0.9")
     end
-    yield("/callback ConfigCharaItem true 18 286 1")
+    yield("/callback ConfigCharacter true 10 0 20")
+    yield("/wait 0.1")
+    yield("/callback ConfigCharaItem true 18 298 1")
     yield("/callback ConfigCharacter true 0")
     yield("/callback ConfigCharacter true -1")
 else
@@ -985,7 +988,9 @@ else
     while not IsAddonReady("ConfigCharacter") do
         yield("/wait 0.9")
     end
-    yield("/callback ConfigCharaItem true 18 286 0")
+    yield("/callback ConfigCharacter true 10 0 20")
+    yield("/wait 0.1")
+    yield("/callback ConfigCharaItem true 18 298 0")
     yield("/callback ConfigCharacter true 0")
     yield("/callback ConfigCharacter true -1")
 end
