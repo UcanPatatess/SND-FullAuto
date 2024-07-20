@@ -8,7 +8,7 @@
     Author: UcanPatates  
 
     ************************
-    * Version  |  1.0.8.1  *
+    * Version  |  1.0.8.2  *
     ************************
 
     -> 1.0.8  : Update for DT changed the /click talk to /click  Talk_Click.
@@ -131,19 +131,19 @@
               yield("/target " .. Name)
               yield("/wait 0.1")
           elseif IsAddonVisible("SelectIconString") then
-              yield("/callback SelectIconString true 1")
+              yield("/pcall SelectIconString true 1")
           elseif IsAddonVisible("SelectYesno") then
-              yield("/callback SelectYesno true 0")
+              yield("/pcall SelectYesno true 0")
               yield("/wait 0.1")
           elseif IsAddonVisible("Repair") then
-              yield("/callback Repair true 0")
+              yield("/pcall Repair true 0")
           else
               yield("/interact")
           end
-          yield("/wait 0.1")
+          yield("/wait 0.3")
       end
       while IsAddonVisible("Repair") do
-          yield("/callback Repair true -1")
+          yield("/pcall Repair true -1")
           yield("/wait 0.1")
       end
       LogInfo("[RepairNpc]Got Repaired by " .. Name .. " .")
@@ -161,7 +161,7 @@
               if IsAddonVisible("Talk") then
                   yield("/click  Talk_Click")
               elseif IsAddonVisible("SelectString") then
-                  yield("/callback SelectString true 0")
+                  yield("/pcall SelectString true 0")
               elseif GetTargetName() ~= Name then
                   yield("/target " .. Name)
               else
@@ -178,7 +178,7 @@
               yield("/generalaction repair")
               yield("/wait 0.5")
           end
-          yield("/callback Repair true 0")
+          yield("/pcall Repair true 0")
           yield("/wait 0.1")
           if GetNodeText("_TextError", 1) == "You do not have the dark matter required to repair that item." and
               IsAddonVisible("_TextError") then
@@ -186,14 +186,14 @@
               LogInfo("[Repair] Set to False not enough dark matter")
           end
           if IsAddonVisible("SelectYesno") then
-              yield("/callback SelectYesno true 0")
+              yield("/pcall SelectYesno true 0")
           end
           while GetCharacterCondition(39) do
               yield("/wait 1")
           end
           yield("/wait 1")
           if IsAddonVisible("Repair") then
-              yield("/callback Repair true -1")
+              yield("/pcall Repair true -1")
           end
           yield("/wait 2")
       end
@@ -212,7 +212,7 @@
                         yield("/wait 1")
                       else
                           if IsAddonVisible("SelectYesno") then
-                              yield("/callback SelectYesno true 0")
+                              yield("/pcall SelectYesno true 0")
                           else
                               yield("/wait 0.1")
                               yield("/interact")
@@ -261,14 +261,14 @@
           end
           if FirstTime then
               SetDFUnrestricted(true)
-              yield("/callback ContentsFinder true 1 6")
+              yield("/pcall ContentsFinder true 1 6")
               yield("/wait 0.1")
               if GetNodeText("ContentsFinder", 14) == "Alexander - The Burden of the Father" then 
               else
-                  yield("/callback ContentsFinder true 12 1")
+                  yield("/pcall ContentsFinder true 12 1")
                   for i = 1, 501 do
                       if IsAddonReady("ContentsFinder") then
-                          yield("/callback ContentsFinder true 3 "..i)
+                          yield("/pcall ContentsFinder true 3 "..i)
                           yield("/wait 0.1")
                           if GetNodeText("ContentsFinder", 14) == "Alexander - The Burden of the Father" then
                               FoundTheDuty = true
@@ -285,15 +285,15 @@
               end
           end
           if GetNodeText("ContentsFinder", 14) == "Alexander - The Burden of the Father" then
-              yield("/callback ContentsFinder true 12 0")
+              yield("/pcall ContentsFinder true 12 0")
               while WhereAmI == GetZoneID() do
                   if IsAddonVisible("ContentsFinderConfirm") then
-                      yield("/callback ContentsFinderConfirm true 8")
+                      yield("/pcall ContentsFinderConfirm true 8")
                   end
                   yield("/wait 1")
               end
           else
-              yield("/callback ContentsFinder true 12 1")
+              yield("/pcall ContentsFinder true 12 1")
               yield("Select the correct Duty and start the script again.")
               yield("/snd stop")
           end
@@ -340,19 +340,19 @@
       repeat
           yield("/wait 0.1")
           if IsAddonVisible("SelectIconString") then
-              yield("/callback SelectIconString true -1")
+              yield("/pcall SelectIconString true -1")
           end
           if IsAddonVisible("SelectString") then
-              yield("/callback SelectString true -1")
+              yield("/pcall SelectString true -1")
           end
           if IsAddonVisible("ShopExchangeItem") then
-              yield("/callback ShopExchangeItem true -1")
+              yield("/pcall ShopExchangeItem true -1")
           end
           if IsAddonVisible("RetainerList") then
-              yield("/callback RetainerList true -1")
+              yield("/pcall RetainerList true -1")
           end
           if IsAddonVisible("InventoryRetainer") then
-              yield("/callback InventoryRetainer true -1")
+              yield("/pcall InventoryRetainer true -1")
           end
       until IsPlayerAvailable()
   end
@@ -390,7 +390,7 @@
                 if GetTargetName() ~= "Entrance" then
                     yield("/target Entrance")
                 elseif IsAddonVisible("SelectYesno") then
-                    yield("/callback SelectYesno true 0")
+                    yield("/pcall SelectYesno true 0")
                 elseif GetDistanceToTarget() > 4  then
                     local X = GetTargetRawXPos()
                     local Y = GetTargetRawYPos()
@@ -416,7 +416,7 @@
                     local Z = GetTargetRawZPos()
                     WalkTo(X,Y,Z,4)
                 elseif IsAddonReady("SelectString") then
-                    yield("/callback SelectString true 0")
+                    yield("/pcall SelectString true 0")
                 else
                     yield("/interact")
                 end
