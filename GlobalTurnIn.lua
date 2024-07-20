@@ -7,9 +7,10 @@
     Author: UcanPatates  
 
     **********************
-    * Version  |  1.1.2  *
+    * Version  |  1.1.3  *
     **********************
 
+    -> 1.1.3  : Added a check for the Automaton Plugin.
     -> 1.1.2  : Automaton Update for merging the stacks.
     -> 1.1.1  : Fixed a crash with the gc town teleportation.
     -> 1.1.0  : Configuration for the empty inv slots.
@@ -43,6 +44,7 @@
     -> Deliveroo : https://plugins.carvel.li/
     -> vnavmesh : https://puni.sh/api/repository/veyn
     -> Pandora's Box : https://love.puni.sh/ment.json
+    -> Automaton : https://puni.sh/api/repository/croizat (you will need to enable auto merge.)
     
     **************
     *  SETTINGS  *
@@ -743,11 +745,13 @@ function WhichArmoryItem(ItemToBuy)
 end
 
 function TurnIn(TableName,MaxArmoryValue)
-    yield("/inventory")
-    yield("/wait 0.1")
-    yield("/inventory")
-    yield("/wait 0.1")
-    yield("/inventory")
+    if HasPlugin("Automaton") then
+        yield("/inventory")
+        yield("/wait 0.1")
+        yield("/inventory")
+        yield("/wait 0.1")
+        yield("/inventory")
+    end
     local lastShopType = nil
     local LastIconShopType = nil
     local NpcName = "Sabina"
