@@ -7,10 +7,11 @@
 
     Author: UcanPatates  
 
-    ************************
-    * Version  |  1.0.8.2  *
-    ************************
+    **********************
+    * Version  |  1.0.9  *
+    **********************
 
+    -> 1.0.9  : Update for the click change(again)
     -> 1.0.8  : Update for DT changed the /click talk to /click  Talk_Click.
     -> 1.0.7  : Added Option to resend subs.
     -> 1.0.6  : Better duty select.
@@ -159,7 +160,7 @@
             yield("/wait 1")
           else
               if IsAddonVisible("Talk") then
-                  yield("/click  Talk_Click")
+                  yield("/click Talk Click")
               elseif IsAddonVisible("SelectString") then
                   yield("/pcall SelectString true 0")
               elseif GetTargetName() ~= Name then
