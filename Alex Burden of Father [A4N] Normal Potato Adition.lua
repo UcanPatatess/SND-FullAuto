@@ -631,7 +631,9 @@
   if SelfRepair and NpcRepair then
       NpcRepair = true
   end
-  
+  if MovementType == "Visland " and ResendSubs then
+    ResendSubs = false
+  end
   if HowManyLoops == "true" or HowManyLoops == "0" then
       LoopAmount = true
   else
