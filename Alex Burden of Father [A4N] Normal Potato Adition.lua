@@ -8,9 +8,10 @@
     Author: UcanPatates  
 
     **********************
-    * Version  |  1.0.9  *
+    * Version  |  1.1.0  *
     **********************
 
+    -> 1.1.0  : Added Visland for pals who is crashing with Vnavmesh. (sub resending will not work if you are using visland)
     -> 1.0.9  : Update for the click change(again)
     -> 1.0.8  : Update for DT changed the /click talk to /click  Talk_Click.
     -> 1.0.7  : Added Option to resend subs.
@@ -36,6 +37,7 @@
 
     -> SomethingNeedDoing (Expanded Edition) [Make sure to press the lua button when you import this] -> https://puni.sh/api/repository/croizat
     -> vnavmesh : https://puni.sh/api/repository/veyn
+    -> Visland : https://puni.sh/api/repository/veyn
     -> Pandora's Box : https://love.puni.sh/ment.json
     -> Rotation Solver : https://puni.sh/api/repository/croizat or https://raw.githubusercontent.com/FFXIV-CombatReborn/CombatRebornRepo/main/pluginmaster.json
     -> AutoRetainer : https://love.puni.sh/ment.json
@@ -49,6 +51,9 @@
   -- true means infinite loops.
   -- numbers are loop numbers.
   
+  MovementType = "Vnavmesh"
+  -- Options: VNavmesh | Visland 
+
   ReasignRetainers = false
   ResendSubs = false -- only supports Limsa , Ul'dah or gridania inn
   -- true means script will use AutoRetainer.
@@ -541,21 +546,35 @@
       end
   end
   
-  function WalkTo(valuex, valuey, valuez, stopdistance)
-      MeshCheck()
-      PathfindAndMoveTo(valuex, valuey, valuez, false)
-      while ((PathIsRunning() or PathfindInProgress()) and GetDistanceToPoint(valuex, valuey, valuez) > stopdistance) do
-          yield("/wait 0.3")
-          if IsInZone(445) then
-              local Y = GetTargetRawYPos()
-              if Y > 11 or Y == 0 then
-                  break
-              end
-          end
-      end
-      PathStop()
-      LogInfo("[WalkTo] Completed")
-  end
+    function WalkTo(valuex, valuey, valuez, stopdistance)
+        MeshCheck()
+        if MovementType == "Visland" then
+            yield("/visland moveto " .. valuex .. " " .. valuey .. " " .. valuez)
+            while GetDistanceToPoint(valuex, valuey, valuez) > stopdistance do 
+                yield("/wait 0.33")
+                if IsInZone(445) then
+                    local Y = GetTargetRawYPos()
+                    if Y > 11 or Y == 0 then
+                        break
+                    end
+                end
+            end
+            yield("/visland stop")
+        else
+            PathfindAndMoveTo(valuex, valuey, valuez, false)
+            while ((PathIsRunning() or PathfindInProgress()) and GetDistanceToPoint(valuex, valuey, valuez) > stopdistance) do
+                yield("/wait 0.3")
+                if IsInZone(445) then
+                    local Y = GetTargetRawYPos()
+                    if Y > 11 or Y == 0 then
+                        break
+                    end
+                end
+            end
+            PathStop()
+        end
+        LogInfo("[WalkTo] Completed")
+    end
   
   function Fight()
       yield("/rotation manual")
@@ -568,13 +587,13 @@
                   local Count = Allcount()
                   while Count < ExpectedCount do
                       Count = Allcount()
-                      WalkTo(-0.0, 10.5, -8.4, 0.3)
+                      WalkTo(-0.0, 10.5, -8.4, 0.1)
                       yield("/wait 0.3")
                       Count = Allcount()
-                      WalkTo(-2.0, 10.5, -6.4, 0.3)
+                      WalkTo(-2.0, 10.5, -6.4, 0.1)
                       yield("/wait 0.3")
                       Count = Allcount()
-                      WalkTo(1.9, 10.6, -6.7, 0.3)
+                      WalkTo(1.9, 10.6, -6.7, 0.1)
                       yield("/wait 0.3")
                       Count = Allcount()
                   end
