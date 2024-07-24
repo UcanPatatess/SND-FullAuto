@@ -7,9 +7,10 @@
     Author: UcanPatates  
 
     **********************
-    * Version  |  1.1.1  *
+    * Version  |  1.1.2  *
     **********************
 
+    -> 1.1.2  : Update to click command for SND.
     -> 1.1.1  : Update for DT changed the /click talk to /click  Talk_Click.
     -> 1.1.0  : Changed the forced preset and some fixes.
     -> 1.0.9  : Now purchases the exact amount of bait and dark matter.
@@ -554,7 +555,7 @@ function WeGoIn()
             elseif GetCharacterCondition(32, false) then
                 yield("/interact")
             elseif IsAddonVisible("Talk") then
-                yield("/click  Talk_Click")
+                yield("/click Talk Click")
             elseif IsAddonVisible("SelectString") then
                 yield("/callback SelectString true 0")
             elseif IsAddonVisible("SelectYesno") then
