@@ -1,26 +1,24 @@
 --[[
     
-    ********************************
-    *  Sharlayan [EW] Leve Turnin  * 
-    ********************************
+    *********************************
+    *  Tuliyollal [DT] Leve Turnin  * 
+    *********************************
 
     *************************
     *  Author: UcanPatates  *
     *************************
 
     **********************
-    * Version  |  1.0.2  *
+    * Version  |  1.0.0  *
     **********************
 
-    1.0.2 --> quick fix for the wrong ids.
-    1.0.1 --> click update
     1.0.0 --> Working leve TurnIn.
 
     ***************
     * Description *
     ***************
 
-    Automated Leve Turnin. (Currently only set for Old Sharlayan)
+    Automated Leve Turnin.
 	**MAKE SURE TO BE ON CUL WHEN TURNING THESE IN**
 
     *********************
@@ -37,9 +35,8 @@
     **************
 ]]
 	
-LeveQuestNumber = 1643
--- 1647 = Tsai tou Vounou : The Mountain Steeped
--- 1643 = Carrot Nibbles : A Stickler for Carrots
+LeveQuestNumber = 1762
+-- 1762 = Spaghetti al Olio e Peperonchino
 
 --[[
 
@@ -79,10 +76,10 @@ repeat
 until IsPlayerAvailable()
 end
 
-function GriggeAccept()
+function MalihaliAccept()
 while not IsAddonReady("GuildLeve") do
-    if GetTargetName() ~= "Grigge" then
-        yield("/target Grigge")
+    if GetTargetName() ~= "Malihali" then
+        yield("/target Malihali")
     elseif IsAddonVisible("SelectString") then
         yield("/pcall SelectString true 1")
     elseif IsAddonVisible("Talk") then
@@ -112,13 +109,13 @@ yield("/wait 0.3")
 GetOUT()
 end
 
-function AhldiyrnComplete()
+function PonawmeComplete()
 local HowMany = GetItemCount(itemID)
 local ChangedHowMany = GetItemCount(itemID)
 while HowMany == ChangedHowMany do
     ChangedHowMany = GetItemCount(itemID)
-    if GetTargetName() ~= "Ahldiyrn" then
-        yield("/target Ahldiyrn")
+    if GetTargetName() ~= "Ponawme" then
+        yield("/target Ponawme")
     elseif IsAddonVisible("Talk") then
         yield("/click Talk Click")
     elseif IsAddonVisible("SelectString") then
@@ -141,18 +138,15 @@ end
 PandoraSetFeatureState("Auto-select Turn-ins", true)
 PandoraSetFeatureConfigState("Auto-select Turn-ins", "AutoConfirm", true)
 
-if LeveQuestNumber == 1647 then
-itemID = 36060
-LeveDetail = 1647
-elseif LeveQuestNumber == 1643 then
-itemID = 36047
-LeveDetail = 1643
+if LeveQuestNumber == 1762 then
+    itemID = 44093
+    LeveDetail = 1762
 else
-yield("/e Please select a leve that you want to do above")
-yield("/snd stop")
+    yield("/e Please select a leve that you want to do above")
+    yield("/snd stop")
 end
 
 while CanILeve() do
-GriggeAccept()
-AhldiyrnComplete()
+    MalihaliAccept()
+    PonawmeComplete()
 end
