@@ -5,10 +5,11 @@
     *******************
 
     *************************
-    *  Version -> 0.0.1.20  *
+    *  Version -> 0.0.1.21  *
     *************************
    
     Version Notes:
+    0.0.1.21 ->    Update for snd version click changes.
     0.0.1.20 ->    Update for DT changed the /click talk to /click  Talk_Click.
     0.0.1.19.2 ->  More Pandora settings added to count for user error if you have Auto-interact with Gathering Nodes and Auto-Mount after Gathering they are disabled now.
     0.0.1.19.1 ->  Now you don't need to configure plugin options i got you ;D
@@ -835,7 +836,7 @@ if IsInZone(886) then
         elseif GetCharacterCondition(32, false) then
             yield("/interact")
         end
-        if IsAddonVisible("Talk") then yield("/click  Talk_Click") end
+        if IsAddonVisible("Talk") then yield("/click  Talk Click") end
         if IsAddonVisible("SelectString") then yield("/callback SelectString true 0") end
         if IsAddonVisible("SelectYesno") then yield("/callback SelectYesno true 0") end
         yield("/wait 0.5")
