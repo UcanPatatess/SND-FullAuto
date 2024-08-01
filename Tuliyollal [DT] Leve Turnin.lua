@@ -9,9 +9,10 @@
     *************************
 
     **********************
-    * Version  |  1.0.0  *
+    * Version  |  1.0.1  *
     **********************
 
+    1.0.1 --> Added Warmouth leve turnin for fishers
     1.0.0 --> Working leve TurnIn.
 
     ***************
@@ -19,7 +20,7 @@
     ***************
 
     Automated Leve Turnin.
-	**MAKE SURE TO BE ON CUL WHEN TURNING THESE IN**
+	**MAKE SURE TO BE ON CUL or FIS WHEN TURNING THESE IN**
 
     *********************
     *  Required Plugins *
@@ -36,7 +37,11 @@
 ]]
 	
 LeveQuestNumber = 1762
+-- Culnarian:
 -- 1762 = Spaghetti al Olio e Peperonchino
+
+-- Fishing:
+-- 1807 = Warmouth
 
 --[[
 
@@ -47,7 +52,14 @@ LeveQuestNumber = 1762
 
 ]]
 function CanILeve()
-if GetItemCount(itemID) < 3 then
+    local Count = nil
+    if GetClassJobId() == 15 then
+        Count = 3
+    end
+    if GetClassJobId() == 18 then
+        Count = 9
+    end
+if GetItemCount(itemID) < Count then
     yield("No Leve item.")
     return false
 else
@@ -81,7 +93,7 @@ while not IsAddonReady("GuildLeve") do
     if GetTargetName() ~= "Malihali" then
         yield("/target Malihali")
     elseif IsAddonVisible("SelectString") then
-        yield("/pcall SelectString true 1")
+        yield("/pcall SelectString true "..SelectStringValue)
     elseif IsAddonVisible("Talk") then
         yield("/click Talk Click")
     else
@@ -101,21 +113,21 @@ if GetNodeText("GuildLeve", 5, 2) == "0" then
     yield("/pcall SelectString true -1")
     yield("/snd stop")
 end
-yield("/wait 0.3")
+yield("/wait 0.5")
 yield("/pcall GuildLeve true 13 1 " .. LeveDetail)
-yield("/wait 0.3")
+yield("/wait 0.5")
 yield("/pcall JournalDetail true 3 " .. LeveDetail)
-yield("/wait 0.3")
+yield("/wait 0.5")
 GetOUT()
 end
 
-function PonawmeComplete()
+function CompleteLeve(NpcName)
 local HowMany = GetItemCount(itemID)
 local ChangedHowMany = GetItemCount(itemID)
 while HowMany == ChangedHowMany do
     ChangedHowMany = GetItemCount(itemID)
-    if GetTargetName() ~= "Ponawme" then
-        yield("/target Ponawme")
+    if GetTargetName() ~= NpcName then
+        yield("/target "..NpcName)
     elseif IsAddonVisible("Talk") then
         yield("/click Talk Click")
     elseif IsAddonVisible("SelectString") then
@@ -130,9 +142,13 @@ end
 GetOUT()
 end
 
-if GetClassJobId() ~= 15 then
-yield("/e WAIT. This isn't on CUL. Not going to attempt to try and run this till you swap your class.")
-yield("/snd stop")
+if GetClassJobId() == 15 then
+    SelectStringValue = 1
+elseif GetClassJobId() == 17 then
+    SelectStringValue = 0
+else
+    yield("/e WAIT. This isn't on CUL or FIS. Not going to attempt to try and run this till you swap your class.")
+    yield("/snd stop")
 end
 
 PandoraSetFeatureState("Auto-select Turn-ins", true)
@@ -141,6 +157,17 @@ PandoraSetFeatureConfigState("Auto-select Turn-ins", "AutoConfirm", true)
 if LeveQuestNumber == 1762 then
     itemID = 44093
     LeveDetail = 1762
+    if GetClassJobId() ~= 15 then
+        yield("/e Please select the correct leve for your class.")
+        yield("/snd stop")
+    end
+elseif LeveQuestNumber == 1807 then
+    itemID = 43843
+    LeveDetail = 1807
+    if GetClassJobId() ~= 18 then
+        yield("/e Please select the correct leve for your class.")
+        yield("/snd stop")
+    end
 else
     yield("/e Please select a leve that you want to do above")
     yield("/snd stop")
@@ -148,5 +175,10 @@ end
 
 while CanILeve() do
     MalihaliAccept()
-    PonawmeComplete()
+    if GetClassJobId() == 15 then
+        CompleteLeve("Ponawme")
+    end
+    if GetClassJobId() == 18 then
+        CompleteLeve("Br'uk Ts'on")
+    end
 end
