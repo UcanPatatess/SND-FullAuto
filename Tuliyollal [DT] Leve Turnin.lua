@@ -9,9 +9,10 @@
     *************************
 
     **********************
-    * Version  |  1.0.1  *
+    * Version  |  1.0.2  *
     **********************
 
+    1.0.2 --> Failsafe and minor bug fix.
     1.0.1 --> Added Warmouth leve turnin for fishers
     1.0.0 --> Working leve TurnIn.
 
@@ -144,7 +145,7 @@ end
 
 if GetClassJobId() == 15 then
     SelectStringValue = 1
-elseif GetClassJobId() == 17 then
+elseif GetClassJobId() == 18 then
     SelectStringValue = 0
 else
     yield("/e WAIT. This isn't on CUL or FIS. Not going to attempt to try and run this till you swap your class.")
@@ -157,14 +158,14 @@ PandoraSetFeatureConfigState("Auto-select Turn-ins", "AutoConfirm", true)
 if LeveQuestNumber == 1762 then
     itemID = 44093
     LeveDetail = 1762
-    if GetClassJobId() ~= 15 then
+    if GetClassJobId() ~= 15 or GetLevel() < 94 then
         yield("/e Please select the correct leve for your class.")
         yield("/snd stop")
     end
 elseif LeveQuestNumber == 1807 then
     itemID = 43843
     LeveDetail = 1807
-    if GetClassJobId() ~= 18 then
+    if GetClassJobId() ~= 18 or GetLevel() < 98 then
         yield("/e Please select the correct leve for your class.")
         yield("/snd stop")
     end
