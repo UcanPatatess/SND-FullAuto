@@ -7,9 +7,10 @@
     Author: UcanPatates  
 
     **********************
-    * Version  |  1.1.3  *
+    * Version  |  1.1.4  *
     **********************
 
+    -> 1.1.4  : fixed the unnecessary halfing with the turn in npc.
     -> 1.1.3  : Added a check for the Automaton Plugin.
     -> 1.1.2  : Automaton Update for merging the stacks.
     -> 1.1.1  : Fixed a crash with the gc town teleportation.
@@ -787,7 +788,7 @@ function TurnIn(TableName,MaxArmoryValue)
     local function Exchange(ItemID, List, Amount)
         local ItemCount = GetItemCount(ItemID)
         local ExpectedItemCount
-
+        local brakepoint = 0
         if MaxArmory then
             ExpectedItemCount = ItemCount + Amount
         else
@@ -809,14 +810,13 @@ function TurnIn(TableName,MaxArmoryValue)
                 yield("/wait 0.3")
             elseif IsAddonVisible("ShopExchangeItemDialog") then
                 yield("/pcall ShopExchangeItemDialog true 0")
-            elseif ItemCount >= ExpectedItemCount then 
+            elseif ItemCount >= ExpectedItemCount or brakepoint > 10 then 
                 break
             elseif IsAddonVisible("ShopExchangeItem") then
                 yield("/pcall ShopExchangeItem true 0 " .. List .. " " .. Amount)
                 yield("/wait 0.6")
             end
-
-            if MaxItem then
+            if MaxItem and ItemCount == GetItemCount(ItemID) and brakepoint > 5 then
                 local newAmount = math.max(1, math.floor(Amount / 2))
                 Amount = newAmount
                 ExpectedItemCount = ItemCount + Amount
@@ -825,6 +825,7 @@ function TurnIn(TableName,MaxArmoryValue)
                 end
                 LogInfo("[Exchange] Adjusting amount to " .. Amount .. " for item ID " .. ItemID)
             end
+            brakepoint = brakepoint + 1
         end
         yield("/wait 0.1") 
         LogInfo("[Exchange] Finished exchange for item ID " .. ItemID)
