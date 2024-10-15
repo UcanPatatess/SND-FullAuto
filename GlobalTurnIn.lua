@@ -7,9 +7,10 @@
     Author: UcanPatates  
 
     **********************
-    * Version  |  1.1.5  *
+    * Version  |  1.1.6  *
     **********************
 
+    -> 1.1.6  : Added an option to teleport to the FC house for vendor selling.
     -> 1.1.5  : Added automatic Retainer sell (if your sell list was configured beforehand).
     -> 1.1.4  : Fixed unnecessary halving with the turn-in NPC.
     -> 1.1.3  : Added a check for the Automaton Plugin.
@@ -68,6 +69,7 @@ MaxArmoryFreeSlot = 2
 -- how many empty slots you want.
 
 VendorTurnIn = false
+TeleportToFC = false
 -- If you DON'T want FC points, and wanna stay off the marketboard
 -- use this to sell to your retainer, you'll lose some gil profit in the end, but you'll also stay more off the radar..
 
@@ -741,6 +743,37 @@ function GetOUT()
     until IsPlayerAvailable()
 end
 
+function FcAndSell()
+    local WhereToComeBack = GetZoneID()
+    yield("/li fc")
+    while WhereToComeBack == GetZoneID() do
+        yield("/wait 2")
+    end
+    PlayerTest()
+    local YardId = GetZoneID()
+    while YardId == GetZoneID() do
+        if GetCharacterCondition(45) then
+            yield("/wait 1")
+        else
+            if GetTargetName() ~= "Entrance" then
+                yield("/target Entrance")
+            elseif IsAddonVisible("SelectYesno") then
+                yield("/pcall SelectYesno true 0")
+            elseif GetDistanceToTarget() > 4  then
+                local X = GetTargetRawXPos()
+                local Y = GetTargetRawYPos()
+                local Z = GetTargetRawZPos()
+                WalkTo(X,Y,Z,4)
+            else
+                yield("/interact")
+            end
+        end
+        yield("/wait 0.5")
+    end
+    PlayerTest()
+    SummoningBellSell()
+end
+
 function WhichArmoryItem(ItemToBuy)
     local ArmoryId = ItemIdArmoryTable[ItemToBuy]
     return ArmoryId
@@ -1023,9 +1056,13 @@ while IsThereTradeItem() do
         
     if TotalExchangeItem > 0 then
         if VendorTurnIn then
-            MountUp()
-            WalkTo(-1.6, 206.5, 50.1, 1)
-            SummoningBellSell()
+            if TeleportToFC then
+                FcAndSell()
+            else
+                MountUp()
+                WalkTo(-1.6, 206.5, 50.1, 1)
+                SummoningBellSell()
+            end
         else
             TeleportGC()
             GcDelivero()
