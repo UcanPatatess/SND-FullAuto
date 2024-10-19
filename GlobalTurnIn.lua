@@ -36,7 +36,7 @@
     ***************
 
     This script will Automaticly turn in your Deltascape , Gordian and Alexandrian parts.
-    
+    Here is a Tutorial to set up VendorTurnIn :https://discord.com/channels/1001823907193552978/1196163718216679514/1296741709958479945
 
     *********************
     *  Required Plugins *
@@ -1002,7 +1002,7 @@ function SummoningBellSell()
         yield("/wait 1")
         IsThereTradeItem()
     end
-    GetOUT()
+    PlayerTest()
 end
 
 -- Main code that runs it all
