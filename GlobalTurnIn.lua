@@ -988,7 +988,7 @@ function MountUp()
             if GetCharacterCondition(27) then
                 yield("/wait 2")
             else
-                yield('/mount "Company Chocobo"')
+                yield('/gaction "mount roulette"')
             end
         end
     else
