@@ -55,11 +55,11 @@
     **************
 ]] 
 
-UseTicket = true
+UseTicket = false
 -- do you want to use tickets to teleport.
 
 
-MaxItem = false 
+MaxItem = true 
 -- do you want your maximize the inventory you have and buy one of a single item? 
 -- true = buy one single item to fill up the inventory
 -- false = buy 1 of each item (Technically safer, but if you're already farming A4N... >.>
