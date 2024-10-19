@@ -7,9 +7,10 @@
     Author: UcanPatates  
 
     **********************
-    * Version  |  1.1.6  *
+    * Version  |  1.1.7  *
     **********************
 
+    -> 1.1.7  : Added buying Lens items from Sabina
     -> 1.1.6  : Added an option to teleport to the FC house for vendor selling.
     -> 1.1.5  : Added automatic Retainer sell (if your sell list was configured beforehand).
     -> 1.1.4  : Fixed unnecessary halving with the turn-in NPC.
@@ -54,11 +55,11 @@
     **************
 ]] 
 
-UseTicket = false
+UseTicket = true
 -- do you want to use tickets to teleport.
 
 
-MaxItem = true 
+MaxItem = false 
 -- do you want your maximize the inventory you have and buy one of a single item? 
 -- true = buy one single item to fill up the inventory
 -- false = buy 1 of each item (Technically safer, but if you're already farming A4N... >.>
@@ -102,6 +103,13 @@ ItemIdArmoryTable =
     [19467] = 3201,
     [19473] = 3201,
  -- Gordian
+[11450] = 3201,
+[11449] = 3201,
+[11448] = 3201,
+[11451] = 3201,
+[11452] = 3201,
+[11453] = 3201,
+[11454] = 3201,
  -- MIDAN
  -- Alexandiran
     [16439] = 3201,
@@ -445,6 +453,9 @@ SabinaTable =
 {0, GordianShaftID, ShaftBuyAmount, 11457, 5,0},
 {0, GordianShaftID, ShaftBuyAmount, 11456, 4,0},
 {0, GordianShaftID, ShaftBuyAmount, 11455, 3,0},
+{0, GordianLensID, LensBuyAmount, 11450, 2,0},
+{0, GordianLensID, LensBuyAmount, 11449, 1,0},
+{0, GordianLensID, LensBuyAmount, 11448, 0,0},
 -- shop 2/dow2 
 {1, GordianBoltID, BoltBuyAmount, 11507, 13,0},
 {1, GordianBoltID, BoltBuyAmount, 11502, 12,0},
@@ -458,6 +469,8 @@ SabinaTable =
 {1, GordianCrankID, CrankBuyAmount, 11466, 4,0},
 {1, GordianShaftID, ShaftBuyAmount, 11458, 3,0},
 {1, GordianShaftID, ShaftBuyAmount, 11459, 2,0},
+{1, GordianLensID, LensBuyAmount, 11451, 1,0},
+{1, GordianLensID, LensBuyAmount, 11452, 0,0},
 -- shop 3/dom 
 {2, GordianBoltID, BoltBuyAmount, 11508, 17,0},
 {2, GordianBoltID, BoltBuyAmount, 11509, 16,0},
@@ -475,6 +488,8 @@ SabinaTable =
 {2, GordianCrankID, CrankBuyAmount, 11468, 4,0},
 {2, GordianShaftID, ShaftBuyAmount, 11460, 3,0},
 {2, GordianShaftID, ShaftBuyAmount, 11461, 2,0},
+{2, GordianLensID, LensBuyAmount, 11453, 1,0},
+{2, GordianLensID, LensBuyAmount, 11454, 0,0},
 ----------------------------   MIDAN   -------------------------------------------------
 
 ----------------------------   Alexandrian   --------------------------------------------
@@ -973,7 +988,7 @@ function MountUp()
             if GetCharacterCondition(27) then
                 yield("/wait 2")
             else
-                yield('/gaction "mount roulette"')
+                yield('/mount "Company Chocobo"')
             end
         end
     else
