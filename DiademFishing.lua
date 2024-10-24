@@ -7,9 +7,10 @@
     Author: UcanPatates  
 
     **********************
-    * Version  |  1.1.2  *
+    * Version  |  1.1.3  *
     **********************
 
+    -> 1.1.3  : Added a Echo setting.
     -> 1.1.2  : Update to click command for SND.
     -> 1.1.1  : Update for DT changed the /click talk to /click  Talk_Click.
     -> 1.1.0  : Changed the forced preset and some fixes.
@@ -50,6 +51,9 @@
     *  SETTINGS  *
     **************
 ]] 
+
+--Do you want to see whats happening in the echo chat.
+EchoToChat = true
 
 --Do you want to buy Diadem Hoverworm and DarkMatter if you don't have it ?
 BuyBait = true           -- true | false (default is true)
@@ -106,10 +110,17 @@ FishingSpot =
 }
 
 -- Functions
+function Echo(Value)
+    if EchoToChat then
+        yield(Value)
+    end
+end
+
 function setPropertyIfNotSet(propertyName)
     if GetSNDProperty(propertyName) == false then
         SetSNDProperty(propertyName, "true")
         LogInfo("[SetSNDPropertys] " .. propertyName .. " set to True")
+        Echo("[SetSNDPropertys] " .. propertyName .. " set to True")
     end
 end
 
@@ -117,6 +128,7 @@ function unsetPropertyIfSet(propertyName)
     if GetSNDProperty(propertyName) then
         SetSNDProperty(propertyName, "false")
         LogInfo("[SetSNDPropertys] " .. propertyName .. " set to False")
+        Echo("[SetSNDPropertys] " .. propertyName .. " set to False")
     end
 end
 
@@ -166,6 +178,7 @@ function BuyPcall(ItemID, NpcName, ShopAddonName, SelectIconString, WhichSlotToB
 end
 
 function NomNomDelish()
+    Echo("[FoodCheck] Starting.")
     local EatThreshold = HowManyMinutes * 60
     while (GetStatusTimeRemaining(48) <= EatThreshold or HasStatusId(48) == false) and UseFood do
         yield("/item " .. FoodKind)
@@ -177,13 +190,16 @@ function NomNomDelish()
                     DutyLeave()
                 end
                 LogInfo("[FoodCheck] StopTheScripIfThereIsNoFood is true stopping the script")
+                Echo("[FoodCheck] StopTheScripIfThereIsNoFood is true stopping the script")
                 yield("/snd stop")
             end
             LogInfo("[FoodCheck] Set to False No Food Remaining")
+            Echo("[FoodCheck] Set to False No Food Remaining")
             break
         end
     end
     LogInfo("[FoodCheck] Completed")
+    Echo("[FoodCheck] Completed")
 end
 
 function LetsBuySomeStuff()
@@ -219,8 +235,10 @@ function LetsBuySomeStuff()
             local BuyAmount = MinimumBait - DiademHoverwormCount 
             BuyPcall(30281, "Mender", "Shop", 0, 6, BuyAmount)
             LogInfo("[Debug]Bought Diadem Hoverworm.")
+            Echo("[Debug]Bought Diadem Hoverworm.")
         elseif not BuyBait and DiademHoverwormCount < BuyBaitMinimum then
             LogInfo("[Debug]BuyBait is False and Bait is running out, continue.")
+            Echo("[Debug]BuyBait is False and Bait is running out, continue.")
         end
 
         yield("/wait 1") -- :D go ahed delete it don't cry to me if its broke tho.
@@ -229,8 +247,10 @@ function LetsBuySomeStuff()
             local BuyAmount = MinimumDarkMatter - Grade8DarkMatterCount 
             BuyPcall(33916, "Mender", "Shop", 0, 14, BuyAmount)
             LogInfo("[Debug]Bought Grade8 DarkMatter.")
+            Echo("[Debug]Bought Grade8 DarkMatter.")
         elseif not BuyDarkMatter and Grade8DarkMatterCount < BuyDarkMatterMinimum then
             LogInfo("[Debug]BuyDarkMatter is False and DarkMatter is running out, continue.")
+            Echo("[Debug]BuyDarkMatter is False and DarkMatter is running out, continue.")
         end
 
         while IsAddonVisible("Shop") do
@@ -273,12 +293,14 @@ function DistanceToAurvael()
     local distance = GetDistanceToPoint(-18.6, -16.0, 141.2)
     if distance and distance > 100 then
         LogInfo("[Debug]Distance to Aurvael is further than 100 units")
+        Echo("[Debug]Distance to Aurvael is further than 100 units")
         return nil
     end
     return distance
 end
 
 function MountAndFly()
+    Echo("[MountAndFly] Starting.")
     while IsInZone(939) and GetCharacterCondition(4, false) and GetCharacterCondition(77, false) do
         PathStop()
         while GetCharacterCondition(4, false) and IsInZone(939) do
@@ -298,9 +320,11 @@ function MountAndFly()
         yield("/gaction jump")
     end
     LogInfo("[MountAndFly] Completed")
+    Echo("[MountAndFly] Completed")
 end
 
 function NpcRepairMenu(Name)
+    Echo("[RepairNpc] Starting the repair with NPC " .. Name .. ".")
     while true do
         if not NeedsRepair(RepairAmount) then
             break
@@ -323,11 +347,13 @@ function NpcRepairMenu(Name)
         yield("/callback Repair true -1")
         yield("/wait 0.1")
     end
-    LogInfo("[RepairNpc]Got Repaired by "..Name .." .")
+    LogInfo("[RepairNpc] Got Repaired by "..Name .." .")
+    Echo("[RepairNpc] Got Repaired by "..Name .." .")
 end
 
 function Repair()
     if NeedsRepair(RepairAmount) and SelfRepair then
+        Echo("[Repair] Starting.")
         while not IsAddonVisible("Repair") do
             yield("/generalaction repair")
             yield("/wait 0.5")
@@ -338,7 +364,10 @@ function Repair()
             IsAddonVisible("_TextError") then
             SelfRepair = false
             LogInfo("[Repair] Set to False not enough dark matter")
+            Echo("[Repair] Set to False not enough dark matter")
             if StopTheScripIfThereIsNoDarkMatter then
+                LogInfo("[Repair] StopTheScripIfThereIsNoDarkMatter is true stopping the script")
+                Echo("[Repair] StopTheScripIfThereIsNoDarkMatter is true stopping the script")
                 if GetCharacterCondition(34) then
                     DutyLeave()
                 end
@@ -379,18 +408,22 @@ function Repair()
     end
     PlayerTest()
     LogInfo("[Repair] Completed")
+    Echo("[Repair] Completed")
 end
 
 function WalkTo(valuex, valuey, valuez)
+    Echo("[WalkTo] Starting.")
     MeshCheck()
     PathfindAndMoveTo(valuex, valuey, valuez, false)
     while PathIsRunning() or PathfindInProgress() do
         yield("/wait 0.1")
     end
     LogInfo("[WalkTo] Completed")
+    Echo("[WalkTo] Completed")
 end
 
 function FlyTo(valuex, valuey, valuez)
+    Echo("[FlyTo] Starting.")
     MeshCheck()
     MountAndFly()
     PathfindAndMoveTo(valuex, valuey, valuez, true)
@@ -399,9 +432,11 @@ function FlyTo(valuex, valuey, valuez)
         MountAndFly()
     end
     LogInfo("[FlyTo] Completed")
+    Echo("[FlyTo] Completed")
 end
 
 function Dismount()
+    Echo("[Dismount] Trying.")
     local a = 0
     if GetCharacterCondition(4) or GetCharacterCondition(77) and IsInZone(886) == false then
         yield("/ac dismount")
@@ -414,9 +449,11 @@ function Dismount()
             yield("/wait 0.1")
             yield("/send SPACE")
             LogInfo("[Debug] Dismount BailoutCommanced")
+            Echo("[Debug] Dismount BailoutCommanced!")
         end
     end
     LogInfo("[Dismount] Completed")
+    Echo("[Dismount] Completed")
 end
 
 function Truncate1Dp(num)
@@ -428,18 +465,22 @@ function MeshCheck()
     if not NavIsReady() then
         while not NavIsReady() do
             LogInfo("[Debug]Building navmesh, currently at " .. Truncate1Dp(NavBuildProgress() * 100) .. "%")
+            Echo("[Debug]Building navmesh, currently at " .. Truncate1Dp(NavBuildProgress() * 100) .. "%")
             yield("/wait 1")
             local was_ready = NavIsReady()
             if was_ready then
                 LogInfo("[Debug]Navmesh ready!")
+                Echo("[Debug]Navmesh ready!")
             end
         end
     else
         LogInfo("[Debug]Navmesh ready!")
+        Echo("[Debug]Navmesh ready!")
     end
 end
 
 function MoveToDiadem(RandomSelect)
+    Echo("[MoveToDiadem] Starting.")
     MeshCheck()
     local X, Y, Z
     if IsInZone(939) then
@@ -481,10 +522,12 @@ function MoveToDiadem(RandomSelect)
             WalkTo(oceanX, oceanY, oceanZ)
         end
         LogInfo("[MoveToDiadem] Completed")
+        Echo("[MoveToDiadem] Completed")
     end
 end
 
 function Bailout500Cast()
+    Echo("[Bailout500Cast] Starting, you have been fishing a lot :D")
     while GetCharacterCondition(6) do
         yield("/ac Quit")
         yield("/wait 1")
@@ -499,10 +542,12 @@ function Bailout500Cast()
         yield("/wait 1")
     end
     LogInfo("[Bailout500Cast] Completed")
+    Echo("[Bailout500Cast] Completed")
 end
 
 function Dofishing()
     if not GetCharacterCondition(4) then
+        Echo("[Fishing] Starting for ".. HowManyMinutes.. " minutes .")
         local MoveEveryMin = HowManyMinutes * 60
         NomNomDelish()
         if IsInZone(939) then
@@ -536,12 +581,14 @@ function Dofishing()
             end
             PlayerTest()
             LogInfo("[Fishing] Completed")
+            Echo("[Fishing] Completed")
         end
     end
 end
 
 function WeGoIn()
     while IsInZone(886) do
+        Echo("[WeGoIn] Started.")
         local distance = DistanceToAurvael()
         if distance and distance > 4 then
             WalkTo(-18.4, -16.0, 143.2)
@@ -566,6 +613,7 @@ function WeGoIn()
     end
     PlayerTest()
     LogInfo("[WeGoIn] Completed")
+    Echo("[WeGoIn] Completed")
 end
 
 function SetAutoHookPreset()
