@@ -7,9 +7,10 @@
     Author: UcanPatates  
 
     **********************
-    * Version  |  1.1.7  *
+    * Version  |  1.1.8  *
     **********************
 
+    -> 1.1.8  : Fixed an oversight in the buying process so it will no longer attempt to buy the same item if you have one or more in your inventory. Also fixed the vendor sell issue for Alexandrian parts.
     -> 1.1.7  : Added buying Lens items from Sabina
     -> 1.1.6  : Added an option to teleport to the FC house for vendor selling.
     -> 1.1.5  : Added automatic Retainer sell (if your sell list was configured beforehand).
@@ -859,7 +860,7 @@ function TurnIn(TableName,MaxArmoryValue)
                 yield("/wait 0.3")
             elseif IsAddonVisible("ShopExchangeItemDialog") then
                 yield("/pcall ShopExchangeItemDialog true 0")
-            elseif ItemCount >= ExpectedItemCount or brakepoint > 10 then 
+            elseif ItemCount >= ExpectedItemCount or ItemCount > 1 or brakepoint > 10 then 
                 break
             elseif IsAddonVisible("ShopExchangeItem") then
                 yield("/pcall ShopExchangeItem true 0 " .. List .. " " .. Amount)
@@ -900,9 +901,11 @@ function TurnIn(TableName,MaxArmoryValue)
         end
 
         if CanExchange > 0 and GearAmount < 1 and SlotINV > 0 then
+            LogInfo("Exchange start ...................")
             LogInfo("SlotINV: "..SlotINV)
             LogInfo("SlotArmoryINV: "..SlotArmoryINV)
             LogInfo("CanExchange: "..CanExchange)
+            LogInfo("GearAmount: "..GearAmount)
             if shopType ~= lastShopType then
                 OpenShopMenu(iconShopType,shopType,NpcName)
                 lastShopType = shopType
@@ -931,6 +934,7 @@ function TurnIn(TableName,MaxArmoryValue)
                 GetOUT()
             end
             iconShopType = LastIconShopType
+            LogInfo("Exchange END ...................")
         end
     end
     yield("/wait 0.1")
@@ -1075,7 +1079,11 @@ while IsThereTradeItem() do
                 FcAndSell()
             else
                 MountUp()
-                WalkTo(-1.6, 206.5, 50.1, 1)
+                if IsInZone(478) then
+                    WalkTo(-1.6, 206.5, 50.1, 1)
+                elseif IsInZone(635) then
+                    WalkTo(-55.6,0.0,51.4, 1)
+                end
                 SummoningBellSell()
             end
         else
