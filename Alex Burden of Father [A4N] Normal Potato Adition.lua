@@ -8,9 +8,10 @@
     Author: UcanPatates  
 
     **********************
-    * Version  |  1.1.0  *
+    * Version  |  1.1.1  *
     **********************
 
+    -> 1.1.1  : Fixed an issue with summoning bell interaction.
     -> 1.1.0  : Added Visland for pals who is crashing with Vnavmesh. (sub resending will not work if you are using visland)
     -> 1.0.9  : Update for the click change(again)
     -> 1.0.8  : Update for DT changed the /click talk to /click  Talk_Click.
@@ -368,8 +369,10 @@
           yield("/target Summoning Bell")
           yield("/wait 0.1")
           if GetTargetName() == "Summoning Bell" and GetDistanceToTarget() <= 4.5 then
-              yield("/interact")
-              while ARRetainersWaitingToBeProcessed() do
+              while ARIsBusy() or ARRetainersWaitingToBeProcessed() do
+                if GetTargetName() == "Summoning Bell" then
+                    yield("/interact")
+                end
                   yield("/wait 1")
               end
               GetOUT()
@@ -578,12 +581,12 @@
   
   function Fight()
       yield("/rotation manual")
+      local ExpectedCount = Allcount() + 8
       while IsInZone(445) do
           yield("/wait 0.3")
           for i = 1, #TargetTable do
               yield("/target " .. TargetTable[i][1])
               if GetTargetName() == "Treasure Coffer" then
-                  local ExpectedCount = Allcount() + 8
                   local Count = Allcount()
                   while Count < ExpectedCount do
                       Count = Allcount()
