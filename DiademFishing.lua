@@ -7,9 +7,10 @@
     Author: UcanPatates  
 
     **********************
-    * Version  |  1.1.3  *
+    * Version  |  1.1.4  *
     **********************
 
+    -> 1.1.4  : Fixed Mender NPC name for targetting. Tweaked food check handling to bypass missing text node on /item usage.
     -> 1.1.3  : Added a Echo setting.
     -> 1.1.2  : Update to click command for SND.
     -> 1.1.1  : Update for DT changed the /click talk to /click  Talk_Click.
@@ -179,11 +180,14 @@ end
 
 function NomNomDelish()
     Echo("[FoodCheck] Starting.")
+    FoodCheck = 1
     local EatThreshold = HowManyMinutes * 60
-    while (GetStatusTimeRemaining(48) <= EatThreshold or HasStatusId(48) == false) and UseFood do
+    while (GetStatusTimeRemaining(48) <= EatThreshold or not HasStatusId(48)) and UseFood and FoodCheck < 4 do
+        Echo("[FoodCheck] Attempting food "..FoodCheck.."/3 times..")
         yield("/item " .. FoodKind)
         yield("/wait 2")
-        if GetNodeText("_TextError", 1) == "You do not have that item." and IsAddonVisible("_TextError") then
+        FoodCheck = FoodCheck + 1
+        if FoodCheck > 3 then
             UseFood = false
             if StopTheScripIfThereIsNoFood then
                 if GetCharacterCondition(34) then
@@ -193,11 +197,12 @@ function NomNomDelish()
                 Echo("[FoodCheck] StopTheScripIfThereIsNoFood is true stopping the script")
                 yield("/snd stop")
             end
-            LogInfo("[FoodCheck] Set to False No Food Remaining")
-            Echo("[FoodCheck] Set to False No Food Remaining")
+            LogInfo("[FoodCheck] Set to False, no food remaining")
+            Echo("[FoodCheck] Set to False, no food remaining")
             break
         end
     end
+    FoodCheck = 1
     LogInfo("[FoodCheck] Completed")
     Echo("[FoodCheck] Completed")
 end
@@ -233,7 +238,7 @@ function LetsBuySomeStuff()
         local distance = GetDistanceToPoint(-641.2, 285.3, -138.7)
         if BuyBait and distance <= 4 and DiademHoverwormCount < BuyBaitMinimum then
             local BuyAmount = MinimumBait - DiademHoverwormCount 
-            BuyPcall(30281, "Mender", "Shop", 0, 6, BuyAmount)
+            BuyPcall(30281, "Merchant & Mender", "Shop", 0, 6, BuyAmount)
             LogInfo("[Debug]Bought Diadem Hoverworm.")
             Echo("[Debug]Bought Diadem Hoverworm.")
         elseif not BuyBait and DiademHoverwormCount < BuyBaitMinimum then
@@ -245,7 +250,7 @@ function LetsBuySomeStuff()
 
         if BuyDarkMatter and distance <= 4 and Grade8DarkMatterCount < BuyDarkMatterMinimum then
             local BuyAmount = MinimumDarkMatter - Grade8DarkMatterCount 
-            BuyPcall(33916, "Mender", "Shop", 0, 14, BuyAmount)
+            BuyPcall(33916, "Merchant & Mender", "Shop", 0, 14, BuyAmount)
             LogInfo("[Debug]Bought Grade8 DarkMatter.")
             Echo("[Debug]Bought Grade8 DarkMatter.")
         elseif not BuyDarkMatter and Grade8DarkMatterCount < BuyDarkMatterMinimum then
